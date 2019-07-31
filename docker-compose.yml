@@ -22,3 +22,4 @@ services:
             rawAccess: true
             port: '5432'
             migrations: true
+   
