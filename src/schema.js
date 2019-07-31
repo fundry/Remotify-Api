@@ -1,13 +1,16 @@
-import { ApolloServer } from 'apollo-server-express';
+import { makeExecutableSchema, } from 'apollo-server';
+import { importSchema } from 'graphql-import';
 
 import TYPEDEFS from './types.js';
-import RESOLVERS from './resolvers.js';
-// import Test from '../models/models'
+import {resolver} from './resolvers.js';
 
-const SERVER = new ApolloServer({
-  typeDefs: TYPEDEFS,
-  resolvers: RESOLVERS,
-  context: ({ req }) => ({}),
+// import Test from '../models/models'
+const typeDefs = importSchema('src/schema.graphql');
+
+const schema = new makeExecutableSchema({
+  typeDefs ,
+  resolvers: resolver,
+   resolverValidationOptions: { requireResolversForResolveType: false },
 });
 
-export default SERVER;
+export   {schema};

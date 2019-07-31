@@ -1,46 +1,10 @@
 require('dotenv').config();
 import { ApolloServer, gql } from 'apollo-server';
-import { importSchema } from 'graphql-import';
 import { Prisma } from 'prisma-binding';
- 
-const resolvers = {
-  Query: {
-    info: () => `This is the API of a Hackernews Clone`,
-    users: (root, args, context, info) => {
-      return context.prisma.query.users({}, info);
-    },
-    node(root, { id }, ctx, info) {
-      return ctx.prisma.query.node({ id }, info);
-    },
-  },
-  Mutation: {
-    createUser: (root, args, context, info) => {
-      return context.prisma.mutation.createUser(
-        {
-          data: {
-            firstName: args.firstName,
-            lastName: args.lastName,
-            email: args.email,
-            password: args.password,
-          },
-        },
-        info
-      );
-    },
-  },
-  Node: {
-    __resolveType(obj, ctx, info) {
-      return obj.__typename;
-    },
-  },
-};
-
-const typeDefs = importSchema('src/schema.graphql');
+import {schema} from "./src/schema";
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  introspection: true,
+  schema , 
   context: (req) => ({
     ...req,
     prisma: new Prisma({

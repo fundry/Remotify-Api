@@ -1,21 +1,34 @@
-const RESOLVERS = {
+const resolver = {
   Query: {
-    test: async (parent, args, { Test }) => {
-      const tests = await Test.find();
-
-      return tests.map((test) => {
-        return test;
-      });
+    info: () => `This is the API of a Hackernews Clone`,
+    users: (root, args, context, info) => {
+      return context.prisma.query.users({}, info);
+    },
+    node(root, { id }, ctx, info) {
+      return ctx.prisma.query.node({ id }, info);
     },
   },
-
   Mutation: {
-    // addtest: async (parent, args, { Test }) => {
-    //   const test = await new Test(args).save();
-    //   test._id = test._id.toString();
-    //   return test;
-    // },
+    createUser: (root, args, context, info) => {
+      return context.prisma.mutation.createUser(
+        {
+          data: {
+            firstName: args.firstName,
+            lastName: args.lastName,
+            email: args.email,
+            password: args.password,
+          },
+        },
+        info
+      );
+    },
+  },
+  Node: {
+    __resolveType(obj, ctx, info) {
+      return obj.__typename;
+    },
   },
 };
 
-export default RESOLVERS;
+
+export  {resolver}  
