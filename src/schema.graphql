@@ -1,11 +1,20 @@
-# import User from "../prisma/prisma.graphql"
+# import Team from "../prisma/prisma.graphql"
+# import Staff from "../prisma/prisma.graphql"
+# import Company from "../prisma/prisma.graphql"
+
+
 
 type Query {
-    info: String!
-    users: [User!]!
+    info: String 
+    staff: Staff 
+    team: Team 
+    company: Company 
     node(id: ID!): Node
 }
 
 type Mutation {
-    createUser(email: String!, firstName: String!, lastName: String!, password: String!): User!
+    createTeam(    name: String
+      members: Int
+      active: Boolean
+      description: String): Team
 }

@@ -3,7 +3,15 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateUser {
+/* GraphQL */ `type AggregateCompany {
+  count: Int!
+}
+
+type AggregateStaff {
+  count: Int!
+}
+
+type AggregateTeam {
   count: Int!
 }
 
@@ -11,105 +19,64 @@ type BatchPayload {
   count: Long!
 }
 
-scalar Long
-
-type Mutation {
-  createUser(data: UserCreateInput!): User!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  deleteUser(where: UserWhereUniqueInput!): User
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
-}
-
-enum MutationType {
-  CREATED
-  UPDATED
-  DELETED
-}
-
-interface Node {
+type Company {
   id: ID!
+  name: String
+  staffs(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff!]
+  Teams: Int
+  leads: Int
 }
 
-type PageInfo {
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-  endCursor: String
-}
-
-type Query {
-  user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  node(id: ID!): Node
-}
-
-type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-}
-
-type User {
-  id: ID!
-  name: String!
-}
-
-type UserConnection {
+type CompanyConnection {
   pageInfo: PageInfo!
-  edges: [UserEdge]!
-  aggregate: AggregateUser!
+  edges: [CompanyEdge]!
+  aggregate: AggregateCompany!
 }
 
-input UserCreateInput {
+input CompanyCreateInput {
   id: ID
-  name: String!
+  name: String
+  staffs: StaffCreateManyWithoutCompanyInput
+  Teams: Int
+  leads: Int
 }
 
-type UserEdge {
-  node: User!
+input CompanyCreateManyWithoutStaffsInput {
+  create: [CompanyCreateWithoutStaffsInput!]
+  connect: [CompanyWhereUniqueInput!]
+}
+
+input CompanyCreateWithoutStaffsInput {
+  id: ID
+  name: String
+  Teams: Int
+  leads: Int
+}
+
+type CompanyEdge {
+  node: Company!
   cursor: String!
 }
 
-enum UserOrderByInput {
+enum CompanyOrderByInput {
   id_ASC
   id_DESC
   name_ASC
   name_DESC
+  Teams_ASC
+  Teams_DESC
+  leads_ASC
+  leads_DESC
 }
 
-type UserPreviousValues {
+type CompanyPreviousValues {
   id: ID!
-  name: String!
-}
-
-type UserSubscriptionPayload {
-  mutation: MutationType!
-  node: User
-  updatedFields: [String!]
-  previousValues: UserPreviousValues
-}
-
-input UserSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: UserWhereInput
-  AND: [UserSubscriptionWhereInput!]
-  OR: [UserSubscriptionWhereInput!]
-  NOT: [UserSubscriptionWhereInput!]
-}
-
-input UserUpdateInput {
   name: String
+  Teams: Int
+  leads: Int
 }
 
-input UserUpdateManyMutationInput {
-  name: String
-}
-
-input UserWhereInput {
+input CompanyScalarWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -138,12 +105,687 @@ input UserWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  NOT: [UserWhereInput!]
+  Teams: Int
+  Teams_not: Int
+  Teams_in: [Int!]
+  Teams_not_in: [Int!]
+  Teams_lt: Int
+  Teams_lte: Int
+  Teams_gt: Int
+  Teams_gte: Int
+  leads: Int
+  leads_not: Int
+  leads_in: [Int!]
+  leads_not_in: [Int!]
+  leads_lt: Int
+  leads_lte: Int
+  leads_gt: Int
+  leads_gte: Int
+  AND: [CompanyScalarWhereInput!]
+  OR: [CompanyScalarWhereInput!]
+  NOT: [CompanyScalarWhereInput!]
 }
 
-input UserWhereUniqueInput {
+type CompanySubscriptionPayload {
+  mutation: MutationType!
+  node: Company
+  updatedFields: [String!]
+  previousValues: CompanyPreviousValues
+}
+
+input CompanySubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CompanyWhereInput
+  AND: [CompanySubscriptionWhereInput!]
+  OR: [CompanySubscriptionWhereInput!]
+  NOT: [CompanySubscriptionWhereInput!]
+}
+
+input CompanyUpdateInput {
+  name: String
+  staffs: StaffUpdateManyWithoutCompanyInput
+  Teams: Int
+  leads: Int
+}
+
+input CompanyUpdateManyDataInput {
+  name: String
+  Teams: Int
+  leads: Int
+}
+
+input CompanyUpdateManyMutationInput {
+  name: String
+  Teams: Int
+  leads: Int
+}
+
+input CompanyUpdateManyWithoutStaffsInput {
+  create: [CompanyCreateWithoutStaffsInput!]
+  delete: [CompanyWhereUniqueInput!]
+  connect: [CompanyWhereUniqueInput!]
+  set: [CompanyWhereUniqueInput!]
+  disconnect: [CompanyWhereUniqueInput!]
+  update: [CompanyUpdateWithWhereUniqueWithoutStaffsInput!]
+  upsert: [CompanyUpsertWithWhereUniqueWithoutStaffsInput!]
+  deleteMany: [CompanyScalarWhereInput!]
+  updateMany: [CompanyUpdateManyWithWhereNestedInput!]
+}
+
+input CompanyUpdateManyWithWhereNestedInput {
+  where: CompanyScalarWhereInput!
+  data: CompanyUpdateManyDataInput!
+}
+
+input CompanyUpdateWithoutStaffsDataInput {
+  name: String
+  Teams: Int
+  leads: Int
+}
+
+input CompanyUpdateWithWhereUniqueWithoutStaffsInput {
+  where: CompanyWhereUniqueInput!
+  data: CompanyUpdateWithoutStaffsDataInput!
+}
+
+input CompanyUpsertWithWhereUniqueWithoutStaffsInput {
+  where: CompanyWhereUniqueInput!
+  update: CompanyUpdateWithoutStaffsDataInput!
+  create: CompanyCreateWithoutStaffsInput!
+}
+
+input CompanyWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  staffs_every: StaffWhereInput
+  staffs_some: StaffWhereInput
+  staffs_none: StaffWhereInput
+  Teams: Int
+  Teams_not: Int
+  Teams_in: [Int!]
+  Teams_not_in: [Int!]
+  Teams_lt: Int
+  Teams_lte: Int
+  Teams_gt: Int
+  Teams_gte: Int
+  leads: Int
+  leads_not: Int
+  leads_in: [Int!]
+  leads_not_in: [Int!]
+  leads_lt: Int
+  leads_lte: Int
+  leads_gt: Int
+  leads_gte: Int
+  AND: [CompanyWhereInput!]
+  OR: [CompanyWhereInput!]
+  NOT: [CompanyWhereInput!]
+}
+
+input CompanyWhereUniqueInput {
+  id: ID
+}
+
+scalar DateTime
+
+scalar Long
+
+type Mutation {
+  createCompany(data: CompanyCreateInput!): Company!
+  updateCompany(data: CompanyUpdateInput!, where: CompanyWhereUniqueInput!): Company
+  updateManyCompanies(data: CompanyUpdateManyMutationInput!, where: CompanyWhereInput): BatchPayload!
+  upsertCompany(where: CompanyWhereUniqueInput!, create: CompanyCreateInput!, update: CompanyUpdateInput!): Company!
+  deleteCompany(where: CompanyWhereUniqueInput!): Company
+  deleteManyCompanies(where: CompanyWhereInput): BatchPayload!
+  createStaff(data: StaffCreateInput!): Staff!
+  updateStaff(data: StaffUpdateInput!, where: StaffWhereUniqueInput!): Staff
+  updateManyStaffs(data: StaffUpdateManyMutationInput!, where: StaffWhereInput): BatchPayload!
+  upsertStaff(where: StaffWhereUniqueInput!, create: StaffCreateInput!, update: StaffUpdateInput!): Staff!
+  deleteStaff(where: StaffWhereUniqueInput!): Staff
+  deleteManyStaffs(where: StaffWhereInput): BatchPayload!
+  createTeam(data: TeamCreateInput!): Team!
+  updateTeam(data: TeamUpdateInput!, where: TeamWhereUniqueInput!): Team
+  updateManyTeams(data: TeamUpdateManyMutationInput!, where: TeamWhereInput): BatchPayload!
+  upsertTeam(where: TeamWhereUniqueInput!, create: TeamCreateInput!, update: TeamUpdateInput!): Team!
+  deleteTeam(where: TeamWhereUniqueInput!): Team
+  deleteManyTeams(where: TeamWhereInput): BatchPayload!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Query {
+  company(where: CompanyWhereUniqueInput!): Company
+  companies(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Company]!
+  companiesConnection(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CompanyConnection!
+  staff(where: StaffWhereUniqueInput!): Staff
+  staffs(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff]!
+  staffsConnection(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StaffConnection!
+  team(where: TeamWhereUniqueInput!): Team
+  teams(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Team]!
+  teamsConnection(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TeamConnection!
+  node(id: ID!): Node
+}
+
+type Staff {
+  id: ID!
+  name: String
+  company(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Company!]
+  team: String
+  role: String
+  joinedAt: DateTime!
+}
+
+type StaffConnection {
+  pageInfo: PageInfo!
+  edges: [StaffEdge]!
+  aggregate: AggregateStaff!
+}
+
+input StaffCreateInput {
+  id: ID
+  name: String
+  company: CompanyCreateManyWithoutStaffsInput
+  team: String
+  role: String
+}
+
+input StaffCreateManyInput {
+  create: [StaffCreateInput!]
+  connect: [StaffWhereUniqueInput!]
+}
+
+input StaffCreateManyWithoutCompanyInput {
+  create: [StaffCreateWithoutCompanyInput!]
+  connect: [StaffWhereUniqueInput!]
+}
+
+input StaffCreateWithoutCompanyInput {
+  id: ID
+  name: String
+  team: String
+  role: String
+}
+
+type StaffEdge {
+  node: Staff!
+  cursor: String!
+}
+
+enum StaffOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  team_ASC
+  team_DESC
+  role_ASC
+  role_DESC
+  joinedAt_ASC
+  joinedAt_DESC
+}
+
+type StaffPreviousValues {
+  id: ID!
+  name: String
+  team: String
+  role: String
+  joinedAt: DateTime!
+}
+
+input StaffScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  team: String
+  team_not: String
+  team_in: [String!]
+  team_not_in: [String!]
+  team_lt: String
+  team_lte: String
+  team_gt: String
+  team_gte: String
+  team_contains: String
+  team_not_contains: String
+  team_starts_with: String
+  team_not_starts_with: String
+  team_ends_with: String
+  team_not_ends_with: String
+  role: String
+  role_not: String
+  role_in: [String!]
+  role_not_in: [String!]
+  role_lt: String
+  role_lte: String
+  role_gt: String
+  role_gte: String
+  role_contains: String
+  role_not_contains: String
+  role_starts_with: String
+  role_not_starts_with: String
+  role_ends_with: String
+  role_not_ends_with: String
+  joinedAt: DateTime
+  joinedAt_not: DateTime
+  joinedAt_in: [DateTime!]
+  joinedAt_not_in: [DateTime!]
+  joinedAt_lt: DateTime
+  joinedAt_lte: DateTime
+  joinedAt_gt: DateTime
+  joinedAt_gte: DateTime
+  AND: [StaffScalarWhereInput!]
+  OR: [StaffScalarWhereInput!]
+  NOT: [StaffScalarWhereInput!]
+}
+
+type StaffSubscriptionPayload {
+  mutation: MutationType!
+  node: Staff
+  updatedFields: [String!]
+  previousValues: StaffPreviousValues
+}
+
+input StaffSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: StaffWhereInput
+  AND: [StaffSubscriptionWhereInput!]
+  OR: [StaffSubscriptionWhereInput!]
+  NOT: [StaffSubscriptionWhereInput!]
+}
+
+input StaffUpdateDataInput {
+  name: String
+  company: CompanyUpdateManyWithoutStaffsInput
+  team: String
+  role: String
+}
+
+input StaffUpdateInput {
+  name: String
+  company: CompanyUpdateManyWithoutStaffsInput
+  team: String
+  role: String
+}
+
+input StaffUpdateManyDataInput {
+  name: String
+  team: String
+  role: String
+}
+
+input StaffUpdateManyInput {
+  create: [StaffCreateInput!]
+  update: [StaffUpdateWithWhereUniqueNestedInput!]
+  upsert: [StaffUpsertWithWhereUniqueNestedInput!]
+  delete: [StaffWhereUniqueInput!]
+  connect: [StaffWhereUniqueInput!]
+  set: [StaffWhereUniqueInput!]
+  disconnect: [StaffWhereUniqueInput!]
+  deleteMany: [StaffScalarWhereInput!]
+  updateMany: [StaffUpdateManyWithWhereNestedInput!]
+}
+
+input StaffUpdateManyMutationInput {
+  name: String
+  team: String
+  role: String
+}
+
+input StaffUpdateManyWithoutCompanyInput {
+  create: [StaffCreateWithoutCompanyInput!]
+  delete: [StaffWhereUniqueInput!]
+  connect: [StaffWhereUniqueInput!]
+  set: [StaffWhereUniqueInput!]
+  disconnect: [StaffWhereUniqueInput!]
+  update: [StaffUpdateWithWhereUniqueWithoutCompanyInput!]
+  upsert: [StaffUpsertWithWhereUniqueWithoutCompanyInput!]
+  deleteMany: [StaffScalarWhereInput!]
+  updateMany: [StaffUpdateManyWithWhereNestedInput!]
+}
+
+input StaffUpdateManyWithWhereNestedInput {
+  where: StaffScalarWhereInput!
+  data: StaffUpdateManyDataInput!
+}
+
+input StaffUpdateWithoutCompanyDataInput {
+  name: String
+  team: String
+  role: String
+}
+
+input StaffUpdateWithWhereUniqueNestedInput {
+  where: StaffWhereUniqueInput!
+  data: StaffUpdateDataInput!
+}
+
+input StaffUpdateWithWhereUniqueWithoutCompanyInput {
+  where: StaffWhereUniqueInput!
+  data: StaffUpdateWithoutCompanyDataInput!
+}
+
+input StaffUpsertWithWhereUniqueNestedInput {
+  where: StaffWhereUniqueInput!
+  update: StaffUpdateDataInput!
+  create: StaffCreateInput!
+}
+
+input StaffUpsertWithWhereUniqueWithoutCompanyInput {
+  where: StaffWhereUniqueInput!
+  update: StaffUpdateWithoutCompanyDataInput!
+  create: StaffCreateWithoutCompanyInput!
+}
+
+input StaffWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  company_every: CompanyWhereInput
+  company_some: CompanyWhereInput
+  company_none: CompanyWhereInput
+  team: String
+  team_not: String
+  team_in: [String!]
+  team_not_in: [String!]
+  team_lt: String
+  team_lte: String
+  team_gt: String
+  team_gte: String
+  team_contains: String
+  team_not_contains: String
+  team_starts_with: String
+  team_not_starts_with: String
+  team_ends_with: String
+  team_not_ends_with: String
+  role: String
+  role_not: String
+  role_in: [String!]
+  role_not_in: [String!]
+  role_lt: String
+  role_lte: String
+  role_gt: String
+  role_gte: String
+  role_contains: String
+  role_not_contains: String
+  role_starts_with: String
+  role_not_starts_with: String
+  role_ends_with: String
+  role_not_ends_with: String
+  joinedAt: DateTime
+  joinedAt_not: DateTime
+  joinedAt_in: [DateTime!]
+  joinedAt_not_in: [DateTime!]
+  joinedAt_lt: DateTime
+  joinedAt_lte: DateTime
+  joinedAt_gt: DateTime
+  joinedAt_gte: DateTime
+  AND: [StaffWhereInput!]
+  OR: [StaffWhereInput!]
+  NOT: [StaffWhereInput!]
+}
+
+input StaffWhereUniqueInput {
+  id: ID
+}
+
+type Subscription {
+  company(where: CompanySubscriptionWhereInput): CompanySubscriptionPayload
+  staff(where: StaffSubscriptionWhereInput): StaffSubscriptionPayload
+  team(where: TeamSubscriptionWhereInput): TeamSubscriptionPayload
+}
+
+type Team {
+  id: ID!
+  name: String
+  members: Int
+  description: String
+  active: Boolean
+  lead(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff!]
+  createdAt: DateTime!
+}
+
+type TeamConnection {
+  pageInfo: PageInfo!
+  edges: [TeamEdge]!
+  aggregate: AggregateTeam!
+}
+
+input TeamCreateInput {
+  id: ID
+  name: String
+  members: Int
+  description: String
+  active: Boolean
+  lead: StaffCreateManyInput
+}
+
+type TeamEdge {
+  node: Team!
+  cursor: String!
+}
+
+enum TeamOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  members_ASC
+  members_DESC
+  description_ASC
+  description_DESC
+  active_ASC
+  active_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type TeamPreviousValues {
+  id: ID!
+  name: String
+  members: Int
+  description: String
+  active: Boolean
+  createdAt: DateTime!
+}
+
+type TeamSubscriptionPayload {
+  mutation: MutationType!
+  node: Team
+  updatedFields: [String!]
+  previousValues: TeamPreviousValues
+}
+
+input TeamSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: TeamWhereInput
+  AND: [TeamSubscriptionWhereInput!]
+  OR: [TeamSubscriptionWhereInput!]
+  NOT: [TeamSubscriptionWhereInput!]
+}
+
+input TeamUpdateInput {
+  name: String
+  members: Int
+  description: String
+  active: Boolean
+  lead: StaffUpdateManyInput
+}
+
+input TeamUpdateManyMutationInput {
+  name: String
+  members: Int
+  description: String
+  active: Boolean
+}
+
+input TeamWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  members: Int
+  members_not: Int
+  members_in: [Int!]
+  members_not_in: [Int!]
+  members_lt: Int
+  members_lte: Int
+  members_gt: Int
+  members_gte: Int
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  active: Boolean
+  active_not: Boolean
+  lead_every: StaffWhereInput
+  lead_some: StaffWhereInput
+  lead_none: StaffWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [TeamWhereInput!]
+  OR: [TeamWhereInput!]
+  NOT: [TeamWhereInput!]
+}
+
+input TeamWhereUniqueInput {
   id: ID
 }
 `

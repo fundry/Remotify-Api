@@ -17,12 +17,12 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createUser(data: UserCreateInput!): User!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  deleteUser(where: UserWhereUniqueInput!): User
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  createTeam(data: TeamCreateInput!): Team!
+  # updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  # deleteUser(where: UserWhereUniqueInput!): User
+  upsertUser(where: UserWhereUniqueInput!, create: TeamCreateInput!, update: UserUpdateInput!): User!
+  # updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
+  # deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -57,6 +57,10 @@ type Query {
   user(where: UserWhereUniqueInput!): User
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
+""" this line seems to introduce a SILENT RUNTIME ERROR """
+  team(where: UserWhereInput)  : [Team]!
+
+
   """Fetches an object given its ID"""
   node(
     """The ID of an object"""
@@ -69,11 +73,35 @@ type Subscription {
 }
 
 type User implements Node {
-  id: ID!
-  name: String!
-  email: String!
-  password: String!
+  id: ID! 
+  name: String 
+  email: String 
+  password: String 
 }
+
+ type Team implements Node  {
+    id: ID!
+    description: String
+    name: String
+    members: Int
+    active: Boolean
+    createdAt: Int
+  }
+
+  type Staff  implements Node {
+    id: ID!
+    name: String
+    team: Int
+    role: String
+    joinedAt: Int
+  }
+
+  type Company implements Node  {
+    id: ID!
+    name: String
+  }
+
+
 
 """A connection to a list of items."""
 type UserConnection {
@@ -85,10 +113,11 @@ type UserConnection {
   aggregate: AggregateUser!
 }
 
-input UserCreateInput {
-  name: String!
-  email: String!
-  password: String!
+input TeamCreateInput {
+    description: String
+    name: String
+    members: Int
+    active: Boolean
 }
 
 """An edge in a connection."""
@@ -305,7 +334,7 @@ input UserWhereInput {
   password_in: [String!]
 
   """All values that are not contained in given list."""
-  password_not_in: [String!]
+  password_not_in: [String!] 
 
   """All values less than the given value."""
   password_lt: String

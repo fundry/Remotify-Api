@@ -1,4 +1,27 @@
-type User {
+type Staff  {
   id: ID! @id
-  name: String!
+  name: String
+  company : [Company!]!
+  team : String
+  role : String
+  joinedAt : DateTime! @createdAt
 }
+
+type Team { 
+  id: ID! @id
+  name : String
+  members : Int  
+  description: String
+  active : Boolean 
+  lead : [Staff!]!
+  createdAt: DateTime! @createdAt
+} 
+
+type Company { 
+   id: ID! @id
+  name : String
+  staffs : [Staff!]!
+  Teams  : Int
+  leads : Int
+}
+ 

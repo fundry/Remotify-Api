@@ -1,34 +1,29 @@
 const resolver = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
-    users: (root, args, context, info) => {
-      return context.prisma.query.users({}, info);
+    // users: (root, args, context, info) => {
+    //   return context.prisma.query.users({}, info);
+    // },
+    team: (root, ctx, prisma, parent,) => {
+        // console.log(prisma.db.query)      
+      return prisma.db.query.team({});
     },
-    node(root, { id }, ctx, info) {
-      return ctx.prisma.query.node({ id }, info);
-    },
+    staff: () => `staff resolve `,
+    company: () => `company resolver`,
   },
   Mutation: {
-    createUser: (root, args, context, info) => {
-      return context.prisma.mutation.createUser(
-        {
-          data: {
-            firstName: args.firstName,
-            lastName: args.lastName,
-            email: args.email,
-            password: args.password,
-          },
+    createTeam: (root, args, context, info) => {
+      return context.db.mutation.createTeam({
+        data: {
+          name: args.name,
+          members: args.members,
+          description: args.description,
+          active: args.active,
         },
-        info
-      );
-    },
-  },
-  Node: {
-    __resolveType(obj, ctx, info) {
-      return obj.__typename;
+      });
+      // console.log(context.prisma.mutation)
     },
   },
 };
 
-
-export  {resolver}  
+export { resolver };
