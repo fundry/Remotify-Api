@@ -19,7 +19,7 @@ services:
             user: postgres
             password: postgres
             ssl: false
-            rawAccess: true
+            rawAccess: false
             port: '5432'
             migrations: true
    

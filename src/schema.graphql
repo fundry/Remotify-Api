@@ -1,7 +1,7 @@
 # import Team from "../prisma/prisma.graphql"
 # import Staff from "../prisma/prisma.graphql"
 # import Company from "../prisma/prisma.graphql"
-
+# import Group from "../prisma/prisma.graphql"
 
 
 type Query {
@@ -9,12 +9,23 @@ type Query {
     staff: Staff 
     team: Team 
     company: Company 
+    group: Group
     node(id: ID!): Node
 }
 
 type Mutation {
+    createCompany(    name: String
+      ): Company
+
+    createStaff(    name: String
+      role: String): Staff
+
+    createGroup(    name: String
+      description: String): Group
+
     createTeam(    name: String
       members: Int
       active: Boolean
       description: String): Team
+      
 }

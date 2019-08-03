@@ -17,10 +17,13 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
+  createCompany(data: CompanyCreateInput): Company!
+  createStaff(data: StaffCreateInput): Staff!
   createTeam(data: TeamCreateInput!): Team!
+  createGroup(data: GroupCreateInput!): Group!
   # updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   # deleteUser(where: UserWhereUniqueInput!): User
-  upsertUser(where: UserWhereUniqueInput!, create: TeamCreateInput!, update: UserUpdateInput!): User!
+  upsertUser(where: UserWhereUniqueInput, create: TeamCreateInput!, update: UserUpdateInput!): User!
   # updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
   # deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
@@ -54,17 +57,17 @@ type PageInfo {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  user(where: UserWhereUniqueInput!): User
+  user(where: UserWhereUniqueInput): User
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
 """ this line seems to introduce a SILENT RUNTIME ERROR """
-  team(where: UserWhereInput)  : [Team]!
+  team(where: UserWhereUniqueInput)  : [Team]
 
 
   """Fetches an object given its ID"""
   node(
     """The ID of an object"""
-    id: ID!
+    id: ID!                                          
   ): Node
 }
 
@@ -79,28 +82,33 @@ type User implements Node {
   password: String 
 }
 
- type Team implements Node  {
+  type Company implements Node  {
     id: ID!
-    description: String
-    name: String
-    members: Int
-    active: Boolean
-    createdAt: Int
+    name: String!
   }
 
   type Staff  implements Node {
     id: ID!
-    name: String
+    name: String!
     team: Int
     role: String
     joinedAt: Int
   }
 
-  type Company implements Node  {
+ type Team implements Node  {
     id: ID!
-    name: String
+    description: String
+    name: String!
+    members: Int
+    active: Boolean
+    createdAt: Int
   }
 
+  type Group implements Node  {
+    id: ID!
+    name:  String!
+    description: String
+  }
 
 
 """A connection to a list of items."""
@@ -113,11 +121,25 @@ type UserConnection {
   aggregate: AggregateUser!
 }
 
+input CompanyCreateInput {
+  name: String
+}
+
+input StaffCreateInput {
+  name: String
+  role: String
+}
+
 input TeamCreateInput {
     description: String
     name: String
     members: Int
     active: Boolean
+}
+
+input GroupCreateInput {
+  name: String
+  description: String
 }
 
 """An edge in a connection."""

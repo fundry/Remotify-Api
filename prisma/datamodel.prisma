@@ -1,15 +1,15 @@
 type Staff  {
   id: ID! @id
-  name: String
+  name: String!
   company : [Company!]!
-  team : String
+  team : [Team!]!
   role : String
   joinedAt : DateTime! @createdAt
 }
 
 type Team { 
   id: ID! @id
-  name : String
+  name : String!
   members : Int  
   description: String
   active : Boolean 
@@ -19,9 +19,16 @@ type Team {
 
 type Company { 
    id: ID! @id
-  name : String
+  name : String!
   staffs : [Staff!]!
   Teams  : Int
   leads : Int
 }
  
+type Group {
+   id: ID! @id
+  name: String!
+  description: String
+  members: [Staff!]
+}
+
