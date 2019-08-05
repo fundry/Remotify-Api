@@ -7,7 +7,7 @@
 type Query {
     info: String 
     staff: Staff 
-    team: Team 
+    team(where: TeamWhereUniqueInput): Team 
     company: Company 
     group: Group
     node(id: ID!): Node

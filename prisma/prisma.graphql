@@ -17,8 +17,8 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createCompany(data: CompanyCreateInput): Company!
-  createStaff(data: StaffCreateInput): Staff!
+  createCompany(data: CompanyCreateInput!): Company!
+  createStaff(data: StaffCreateInput!): Staff!
   createTeam(data: TeamCreateInput!): Team!
   createGroup(data: GroupCreateInput!): Group!
   # updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
@@ -61,8 +61,8 @@ type Query {
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
 """ this line seems to introduce a SILENT RUNTIME ERROR """
-  team(where: UserWhereUniqueInput)  : [Team]
-
+  team(where: TeamWhereUniqueInput!): Team
+  upsertTeam(where:TeamWhereUniqueInput!, create: TeamCreateInput! ): Team!
 
   """Fetches an object given its ID"""
   node(
@@ -391,4 +391,8 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+}
+
+input TeamWhereUniqueInput {
+  name: String
 }
