@@ -60,9 +60,20 @@ type Query {
   user(where: UserWhereUniqueInput): User
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
-""" this line seems to introduce a SILENT RUNTIME ERROR """
+
+""" this line seems to introduces a SILENT RUNTIME ERROR if not mandatory """
   team(where: TeamWhereUniqueInput!): Team
   upsertTeam(where:TeamWhereUniqueInput!, create: TeamCreateInput! ): Team!
+
+  company(where: CompanyWhereUniqueInput!): Company
+  upsertCompany(where:CompanyWhereUniqueInput!, create: CompanyCreateInput! ): Company!
+
+  staff(where: StaffWhereUniqueInput!): Staff
+  upsertStaff(where:StaffWhereUniqueInput!, create: StaffCreateInput! ): Staff!
+
+  group(where: GroupWhereUniqueInput!): Group!
+  upsertGroup(where:GroupWhereUniqueInput!, create: GroupCreateInput! ): Group!
+
 
   """Fetches an object given its ID"""
   node(
@@ -396,3 +407,16 @@ input UserWhereUniqueInput {
 input TeamWhereUniqueInput {
   id : ID
 }
+
+input StaffWhereUniqueInput {
+  id : ID
+}
+
+input GroupWhereUniqueInput {
+  id : ID
+}
+
+input CompanyWhereUniqueInput {
+  id : ID
+}
+

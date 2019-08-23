@@ -4,10 +4,27 @@ const resolver = {
     // users: (root, args, context, info) => {
     //   return context.prisma.query.users({}, info);
     // },
-    company: () => `company resolver`,
-    staff: () => `staff resolve `,
+    company: (_, ctx, prisma, info) => {
+      const id = ctx.where.id;
+      return prisma.db.query.company({
+        where: {
+          id,
+        },
+        info,
+      });
+    },
 
-    team: (ctx, prisma, info) => {
+    staff: (_, ctx, prisma, info) => {
+      const id = ctx.where.id;
+      return prisma.db.query.staff({
+        where: {
+          id,
+        },
+        info,
+      });
+    },
+
+    team: (_, ctx, prisma, info) => {
       const id = ctx.where.id;
       return prisma.db.query.team({
         where: {
@@ -17,7 +34,15 @@ const resolver = {
       });
     },
 
-    group: () => `group resolver`,
+    group: (_, ctx, prisma, info) => {
+      const id = ctx.where.id;
+      return prisma.db.query.group({
+        where: {
+          id,
+        },
+        info,
+      });
+    },
   },
 
   Mutation: {

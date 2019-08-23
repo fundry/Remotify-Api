@@ -38,6 +38,9 @@ const typeDefs = gql`
       active: Boolean
       description: String
     ): Team!
+    createCompany(name: String): Company!
+    createStaff(name: String, team: Int, role: Boolean, joinedAt: Int): Staff!
+    createGroup(name: String, description: String): Group!
   }
 `;
 
