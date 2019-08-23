@@ -6,12 +6,20 @@ const resolver = {
     // },
     company: () => `company resolver`,
     staff: () => `staff resolve `,
-    team: (root, ctx, prisma, parent) => {
-      // console.log(prisma.db.query)
-      return prisma.db.query.team({});
+
+    team: (ctx, prisma, info) => {
+      const id = ctx.where.id;
+      return prisma.db.query.team({
+        where: {
+          id,
+        },
+        info,
+      });
     },
+
     group: () => `group resolver`,
   },
+
   Mutation: {
     createCompany: (root, args, context, info) => {
       return context.db.mutation.createCompany({
