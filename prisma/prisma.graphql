@@ -17,7 +17,7 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createCompany(data: CompanyCreateInput!): Company!
+  createOrganization(data: OrganizationCreateInput!): Organization!
   createStaff(data: StaffCreateInput!): Staff!
   createTeam(data: TeamCreateInput!): Team!
   createGroup(data: GroupCreateInput!): Group!
@@ -65,8 +65,8 @@ type Query {
   team(where: TeamWhereUniqueInput!): Team
   upsertTeam(where:TeamWhereUniqueInput!, create: TeamCreateInput! ): Team!
 
-  company(where: CompanyWhereUniqueInput!): Company
-  upsertCompany(where:CompanyWhereUniqueInput!, create: CompanyCreateInput! ): Company!
+  organization(where: OrganizationWhereUniqueInput!): Organization
+  upsertOrganization(where:OrganizationWhereUniqueInput!, create: OrganizationCreateInput! ): Organization!
 
   staff(where: StaffWhereUniqueInput!): Staff
   upsertStaff(where:StaffWhereUniqueInput!, create: StaffCreateInput! ): Staff!
@@ -93,9 +93,12 @@ type User implements Node {
   password: String 
 }
 
-  type Company implements Node  {
+  type Organization implements Node  {
     id: ID!
     name: String!
+    description: String
+    createdAt: Int
+    type: String
   }
 
   type Staff  implements Node {
@@ -103,6 +106,7 @@ type User implements Node {
     name: String!
     role: String
     joinedAt: Int
+    isLead:  Boolean
   }
 
  type Team implements Node  {
@@ -131,13 +135,18 @@ type UserConnection {
   aggregate: AggregateUser!
 }
 
-input CompanyCreateInput {
+input OrganizationCreateInput {
   name: String
+  description: String
+  createdAt: Int
+  type: String
 }
 
 input StaffCreateInput {
   name: String
   role: String
+  isLead:  Boolean
+  joinedAt: Int
 }
 
 input TeamCreateInput {
@@ -415,7 +424,7 @@ input GroupWhereUniqueInput {
   id : ID
 }
 
-input CompanyWhereUniqueInput {
+input OrganizationWhereUniqueInput {
   id : ID
 }
 

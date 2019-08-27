@@ -2,9 +2,9 @@ const resolver = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
     
-    company: (_, ctx, prisma, info) => {
+    organization: (_, ctx, prisma, info) => {
       const id = ctx.where.id;
-      return prisma.db.query.company({
+      return prisma.db.query.organization({
         where: {
           id,
         },
@@ -44,10 +44,14 @@ const resolver = {
   },
 
   Mutation: {
-    createCompany: (root, args, context, info) => {
-      return context.db.mutation.createCompany({
+    createOrganization: (root, args, context, info) => {
+      return context.db.mutation.createOrganization({
         data: {
           name: args.name,
+          description: args.description , 
+          // createdAt: new Date(),
+          // use moment.js for createdAt
+          type: args.type
         },
       });
     },
@@ -57,6 +61,7 @@ const resolver = {
         data: {
           name: args.name,
           role: args.role,
+          isLead: args.isLead
         },
       });
     },

@@ -18,7 +18,7 @@ const typeDefs = gql`
     joinedAt: Int
   }
 
-  type Company {
+  type Organization {
     id: Int
     name: String
   }
@@ -26,7 +26,7 @@ const typeDefs = gql`
   type Query {
     info: String
     team: [Team]
-    company: [Company]
+    organization: [Organization]
     staff: [Staff]
     users: [Staff]
   }
@@ -38,7 +38,7 @@ const typeDefs = gql`
       active: Boolean
       description: String
     ): Team!
-    createCompany(name: String): Company!
+    createOrganization(name: String): Organization!
     createStaff(name: String, role: Boolean, joinedAt: Int): Staff!
     createGroup(name: String, description: String): Group!
   }

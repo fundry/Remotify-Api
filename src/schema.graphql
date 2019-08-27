@@ -1,6 +1,6 @@
 # import Team from "../prisma/prisma.graphql"
 # import Staff from "../prisma/prisma.graphql"
-# import Company from "../prisma/prisma.graphql"
+# import Organization from "../prisma/prisma.graphql"
 # import Group from "../prisma/prisma.graphql"
 
 
@@ -8,24 +8,32 @@ type Query {
     info: String 
     staff(where: StaffWhereUniqueInput): Staff 
     team(where: TeamWhereUniqueInput): Team 
-    company(where: CompanyWhereUniqueInput): Company 
+    organization(where: OrganizationWhereUniqueInput): Organization 
     group(where: GroupWhereUniqueInput): Group
     node(id: ID!): Node
 }
 
 type Mutation {
-    createCompany(    name: String!
-      ): Company
+    createOrganization(  
+        name: String!
+        description: String
+        createdAt: Int
+        type: String
+      ): Organization
 
-    createStaff(    name: String!
-      role: String): Staff
+    createStaff(    
+      name: String!
+      role: String
+      isLead: Boolean
+      ): Staff
 
     createGroup(    name: String!
       description: String): Group
 
-    createTeam(    name: String!
+    createTeam(   
+       name: String!
       members: Int
       active: Boolean
+      createdAt: Int
       description: String): Team
-      
 }

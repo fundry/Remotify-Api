@@ -1,11 +1,3 @@
-type Staff  {
-  id: ID! @id
-  name: String!
-  company : [Company!]!
-  team : [Team!]!
-  role : String
-  joinedAt : DateTime! @createdAt
-}
 
 type Team { 
   id: ID! @id
@@ -17,18 +9,47 @@ type Team {
   createdAt: DateTime! @createdAt
 } 
 
-type Company { 
-   id: ID! @id
-  name : String!
-  staffs : [Staff!]!
-  Teams  : Int
-  leads : Int
-}
- 
 type Group {
    id: ID! @id
   name: String!
   description: String
   members: [Staff!]
 }
+
+type Organization { 
+   id: ID! @id
+  createdAt: DateTime! @createdAt
+  name : String!
+  Teams  : Int
+  leads : Int
+  type: String
+  description: String
+  staffs : [Staff!]!
+ department: [Department!]!
+}
+ 
+type Department {
+  id: ID!  @id
+  leads: [Lead!]!
+  name: String!
+  teams: [Team!]!  
+  createdAt: DateTime! @createdAt
+}
+
+type Lead { 
+  id: ID! @id
+  staff: [Staff!]!
+  team: [Team!]!
+}
+
+type Staff  {
+  id: ID! @id
+  name: String!
+  organization : [Organization!]!
+  team : [Team!]!
+  isLead: Boolean
+  role : String
+  joinedAt : DateTime! @createdAt
+}
+
 
