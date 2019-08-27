@@ -6,24 +6,24 @@
 
 type Query {
     info: String 
-    staff: Staff 
+    staff(where: StaffWhereUniqueInput): Staff 
     team(where: TeamWhereUniqueInput): Team 
-    company: Company 
-    group: Group
+    company(where: CompanyWhereUniqueInput): Company 
+    group(where: GroupWhereUniqueInput): Group
     node(id: ID!): Node
 }
 
 type Mutation {
-    createCompany(    name: String
+    createCompany(    name: String!
       ): Company
 
-    createStaff(    name: String
+    createStaff(    name: String!
       role: String): Staff
 
-    createGroup(    name: String
+    createGroup(    name: String!
       description: String): Group
 
-    createTeam(    name: String
+    createTeam(    name: String!
       members: Int
       active: Boolean
       description: String): Team

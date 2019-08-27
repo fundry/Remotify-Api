@@ -1,9 +1,7 @@
 const resolver = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
-    // users: (root, args, context, info) => {
-    //   return context.prisma.query.users({}, info);
-    // },
+    
     company: (_, ctx, prisma, info) => {
       const id = ctx.where.id;
       return prisma.db.query.company({

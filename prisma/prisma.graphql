@@ -101,7 +101,6 @@ type User implements Node {
   type Staff  implements Node {
     id: ID!
     name: String!
-    team: Int
     role: String
     joinedAt: Int
   }
