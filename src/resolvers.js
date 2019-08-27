@@ -51,7 +51,10 @@ const resolver = {
           description: args.description , 
           // createdAt: new Date(),
           // use moment.js for createdAt
-          type: args.type
+          type: args.type ,
+          email: args.email , 
+          country: args.country,
+          state : args.state
         },
       });
     },
@@ -61,7 +64,10 @@ const resolver = {
         data: {
           name: args.name,
           role: args.role,
-          isLead: args.isLead
+          isLead: args.isLead,
+          email: args.email,
+          country: args.country,
+          state : args.state
         },
       });
     },

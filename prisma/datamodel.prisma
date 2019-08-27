@@ -24,6 +24,9 @@ type Organization {
   leads : Int
   type: String
   description: String
+   country : String
+  state: String  
+  email : String
   staffs : [Staff!]!
  department: [Department!]!
 }
@@ -44,11 +47,15 @@ type Lead {
 
 type Staff  {
   id: ID! @id
-  name: String!
+  firstname: String!
+  lastname: String
   organization : [Organization!]!
   team : [Team!]!
   isLead: Boolean
   role : String
+  country: String
+  state: String
+  email: String
   joinedAt : DateTime! @createdAt
 }
 

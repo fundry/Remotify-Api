@@ -303,12 +303,20 @@ export type LeadOrderByInput = "id_ASC" | "id_DESC";
 export type StaffOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "name_ASC"
-  | "name_DESC"
+  | "firstname_ASC"
+  | "firstname_DESC"
+  | "lastname_ASC"
+  | "lastname_DESC"
   | "isLead_ASC"
   | "isLead_DESC"
   | "role_ASC"
   | "role_DESC"
+  | "country_ASC"
+  | "country_DESC"
+  | "state_ASC"
+  | "state_DESC"
+  | "email_ASC"
+  | "email_DESC"
   | "joinedAt_ASC"
   | "joinedAt_DESC";
 
@@ -326,7 +334,13 @@ export type OrganizationOrderByInput =
   | "type_ASC"
   | "type_DESC"
   | "description_ASC"
-  | "description_DESC";
+  | "description_DESC"
+  | "country_ASC"
+  | "country_DESC"
+  | "state_ASC"
+  | "state_DESC"
+  | "email_ASC"
+  | "email_DESC";
 
 export type DepartmentOrderByInput =
   | "id_ASC"
@@ -366,6 +380,9 @@ export interface OrganizationUpdateWithoutStaffsDataInput {
   leads?: Maybe<Int>;
   type?: Maybe<String>;
   description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
   department?: Maybe<DepartmentUpdateManyInput>;
 }
 
@@ -568,6 +585,48 @@ export interface OrganizationWhereInput {
   description_not_starts_with?: Maybe<String>;
   description_ends_with?: Maybe<String>;
   description_not_ends_with?: Maybe<String>;
+  country?: Maybe<String>;
+  country_not?: Maybe<String>;
+  country_in?: Maybe<String[] | String>;
+  country_not_in?: Maybe<String[] | String>;
+  country_lt?: Maybe<String>;
+  country_lte?: Maybe<String>;
+  country_gt?: Maybe<String>;
+  country_gte?: Maybe<String>;
+  country_contains?: Maybe<String>;
+  country_not_contains?: Maybe<String>;
+  country_starts_with?: Maybe<String>;
+  country_not_starts_with?: Maybe<String>;
+  country_ends_with?: Maybe<String>;
+  country_not_ends_with?: Maybe<String>;
+  state?: Maybe<String>;
+  state_not?: Maybe<String>;
+  state_in?: Maybe<String[] | String>;
+  state_not_in?: Maybe<String[] | String>;
+  state_lt?: Maybe<String>;
+  state_lte?: Maybe<String>;
+  state_gt?: Maybe<String>;
+  state_gte?: Maybe<String>;
+  state_contains?: Maybe<String>;
+  state_not_contains?: Maybe<String>;
+  state_starts_with?: Maybe<String>;
+  state_not_starts_with?: Maybe<String>;
+  state_ends_with?: Maybe<String>;
+  state_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
   staffs_every?: Maybe<StaffWhereInput>;
   staffs_some?: Maybe<StaffWhereInput>;
   staffs_none?: Maybe<StaffWhereInput>;
@@ -623,10 +682,14 @@ export interface DepartmentSubscriptionWhereInput {
 
 export interface StaffCreateWithoutTeamInput {
   id?: Maybe<ID_Input>;
-  name: String;
+  firstname: String;
+  lastname?: Maybe<String>;
   organization?: Maybe<OrganizationCreateManyWithoutStaffsInput>;
   isLead?: Maybe<Boolean>;
   role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export interface TeamUpdateInput {
@@ -644,11 +707,15 @@ export interface DepartmentUpdateInput {
 }
 
 export interface StaffUpdateInput {
-  name?: Maybe<String>;
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
   organization?: Maybe<OrganizationUpdateManyWithoutStaffsInput>;
   team?: Maybe<TeamUpdateManyWithoutLeadInput>;
   isLead?: Maybe<Boolean>;
   role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export interface LeadUpdateManyInput {
@@ -674,6 +741,9 @@ export interface OrganizationUpdateManyMutationInput {
   leads?: Maybe<Int>;
   type?: Maybe<String>;
   description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export interface LeadUpdateWithWhereUniqueNestedInput {
@@ -713,10 +783,14 @@ export interface LeadUpdateDataInput {
 }
 
 export interface StaffUpdateWithoutOrganizationDataInput {
-  name?: Maybe<String>;
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
   team?: Maybe<TeamUpdateManyWithoutLeadInput>;
   isLead?: Maybe<Boolean>;
   role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export interface StaffUpdateManyInput {
@@ -754,16 +828,23 @@ export interface OrganizationUpdateInput {
   leads?: Maybe<Int>;
   type?: Maybe<String>;
   description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
   staffs?: Maybe<StaffUpdateManyWithoutOrganizationInput>;
   department?: Maybe<DepartmentUpdateManyInput>;
 }
 
 export interface StaffUpdateDataInput {
-  name?: Maybe<String>;
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
   organization?: Maybe<OrganizationUpdateManyWithoutStaffsInput>;
   team?: Maybe<TeamUpdateManyWithoutLeadInput>;
   isLead?: Maybe<Boolean>;
   role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export type OrganizationWhereUniqueInput = AtLeastOne<{
@@ -807,6 +888,9 @@ export interface OrganizationCreateInput {
   leads?: Maybe<Int>;
   type?: Maybe<String>;
   description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
   staffs?: Maybe<StaffCreateManyWithoutOrganizationInput>;
   department?: Maybe<DepartmentCreateManyInput>;
 }
@@ -1046,10 +1130,14 @@ export interface TeamUpdateManyMutationInput {
 }
 
 export interface StaffUpdateWithoutTeamDataInput {
-  name?: Maybe<String>;
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
   organization?: Maybe<OrganizationUpdateManyWithoutStaffsInput>;
   isLead?: Maybe<Boolean>;
   role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export type GroupWhereUniqueInput = AtLeastOne<{
@@ -1083,20 +1171,34 @@ export interface StaffScalarWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
+  firstname?: Maybe<String>;
+  firstname_not?: Maybe<String>;
+  firstname_in?: Maybe<String[] | String>;
+  firstname_not_in?: Maybe<String[] | String>;
+  firstname_lt?: Maybe<String>;
+  firstname_lte?: Maybe<String>;
+  firstname_gt?: Maybe<String>;
+  firstname_gte?: Maybe<String>;
+  firstname_contains?: Maybe<String>;
+  firstname_not_contains?: Maybe<String>;
+  firstname_starts_with?: Maybe<String>;
+  firstname_not_starts_with?: Maybe<String>;
+  firstname_ends_with?: Maybe<String>;
+  firstname_not_ends_with?: Maybe<String>;
+  lastname?: Maybe<String>;
+  lastname_not?: Maybe<String>;
+  lastname_in?: Maybe<String[] | String>;
+  lastname_not_in?: Maybe<String[] | String>;
+  lastname_lt?: Maybe<String>;
+  lastname_lte?: Maybe<String>;
+  lastname_gt?: Maybe<String>;
+  lastname_gte?: Maybe<String>;
+  lastname_contains?: Maybe<String>;
+  lastname_not_contains?: Maybe<String>;
+  lastname_starts_with?: Maybe<String>;
+  lastname_not_starts_with?: Maybe<String>;
+  lastname_ends_with?: Maybe<String>;
+  lastname_not_ends_with?: Maybe<String>;
   isLead?: Maybe<Boolean>;
   isLead_not?: Maybe<Boolean>;
   role?: Maybe<String>;
@@ -1113,6 +1215,48 @@ export interface StaffScalarWhereInput {
   role_not_starts_with?: Maybe<String>;
   role_ends_with?: Maybe<String>;
   role_not_ends_with?: Maybe<String>;
+  country?: Maybe<String>;
+  country_not?: Maybe<String>;
+  country_in?: Maybe<String[] | String>;
+  country_not_in?: Maybe<String[] | String>;
+  country_lt?: Maybe<String>;
+  country_lte?: Maybe<String>;
+  country_gt?: Maybe<String>;
+  country_gte?: Maybe<String>;
+  country_contains?: Maybe<String>;
+  country_not_contains?: Maybe<String>;
+  country_starts_with?: Maybe<String>;
+  country_not_starts_with?: Maybe<String>;
+  country_ends_with?: Maybe<String>;
+  country_not_ends_with?: Maybe<String>;
+  state?: Maybe<String>;
+  state_not?: Maybe<String>;
+  state_in?: Maybe<String[] | String>;
+  state_not_in?: Maybe<String[] | String>;
+  state_lt?: Maybe<String>;
+  state_lte?: Maybe<String>;
+  state_gt?: Maybe<String>;
+  state_gte?: Maybe<String>;
+  state_contains?: Maybe<String>;
+  state_not_contains?: Maybe<String>;
+  state_starts_with?: Maybe<String>;
+  state_not_starts_with?: Maybe<String>;
+  state_ends_with?: Maybe<String>;
+  state_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
   joinedAt?: Maybe<DateTimeInput>;
   joinedAt_not?: Maybe<DateTimeInput>;
   joinedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -1161,9 +1305,13 @@ export interface StaffCreateManyWithoutOrganizationInput {
 }
 
 export interface StaffUpdateManyDataInput {
-  name?: Maybe<String>;
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
   isLead?: Maybe<Boolean>;
   role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export interface GroupUpdateManyMutationInput {
@@ -1261,11 +1409,15 @@ export interface TeamUpdateManyWithWhereNestedInput {
 
 export interface StaffCreateInput {
   id?: Maybe<ID_Input>;
-  name: String;
+  firstname: String;
+  lastname?: Maybe<String>;
   organization?: Maybe<OrganizationCreateManyWithoutStaffsInput>;
   team?: Maybe<TeamCreateManyWithoutLeadInput>;
   isLead?: Maybe<Boolean>;
   role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export interface TeamUpdateManyDataInput {
@@ -1299,9 +1451,13 @@ export interface DepartmentUpsertWithWhereUniqueNestedInput {
 }
 
 export interface StaffUpdateManyMutationInput {
-  name?: Maybe<String>;
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
   isLead?: Maybe<Boolean>;
   role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export interface DepartmentScalarWhereInput {
@@ -1384,6 +1540,9 @@ export interface OrganizationCreateWithoutStaffsInput {
   leads?: Maybe<Int>;
   type?: Maybe<String>;
   description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
   department?: Maybe<DepartmentCreateManyInput>;
 }
 
@@ -1468,6 +1627,48 @@ export interface OrganizationScalarWhereInput {
   description_not_starts_with?: Maybe<String>;
   description_ends_with?: Maybe<String>;
   description_not_ends_with?: Maybe<String>;
+  country?: Maybe<String>;
+  country_not?: Maybe<String>;
+  country_in?: Maybe<String[] | String>;
+  country_not_in?: Maybe<String[] | String>;
+  country_lt?: Maybe<String>;
+  country_lte?: Maybe<String>;
+  country_gt?: Maybe<String>;
+  country_gte?: Maybe<String>;
+  country_contains?: Maybe<String>;
+  country_not_contains?: Maybe<String>;
+  country_starts_with?: Maybe<String>;
+  country_not_starts_with?: Maybe<String>;
+  country_ends_with?: Maybe<String>;
+  country_not_ends_with?: Maybe<String>;
+  state?: Maybe<String>;
+  state_not?: Maybe<String>;
+  state_in?: Maybe<String[] | String>;
+  state_not_in?: Maybe<String[] | String>;
+  state_lt?: Maybe<String>;
+  state_lte?: Maybe<String>;
+  state_gt?: Maybe<String>;
+  state_gte?: Maybe<String>;
+  state_contains?: Maybe<String>;
+  state_not_contains?: Maybe<String>;
+  state_starts_with?: Maybe<String>;
+  state_not_starts_with?: Maybe<String>;
+  state_ends_with?: Maybe<String>;
+  state_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
   AND?: Maybe<OrganizationScalarWhereInput[] | OrganizationScalarWhereInput>;
   OR?: Maybe<OrganizationScalarWhereInput[] | OrganizationScalarWhereInput>;
   NOT?: Maybe<OrganizationScalarWhereInput[] | OrganizationScalarWhereInput>;
@@ -1555,6 +1756,9 @@ export interface OrganizationUpdateManyDataInput {
   leads?: Maybe<Int>;
   type?: Maybe<String>;
   description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export interface OrganizationUpdateManyWithWhereNestedInput {
@@ -1564,10 +1768,14 @@ export interface OrganizationUpdateManyWithWhereNestedInput {
 
 export interface StaffCreateWithoutOrganizationInput {
   id?: Maybe<ID_Input>;
-  name: String;
+  firstname: String;
+  lastname?: Maybe<String>;
   team?: Maybe<TeamCreateManyWithoutLeadInput>;
   isLead?: Maybe<Boolean>;
   role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
 }
 
 export interface StaffWhereInput {
@@ -1585,20 +1793,34 @@ export interface StaffWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
+  firstname?: Maybe<String>;
+  firstname_not?: Maybe<String>;
+  firstname_in?: Maybe<String[] | String>;
+  firstname_not_in?: Maybe<String[] | String>;
+  firstname_lt?: Maybe<String>;
+  firstname_lte?: Maybe<String>;
+  firstname_gt?: Maybe<String>;
+  firstname_gte?: Maybe<String>;
+  firstname_contains?: Maybe<String>;
+  firstname_not_contains?: Maybe<String>;
+  firstname_starts_with?: Maybe<String>;
+  firstname_not_starts_with?: Maybe<String>;
+  firstname_ends_with?: Maybe<String>;
+  firstname_not_ends_with?: Maybe<String>;
+  lastname?: Maybe<String>;
+  lastname_not?: Maybe<String>;
+  lastname_in?: Maybe<String[] | String>;
+  lastname_not_in?: Maybe<String[] | String>;
+  lastname_lt?: Maybe<String>;
+  lastname_lte?: Maybe<String>;
+  lastname_gt?: Maybe<String>;
+  lastname_gte?: Maybe<String>;
+  lastname_contains?: Maybe<String>;
+  lastname_not_contains?: Maybe<String>;
+  lastname_starts_with?: Maybe<String>;
+  lastname_not_starts_with?: Maybe<String>;
+  lastname_ends_with?: Maybe<String>;
+  lastname_not_ends_with?: Maybe<String>;
   organization_every?: Maybe<OrganizationWhereInput>;
   organization_some?: Maybe<OrganizationWhereInput>;
   organization_none?: Maybe<OrganizationWhereInput>;
@@ -1621,6 +1843,48 @@ export interface StaffWhereInput {
   role_not_starts_with?: Maybe<String>;
   role_ends_with?: Maybe<String>;
   role_not_ends_with?: Maybe<String>;
+  country?: Maybe<String>;
+  country_not?: Maybe<String>;
+  country_in?: Maybe<String[] | String>;
+  country_not_in?: Maybe<String[] | String>;
+  country_lt?: Maybe<String>;
+  country_lte?: Maybe<String>;
+  country_gt?: Maybe<String>;
+  country_gte?: Maybe<String>;
+  country_contains?: Maybe<String>;
+  country_not_contains?: Maybe<String>;
+  country_starts_with?: Maybe<String>;
+  country_not_starts_with?: Maybe<String>;
+  country_ends_with?: Maybe<String>;
+  country_not_ends_with?: Maybe<String>;
+  state?: Maybe<String>;
+  state_not?: Maybe<String>;
+  state_in?: Maybe<String[] | String>;
+  state_not_in?: Maybe<String[] | String>;
+  state_lt?: Maybe<String>;
+  state_lte?: Maybe<String>;
+  state_gt?: Maybe<String>;
+  state_gte?: Maybe<String>;
+  state_contains?: Maybe<String>;
+  state_not_contains?: Maybe<String>;
+  state_starts_with?: Maybe<String>;
+  state_not_starts_with?: Maybe<String>;
+  state_ends_with?: Maybe<String>;
+  state_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
   joinedAt?: Maybe<DateTimeInput>;
   joinedAt_not?: Maybe<DateTimeInput>;
   joinedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -2239,9 +2503,13 @@ export interface LeadConnectionSubscription
 
 export interface StaffPreviousValues {
   id: ID_Output;
-  name: String;
+  firstname: String;
+  lastname?: String;
   isLead?: Boolean;
   role?: String;
+  country?: String;
+  state?: String;
+  email?: String;
   joinedAt: DateTimeOutput;
 }
 
@@ -2249,9 +2517,13 @@ export interface StaffPreviousValuesPromise
   extends Promise<StaffPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
+  firstname: () => Promise<String>;
+  lastname: () => Promise<String>;
   isLead: () => Promise<Boolean>;
   role: () => Promise<String>;
+  country: () => Promise<String>;
+  state: () => Promise<String>;
+  email: () => Promise<String>;
   joinedAt: () => Promise<DateTimeOutput>;
 }
 
@@ -2259,9 +2531,13 @@ export interface StaffPreviousValuesSubscription
   extends Promise<AsyncIterator<StaffPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
+  firstname: () => Promise<AsyncIterator<String>>;
+  lastname: () => Promise<AsyncIterator<String>>;
   isLead: () => Promise<AsyncIterator<Boolean>>;
   role: () => Promise<AsyncIterator<String>>;
+  country: () => Promise<AsyncIterator<String>>;
+  state: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
   joinedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
@@ -2378,6 +2654,9 @@ export interface Organization {
   leads?: Int;
   type?: String;
   description?: String;
+  country?: String;
+  state?: String;
+  email?: String;
 }
 
 export interface OrganizationPromise
@@ -2390,6 +2669,9 @@ export interface OrganizationPromise
   leads: () => Promise<Int>;
   type: () => Promise<String>;
   description: () => Promise<String>;
+  country: () => Promise<String>;
+  state: () => Promise<String>;
+  email: () => Promise<String>;
   staffs: <T = FragmentableArray<Staff>>(args?: {
     where?: StaffWhereInput;
     orderBy?: StaffOrderByInput;
@@ -2420,6 +2702,9 @@ export interface OrganizationSubscription
   leads: () => Promise<AsyncIterator<Int>>;
   type: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
+  country: () => Promise<AsyncIterator<String>>;
+  state: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
   staffs: <T = Promise<AsyncIterator<StaffSubscription>>>(args?: {
     where?: StaffWhereInput;
     orderBy?: StaffOrderByInput;
@@ -2450,6 +2735,9 @@ export interface OrganizationNullablePromise
   leads: () => Promise<Int>;
   type: () => Promise<String>;
   description: () => Promise<String>;
+  country: () => Promise<String>;
+  state: () => Promise<String>;
+  email: () => Promise<String>;
   staffs: <T = FragmentableArray<Staff>>(args?: {
     where?: StaffWhereInput;
     orderBy?: StaffOrderByInput;
@@ -2557,6 +2845,9 @@ export interface OrganizationPreviousValues {
   leads?: Int;
   type?: String;
   description?: String;
+  country?: String;
+  state?: String;
+  email?: String;
 }
 
 export interface OrganizationPreviousValuesPromise
@@ -2569,6 +2860,9 @@ export interface OrganizationPreviousValuesPromise
   leads: () => Promise<Int>;
   type: () => Promise<String>;
   description: () => Promise<String>;
+  country: () => Promise<String>;
+  state: () => Promise<String>;
+  email: () => Promise<String>;
 }
 
 export interface OrganizationPreviousValuesSubscription
@@ -2581,6 +2875,9 @@ export interface OrganizationPreviousValuesSubscription
   leads: () => Promise<AsyncIterator<Int>>;
   type: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
+  country: () => Promise<AsyncIterator<String>>;
+  state: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
 }
 
 export interface OrganizationSubscriptionPayload {
@@ -2610,15 +2907,20 @@ export interface OrganizationSubscriptionPayloadSubscription
 
 export interface Staff {
   id: ID_Output;
-  name: String;
+  firstname: String;
+  lastname?: String;
   isLead?: Boolean;
   role?: String;
+  country?: String;
+  state?: String;
+  email?: String;
   joinedAt: DateTimeOutput;
 }
 
 export interface StaffPromise extends Promise<Staff>, Fragmentable {
   id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
+  firstname: () => Promise<String>;
+  lastname: () => Promise<String>;
   organization: <T = FragmentableArray<Organization>>(args?: {
     where?: OrganizationWhereInput;
     orderBy?: OrganizationOrderByInput;
@@ -2639,6 +2941,9 @@ export interface StaffPromise extends Promise<Staff>, Fragmentable {
   }) => T;
   isLead: () => Promise<Boolean>;
   role: () => Promise<String>;
+  country: () => Promise<String>;
+  state: () => Promise<String>;
+  email: () => Promise<String>;
   joinedAt: () => Promise<DateTimeOutput>;
 }
 
@@ -2646,7 +2951,8 @@ export interface StaffSubscription
   extends Promise<AsyncIterator<Staff>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
+  firstname: () => Promise<AsyncIterator<String>>;
+  lastname: () => Promise<AsyncIterator<String>>;
   organization: <T = Promise<AsyncIterator<OrganizationSubscription>>>(args?: {
     where?: OrganizationWhereInput;
     orderBy?: OrganizationOrderByInput;
@@ -2667,6 +2973,9 @@ export interface StaffSubscription
   }) => T;
   isLead: () => Promise<AsyncIterator<Boolean>>;
   role: () => Promise<AsyncIterator<String>>;
+  country: () => Promise<AsyncIterator<String>>;
+  state: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
   joinedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
@@ -2674,7 +2983,8 @@ export interface StaffNullablePromise
   extends Promise<Staff | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
+  firstname: () => Promise<String>;
+  lastname: () => Promise<String>;
   organization: <T = FragmentableArray<Organization>>(args?: {
     where?: OrganizationWhereInput;
     orderBy?: OrganizationOrderByInput;
@@ -2695,6 +3005,9 @@ export interface StaffNullablePromise
   }) => T;
   isLead: () => Promise<Boolean>;
   role: () => Promise<String>;
+  country: () => Promise<String>;
+  state: () => Promise<String>;
+  email: () => Promise<String>;
   joinedAt: () => Promise<DateTimeOutput>;
 }
 

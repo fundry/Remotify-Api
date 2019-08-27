@@ -67,6 +67,8 @@ type Query {
 
   organization(where: OrganizationWhereUniqueInput!): Organization
   upsertOrganization(where:OrganizationWhereUniqueInput!, create: OrganizationCreateInput! ): Organization!
+  department(where: DepartmentWhereUniqueInput!): Organization!
+
 
   staff(where: StaffWhereUniqueInput!): Staff
   upsertStaff(where:StaffWhereUniqueInput!, create: StaffCreateInput! ): Staff!
@@ -99,14 +101,21 @@ type User implements Node {
     description: String
     createdAt: Int
     type: String
+    email: String
+    country: String
+    state: String
   }
 
   type Staff  implements Node {
     id: ID!
-    name: String!
+    firstname: String!
+    lastname: String
+    email: String
     role: String
     joinedAt: Int
     isLead:  Boolean
+      country: String
+      state: String
   }
 
  type Team implements Node  {
@@ -139,14 +148,24 @@ input OrganizationCreateInput {
   name: String
   description: String
   createdAt: Int
-  type: String
+  type: String 
+  email: String
+   country: String
+    state: String
 }
+
+  input DepartmentCreateInput{
+    name: String
+  }
 
 input StaffCreateInput {
   name: String
   role: String
   isLead:  Boolean
   joinedAt: Int
+  email: String
+   country: String
+    state: String
 }
 
 input TeamCreateInput {
@@ -428,3 +447,6 @@ input OrganizationWhereUniqueInput {
   id : ID
 }
 
+input DepartmentWhereUniqueInput {
+  id : ID
+}

@@ -6,29 +6,51 @@
 
 type Query {
     info: String 
+
+    # single queries
     staff(where: StaffWhereUniqueInput): Staff 
     team(where: TeamWhereUniqueInput): Team 
-    organization(where: OrganizationWhereUniqueInput): Organization 
+    organization(where: OrganizationWhereUniqueInput): Organization
     group(where: GroupWhereUniqueInput): Group
+ 
+  # multiple mutations
+    allOrganizations: [Organization!]
+    allStaff: [Staff!]
+    allTeam: [Team!]
+    allGroup: [Group!]
+
     node(id: ID!): Node
 }
 
 type Mutation {
+    createGroup(    name: String!
+      description: String): Group
+
+  # organization Mutations
     createOrganization(  
         name: String!
         description: String
         createdAt: Int
         type: String
+         email: String
+         country: String
+         state: String
       ): Organization
 
+  createDepartment(
+      name: String! 
+  ): Organization    
+
     createStaff(    
-      name: String!
+      firstname: String!
+      lastname: String
       role: String
+      email: String
+      country: String
+      state: String
       isLead: Boolean
       ): Staff
 
-    createGroup(    name: String!
-      description: String): Group
 
     createTeam(   
        name: String!
@@ -36,4 +58,5 @@ type Mutation {
       active: Boolean
       createdAt: Int
       description: String): Team
+
 }
