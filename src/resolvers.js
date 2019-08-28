@@ -1,7 +1,9 @@
+import Axios from 'axios';
+
 const resolver = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
-    
+
     organization: (_, ctx, prisma, info) => {
       const id = ctx.where.id;
       return prisma.db.query.organization({
@@ -48,13 +50,13 @@ const resolver = {
       return context.db.mutation.createOrganization({
         data: {
           name: args.name,
-          description: args.description , 
+          description: args.description,
           // createdAt: new Date(),
           // use moment.js for createdAt
-          type: args.type ,
-          email: args.email , 
+          type: args.type,
+          email: args.email,
           country: args.country,
-          state : args.state
+          state: args.state,
         },
       });
     },
@@ -67,7 +69,7 @@ const resolver = {
           isLead: args.isLead,
           email: args.email,
           country: args.country,
-          state : args.state
+          state: args.state,
         },
       });
     },
@@ -90,6 +92,19 @@ const resolver = {
           description: args.description,
         },
       });
+    },
+
+    // Cloud Functions resolvers here ============>>>>
+    verifyEmail: (root, args, context, info) => {
+      console.log(args.email);
+      const Email = args.email;
+      try {
+        Axios.post('http://localhost:8080/', { 
+          email: Email,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };

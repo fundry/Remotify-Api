@@ -59,4 +59,8 @@ type Mutation {
       createdAt: Int
       description: String): Team
 
+# cloud functions resolvers here 
+    verifyEmail(
+      email: String
+    ) : Organization
 }
