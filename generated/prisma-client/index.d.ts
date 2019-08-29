@@ -340,7 +340,9 @@ export type OrganizationOrderByInput =
   | "state_ASC"
   | "state_DESC"
   | "email_ASC"
-  | "email_DESC";
+  | "email_DESC"
+  | "password_ASC"
+  | "password_DESC";
 
 export type DepartmentOrderByInput =
   | "id_ASC"
@@ -383,6 +385,7 @@ export interface OrganizationUpdateWithoutStaffsDataInput {
   country?: Maybe<String>;
   state?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
   department?: Maybe<DepartmentUpdateManyInput>;
 }
 
@@ -627,6 +630,20 @@ export interface OrganizationWhereInput {
   email_not_starts_with?: Maybe<String>;
   email_ends_with?: Maybe<String>;
   email_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
   staffs_every?: Maybe<StaffWhereInput>;
   staffs_some?: Maybe<StaffWhereInput>;
   staffs_none?: Maybe<StaffWhereInput>;
@@ -744,6 +761,7 @@ export interface OrganizationUpdateManyMutationInput {
   country?: Maybe<String>;
   state?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
 }
 
 export interface LeadUpdateWithWhereUniqueNestedInput {
@@ -831,6 +849,7 @@ export interface OrganizationUpdateInput {
   country?: Maybe<String>;
   state?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
   staffs?: Maybe<StaffUpdateManyWithoutOrganizationInput>;
   department?: Maybe<DepartmentUpdateManyInput>;
 }
@@ -891,6 +910,7 @@ export interface OrganizationCreateInput {
   country?: Maybe<String>;
   state?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
   staffs?: Maybe<StaffCreateManyWithoutOrganizationInput>;
   department?: Maybe<DepartmentCreateManyInput>;
 }
@@ -1543,6 +1563,7 @@ export interface OrganizationCreateWithoutStaffsInput {
   country?: Maybe<String>;
   state?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
   department?: Maybe<DepartmentCreateManyInput>;
 }
 
@@ -1669,6 +1690,20 @@ export interface OrganizationScalarWhereInput {
   email_not_starts_with?: Maybe<String>;
   email_ends_with?: Maybe<String>;
   email_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
   AND?: Maybe<OrganizationScalarWhereInput[] | OrganizationScalarWhereInput>;
   OR?: Maybe<OrganizationScalarWhereInput[] | OrganizationScalarWhereInput>;
   NOT?: Maybe<OrganizationScalarWhereInput[] | OrganizationScalarWhereInput>;
@@ -1759,6 +1794,7 @@ export interface OrganizationUpdateManyDataInput {
   country?: Maybe<String>;
   state?: Maybe<String>;
   email?: Maybe<String>;
+  password?: Maybe<String>;
 }
 
 export interface OrganizationUpdateManyWithWhereNestedInput {
@@ -2657,6 +2693,7 @@ export interface Organization {
   country?: String;
   state?: String;
   email?: String;
+  password?: String;
 }
 
 export interface OrganizationPromise
@@ -2672,6 +2709,7 @@ export interface OrganizationPromise
   country: () => Promise<String>;
   state: () => Promise<String>;
   email: () => Promise<String>;
+  password: () => Promise<String>;
   staffs: <T = FragmentableArray<Staff>>(args?: {
     where?: StaffWhereInput;
     orderBy?: StaffOrderByInput;
@@ -2705,6 +2743,7 @@ export interface OrganizationSubscription
   country: () => Promise<AsyncIterator<String>>;
   state: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
   staffs: <T = Promise<AsyncIterator<StaffSubscription>>>(args?: {
     where?: StaffWhereInput;
     orderBy?: StaffOrderByInput;
@@ -2738,6 +2777,7 @@ export interface OrganizationNullablePromise
   country: () => Promise<String>;
   state: () => Promise<String>;
   email: () => Promise<String>;
+  password: () => Promise<String>;
   staffs: <T = FragmentableArray<Staff>>(args?: {
     where?: StaffWhereInput;
     orderBy?: StaffOrderByInput;
@@ -2848,6 +2888,7 @@ export interface OrganizationPreviousValues {
   country?: String;
   state?: String;
   email?: String;
+  password?: String;
 }
 
 export interface OrganizationPreviousValuesPromise
@@ -2863,6 +2904,7 @@ export interface OrganizationPreviousValuesPromise
   country: () => Promise<String>;
   state: () => Promise<String>;
   email: () => Promise<String>;
+  password: () => Promise<String>;
 }
 
 export interface OrganizationPreviousValuesSubscription
@@ -2878,6 +2920,7 @@ export interface OrganizationPreviousValuesSubscription
   country: () => Promise<AsyncIterator<String>>;
   state: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
 }
 
 export interface OrganizationSubscriptionPayload {

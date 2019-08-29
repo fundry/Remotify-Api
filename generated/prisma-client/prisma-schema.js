@@ -561,6 +561,7 @@ type Organization {
   country: String
   state: String
   email: String
+  password: String
   staffs(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff!]
   department(where: DepartmentWhereInput, orderBy: DepartmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Department!]
 }
@@ -581,6 +582,7 @@ input OrganizationCreateInput {
   country: String
   state: String
   email: String
+  password: String
   staffs: StaffCreateManyWithoutOrganizationInput
   department: DepartmentCreateManyInput
 }
@@ -600,6 +602,7 @@ input OrganizationCreateWithoutStaffsInput {
   country: String
   state: String
   email: String
+  password: String
   department: DepartmentCreateManyInput
 }
 
@@ -629,6 +632,8 @@ enum OrganizationOrderByInput {
   state_DESC
   email_ASC
   email_DESC
+  password_ASC
+  password_DESC
 }
 
 type OrganizationPreviousValues {
@@ -642,6 +647,7 @@ type OrganizationPreviousValues {
   country: String
   state: String
   email: String
+  password: String
 }
 
 input OrganizationScalarWhereInput {
@@ -767,6 +773,20 @@ input OrganizationScalarWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
   AND: [OrganizationScalarWhereInput!]
   OR: [OrganizationScalarWhereInput!]
   NOT: [OrganizationScalarWhereInput!]
@@ -799,6 +819,7 @@ input OrganizationUpdateInput {
   country: String
   state: String
   email: String
+  password: String
   staffs: StaffUpdateManyWithoutOrganizationInput
   department: DepartmentUpdateManyInput
 }
@@ -812,6 +833,7 @@ input OrganizationUpdateManyDataInput {
   country: String
   state: String
   email: String
+  password: String
 }
 
 input OrganizationUpdateManyMutationInput {
@@ -823,6 +845,7 @@ input OrganizationUpdateManyMutationInput {
   country: String
   state: String
   email: String
+  password: String
 }
 
 input OrganizationUpdateManyWithoutStaffsInput {
@@ -851,6 +874,7 @@ input OrganizationUpdateWithoutStaffsDataInput {
   country: String
   state: String
   email: String
+  password: String
   department: DepartmentUpdateManyInput
 }
 
@@ -988,6 +1012,20 @@ input OrganizationWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
   staffs_every: StaffWhereInput
   staffs_some: StaffWhereInput
   staffs_none: StaffWhereInput

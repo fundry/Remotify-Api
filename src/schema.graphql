@@ -27,7 +27,7 @@ type Mutation {
       description: String): Group
 
   # organization Mutations
-    createOrganization(  
+    createOrganization(  where: OrganizationWhereUniqueInput 
         name: String!
         description: String
         createdAt: Int
@@ -35,6 +35,7 @@ type Mutation {
          email: String
          country: String
          state: String
+         password: String
       ): Organization
 
   createDepartment(
@@ -51,7 +52,6 @@ type Mutation {
       isLead: Boolean
       ): Staff
 
-
     createTeam(   
        name: String!
       members: Int
@@ -59,8 +59,25 @@ type Mutation {
       createdAt: Int
       description: String): Team
 
+# authentication
+  loginOrganization(
+    where: OrganizationWhereUniqueInput
+    name: String
+    password: String
+  ) :  AuthPayload
+
+
 # cloud functions resolvers here 
     verifyEmail(
       email: String
     ) : Organization
+}
+
+type AuthPayload {
+    token: String!
+    organization: Organization
+}
+
+input OrganizationWhereUniqueInput{
+  id : ID
 }

@@ -1,4 +1,6 @@
 import Axios from 'axios';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const resolver = {
   Query: {
@@ -46,8 +48,10 @@ const resolver = {
   },
 
   Mutation: {
-    createOrganization: (root, args, context, info) => {
-      return context.db.mutation.createOrganization({
+    createOrganization: async (root, args, context, info) => {
+      const hashedPassword = await bcrypt.hash(args.password, 10);
+
+      return await context.db.mutation.createOrganization({
         data: {
           name: args.name,
           description: args.description,
@@ -57,8 +61,47 @@ const resolver = {
           email: args.email,
           country: args.country,
           state: args.state,
+          password: hashedPassword,
         },
       });
+    },
+
+    loginOrganization: async (
+      parent,
+      { username, password, where },
+      ctx,
+      info
+    ) => {
+      const id = where.id;
+      const user = await ctx.db.query.organization({
+        where: {
+          id: id,
+        },
+        username,
+      });
+
+      if (!user) {
+        throw new Error('Invalid Login');
+      }
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (!passwordMatch) {
+        throw new Error('Invalid Login');
+      }
+      const token = jwt.sign(
+        {
+          id: user.id,
+          username: user.email,
+        },
+        'my-secret-from-env-file-in-prod',
+        {
+          expiresIn: '30d',  
+        }
+      );
+      return {
+        token,
+        user,
+      };
     },
 
     createStaff: (root, args, context, info) => {
@@ -99,7 +142,7 @@ const resolver = {
       console.log(args.email);
       const Email = args.email;
       try {
-        Axios.post('http://localhost:8080/', { 
+        Axios.post('http://localhost:8080/', {
           email: Email,
         });
       } catch (error) {
