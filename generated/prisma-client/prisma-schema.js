@@ -27,6 +27,10 @@ type AggregateTeam {
   count: Int!
 }
 
+type AggregateTesters {
+  count: Int!
+}
+
 type BatchPayload {
   count: Long!
 }
@@ -538,6 +542,12 @@ type Mutation {
   upsertTeam(where: TeamWhereUniqueInput!, create: TeamCreateInput!, update: TeamUpdateInput!): Team!
   deleteTeam(where: TeamWhereUniqueInput!): Team
   deleteManyTeams(where: TeamWhereInput): BatchPayload!
+  createTesters(data: TestersCreateInput!): Testers!
+  updateTesters(data: TestersUpdateInput!, where: TestersWhereUniqueInput!): Testers
+  updateManyTesterses(data: TestersUpdateManyMutationInput!, where: TestersWhereInput): BatchPayload!
+  upsertTesters(where: TestersWhereUniqueInput!, create: TestersCreateInput!, update: TestersUpdateInput!): Testers!
+  deleteTesters(where: TestersWhereUniqueInput!): Testers
+  deleteManyTesterses(where: TestersWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -1039,6 +1049,8 @@ input OrganizationWhereInput {
 
 input OrganizationWhereUniqueInput {
   id: ID
+  state: String
+  email: String
 }
 
 type PageInfo {
@@ -1067,6 +1079,9 @@ type Query {
   team(where: TeamWhereUniqueInput!): Team
   teams(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Team]!
   teamsConnection(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TeamConnection!
+  testers(where: TestersWhereUniqueInput!): Testers
+  testerses(where: TestersWhereInput, orderBy: TestersOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Testers]!
+  testersesConnection(where: TestersWhereInput, orderBy: TestersOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TestersConnection!
   node(id: ID!): Node
 }
 
@@ -1583,6 +1598,7 @@ type Subscription {
   organization(where: OrganizationSubscriptionWhereInput): OrganizationSubscriptionPayload
   staff(where: StaffSubscriptionWhereInput): StaffSubscriptionPayload
   team(where: TeamSubscriptionWhereInput): TeamSubscriptionPayload
+  testers(where: TestersSubscriptionWhereInput): TestersSubscriptionPayload
 }
 
 type Team {
@@ -1900,6 +1916,146 @@ input TeamWhereInput {
 
 input TeamWhereUniqueInput {
   id: ID
+}
+
+type Testers {
+  id: ID!
+  name: String
+  email: String
+  department: String
+}
+
+type TestersConnection {
+  pageInfo: PageInfo!
+  edges: [TestersEdge]!
+  aggregate: AggregateTesters!
+}
+
+input TestersCreateInput {
+  id: ID
+  name: String
+  email: String
+  department: String
+}
+
+type TestersEdge {
+  node: Testers!
+  cursor: String!
+}
+
+enum TestersOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  department_ASC
+  department_DESC
+}
+
+type TestersPreviousValues {
+  id: ID!
+  name: String
+  email: String
+  department: String
+}
+
+type TestersSubscriptionPayload {
+  mutation: MutationType!
+  node: Testers
+  updatedFields: [String!]
+  previousValues: TestersPreviousValues
+}
+
+input TestersSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: TestersWhereInput
+  AND: [TestersSubscriptionWhereInput!]
+  OR: [TestersSubscriptionWhereInput!]
+  NOT: [TestersSubscriptionWhereInput!]
+}
+
+input TestersUpdateInput {
+  name: String
+  email: String
+  department: String
+}
+
+input TestersUpdateManyMutationInput {
+  name: String
+  email: String
+  department: String
+}
+
+input TestersWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  department: String
+  department_not: String
+  department_in: [String!]
+  department_not_in: [String!]
+  department_lt: String
+  department_lte: String
+  department_gt: String
+  department_gte: String
+  department_contains: String
+  department_not_contains: String
+  department_starts_with: String
+  department_not_starts_with: String
+  department_ends_with: String
+  department_not_ends_with: String
+  AND: [TestersWhereInput!]
+  OR: [TestersWhereInput!]
+  NOT: [TestersWhereInput!]
+}
+
+input TestersWhereUniqueInput {
+  id: ID
+  email: String
 }
 `
       }

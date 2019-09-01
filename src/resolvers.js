@@ -6,7 +6,13 @@ const resolver = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
 
-    organization: (_, ctx, prisma, info) => {
+    organization: async (_, ctx, { name }, prisma, info) => {
+      // logic to  create protected field ===========-->>
+      // console.log(name)
+
+      // if (!name) {
+      //   throw new Error('Invalid Login');
+      // }
       const id = ctx.where.id;
       return prisma.db.query.organization({
         where: {
@@ -51,6 +57,16 @@ const resolver = {
     createOrganization: async (root, args, context, info) => {
       const hashedPassword = await bcrypt.hash(args.password, 10);
 
+      // cloud function here
+      const Email = args.email;
+      try {
+        Axios.post('http://localhost:8080/', {
+          email: Email,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
       return await context.db.mutation.createOrganization({
         data: {
           name: args.name,
@@ -66,18 +82,13 @@ const resolver = {
       });
     },
 
-    loginOrganization: async (
-      parent,
-      { username, password, where },
-      ctx,
-      info
-    ) => {
-      const id = where.id;
+    loginOrganization: async (parent, { password, where }, ctx, info) => {
+      const email = where.email;
+      const userId = where.id;
       const user = await ctx.db.query.organization({
         where: {
-          id: id,
+          email: email,
         },
-        username,
       });
 
       if (!user) {
@@ -90,18 +101,14 @@ const resolver = {
       }
       const token = jwt.sign(
         {
-          id: user.id,
-          username: user.email,
+          email: email,
         },
-        'my-secret-from-env-file-in-prod',
+        process.env.ORGANIZATION_TOKEN,
         {
-          expiresIn: '30d',  
+          expiresIn: '30d',
         }
       );
-      return {
-        token,
-        user,
-      };
+      return token;
     },
 
     createStaff: (root, args, context, info) => {
@@ -138,8 +145,7 @@ const resolver = {
     },
 
     // Cloud Functions resolvers here ============>>>>
-    verifyEmail: (root, args, context, info) => {
-      console.log(args.email);
+    sendEmail: (root, args, context, info) => {
       const Email = args.email;
       try {
         Axios.post('http://localhost:8080/', {

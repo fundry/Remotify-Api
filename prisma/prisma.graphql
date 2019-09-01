@@ -447,6 +447,7 @@ input GroupWhereUniqueInput {
 
 input OrganizationWhereUniqueInput {
   id : ID
+  email: String
 }
 
 input DepartmentWhereUniqueInput {

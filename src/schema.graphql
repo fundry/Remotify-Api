@@ -68,7 +68,7 @@ type Mutation {
 
 
 # cloud functions resolvers here 
-    verifyEmail(
+    sendEmail(
       email: String
     ) : Organization
 }
@@ -80,4 +80,5 @@ type AuthPayload {
 
 input OrganizationWhereUniqueInput{
   id : ID
+  email: String
 }
