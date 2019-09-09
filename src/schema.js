@@ -3,11 +3,14 @@ import { importSchema } from 'graphql-import';
 import jwt from 'jsonwebtoken';
 
 import { resolver } from './resolvers.js';
+import { Prisma } from 'prisma-binding';
+
+console.log(process.env.APP_SECRET)
 
 const getUser = (token) => {
   try {
     if (token) {
-      return jwt.verify(token, 'my-secret-from-env-file-in-prod');
+      return jwt.verify(token, process.env.ORGANIZATION_TOKEN);
     }
     return null;
   } catch (err) {
@@ -15,14 +18,12 @@ const getUser = (token) => {
   }
 };
 
-console.log(process.env.ORGANIZATION_TOKEN)
-
 const typeDefs = importSchema('src/schema.graphql');
 
 const schema = new makeExecutableSchema({
   typeDefs,
   resolvers: resolver,
-  context: ({ req }) => {
+  context: ({ req }) => { 
     const tokenWithBearer = req.headers.authorization || '';
     const token = tokenWithBearer.split(' ')[1];
     const user = getUser(token);
@@ -32,6 +33,8 @@ const schema = new makeExecutableSchema({
       prisma, // the generated prisma client if you are using it
     };
   },
+  secret: process.env.APP_SECRET , 
+
   resolverValidationOptions: { requireResolversForResolveType: false },
 });
 
