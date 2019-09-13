@@ -6,13 +6,15 @@ const resolver = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
 
-    organization: async (_, ctx, { name }, prisma, info) => {
+    organization: async (_, ctx, prisma, info) => {
       // logic to  create protected field ===========-->>
       // console.log(name)
 
       // if (!name) {
       //   throw new Error('Invalid Login');
       // }
+
+
       const id = ctx.where.id;
       return prisma.db.query.organization({
         where: {
