@@ -572,7 +572,8 @@ type Organization {
   state: String
   email: String
   password: String
-  staffs(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff!]
+  staffs: Int
+  staff: Staff
   department(where: DepartmentWhereInput, orderBy: DepartmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Department!]
 }
 
@@ -593,16 +594,17 @@ input OrganizationCreateInput {
   state: String
   email: String
   password: String
-  staffs: StaffCreateManyWithoutOrganizationInput
+  staffs: Int
+  staff: StaffCreateOneWithoutOrganizationInput
   department: DepartmentCreateManyInput
 }
 
-input OrganizationCreateManyWithoutStaffsInput {
-  create: [OrganizationCreateWithoutStaffsInput!]
-  connect: [OrganizationWhereUniqueInput!]
+input OrganizationCreateOneWithoutStaffInput {
+  create: OrganizationCreateWithoutStaffInput
+  connect: OrganizationWhereUniqueInput
 }
 
-input OrganizationCreateWithoutStaffsInput {
+input OrganizationCreateWithoutStaffInput {
   id: ID
   name: String!
   Teams: Int
@@ -613,6 +615,7 @@ input OrganizationCreateWithoutStaffsInput {
   state: String
   email: String
   password: String
+  staffs: Int
   department: DepartmentCreateManyInput
 }
 
@@ -644,6 +647,8 @@ enum OrganizationOrderByInput {
   email_DESC
   password_ASC
   password_DESC
+  staffs_ASC
+  staffs_DESC
 }
 
 type OrganizationPreviousValues {
@@ -658,148 +663,7 @@ type OrganizationPreviousValues {
   state: String
   email: String
   password: String
-}
-
-input OrganizationScalarWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  name: String
-  name_not: String
-  name_in: [String!]
-  name_not_in: [String!]
-  name_lt: String
-  name_lte: String
-  name_gt: String
-  name_gte: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
-  Teams: Int
-  Teams_not: Int
-  Teams_in: [Int!]
-  Teams_not_in: [Int!]
-  Teams_lt: Int
-  Teams_lte: Int
-  Teams_gt: Int
-  Teams_gte: Int
-  leads: Int
-  leads_not: Int
-  leads_in: [Int!]
-  leads_not_in: [Int!]
-  leads_lt: Int
-  leads_lte: Int
-  leads_gt: Int
-  leads_gte: Int
-  type: String
-  type_not: String
-  type_in: [String!]
-  type_not_in: [String!]
-  type_lt: String
-  type_lte: String
-  type_gt: String
-  type_gte: String
-  type_contains: String
-  type_not_contains: String
-  type_starts_with: String
-  type_not_starts_with: String
-  type_ends_with: String
-  type_not_ends_with: String
-  description: String
-  description_not: String
-  description_in: [String!]
-  description_not_in: [String!]
-  description_lt: String
-  description_lte: String
-  description_gt: String
-  description_gte: String
-  description_contains: String
-  description_not_contains: String
-  description_starts_with: String
-  description_not_starts_with: String
-  description_ends_with: String
-  description_not_ends_with: String
-  country: String
-  country_not: String
-  country_in: [String!]
-  country_not_in: [String!]
-  country_lt: String
-  country_lte: String
-  country_gt: String
-  country_gte: String
-  country_contains: String
-  country_not_contains: String
-  country_starts_with: String
-  country_not_starts_with: String
-  country_ends_with: String
-  country_not_ends_with: String
-  state: String
-  state_not: String
-  state_in: [String!]
-  state_not_in: [String!]
-  state_lt: String
-  state_lte: String
-  state_gt: String
-  state_gte: String
-  state_contains: String
-  state_not_contains: String
-  state_starts_with: String
-  state_not_starts_with: String
-  state_ends_with: String
-  state_not_ends_with: String
-  email: String
-  email_not: String
-  email_in: [String!]
-  email_not_in: [String!]
-  email_lt: String
-  email_lte: String
-  email_gt: String
-  email_gte: String
-  email_contains: String
-  email_not_contains: String
-  email_starts_with: String
-  email_not_starts_with: String
-  email_ends_with: String
-  email_not_ends_with: String
-  password: String
-  password_not: String
-  password_in: [String!]
-  password_not_in: [String!]
-  password_lt: String
-  password_lte: String
-  password_gt: String
-  password_gte: String
-  password_contains: String
-  password_not_contains: String
-  password_starts_with: String
-  password_not_starts_with: String
-  password_ends_with: String
-  password_not_ends_with: String
-  AND: [OrganizationScalarWhereInput!]
-  OR: [OrganizationScalarWhereInput!]
-  NOT: [OrganizationScalarWhereInput!]
+  staffs: Int
 }
 
 type OrganizationSubscriptionPayload {
@@ -830,20 +694,9 @@ input OrganizationUpdateInput {
   state: String
   email: String
   password: String
-  staffs: StaffUpdateManyWithoutOrganizationInput
+  staffs: Int
+  staff: StaffUpdateOneWithoutOrganizationInput
   department: DepartmentUpdateManyInput
-}
-
-input OrganizationUpdateManyDataInput {
-  name: String
-  Teams: Int
-  leads: Int
-  type: String
-  description: String
-  country: String
-  state: String
-  email: String
-  password: String
 }
 
 input OrganizationUpdateManyMutationInput {
@@ -856,26 +709,19 @@ input OrganizationUpdateManyMutationInput {
   state: String
   email: String
   password: String
+  staffs: Int
 }
 
-input OrganizationUpdateManyWithoutStaffsInput {
-  create: [OrganizationCreateWithoutStaffsInput!]
-  delete: [OrganizationWhereUniqueInput!]
-  connect: [OrganizationWhereUniqueInput!]
-  set: [OrganizationWhereUniqueInput!]
-  disconnect: [OrganizationWhereUniqueInput!]
-  update: [OrganizationUpdateWithWhereUniqueWithoutStaffsInput!]
-  upsert: [OrganizationUpsertWithWhereUniqueWithoutStaffsInput!]
-  deleteMany: [OrganizationScalarWhereInput!]
-  updateMany: [OrganizationUpdateManyWithWhereNestedInput!]
+input OrganizationUpdateOneWithoutStaffInput {
+  create: OrganizationCreateWithoutStaffInput
+  update: OrganizationUpdateWithoutStaffDataInput
+  upsert: OrganizationUpsertWithoutStaffInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: OrganizationWhereUniqueInput
 }
 
-input OrganizationUpdateManyWithWhereNestedInput {
-  where: OrganizationScalarWhereInput!
-  data: OrganizationUpdateManyDataInput!
-}
-
-input OrganizationUpdateWithoutStaffsDataInput {
+input OrganizationUpdateWithoutStaffDataInput {
   name: String
   Teams: Int
   leads: Int
@@ -885,18 +731,13 @@ input OrganizationUpdateWithoutStaffsDataInput {
   state: String
   email: String
   password: String
+  staffs: Int
   department: DepartmentUpdateManyInput
 }
 
-input OrganizationUpdateWithWhereUniqueWithoutStaffsInput {
-  where: OrganizationWhereUniqueInput!
-  data: OrganizationUpdateWithoutStaffsDataInput!
-}
-
-input OrganizationUpsertWithWhereUniqueWithoutStaffsInput {
-  where: OrganizationWhereUniqueInput!
-  update: OrganizationUpdateWithoutStaffsDataInput!
-  create: OrganizationCreateWithoutStaffsInput!
+input OrganizationUpsertWithoutStaffInput {
+  update: OrganizationUpdateWithoutStaffDataInput!
+  create: OrganizationCreateWithoutStaffInput!
 }
 
 input OrganizationWhereInput {
@@ -1036,9 +877,15 @@ input OrganizationWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
-  staffs_every: StaffWhereInput
-  staffs_some: StaffWhereInput
-  staffs_none: StaffWhereInput
+  staffs: Int
+  staffs_not: Int
+  staffs_in: [Int!]
+  staffs_not_in: [Int!]
+  staffs_lt: Int
+  staffs_lte: Int
+  staffs_gt: Int
+  staffs_gte: Int
+  staff: StaffWhereInput
   department_every: DepartmentWhereInput
   department_some: DepartmentWhereInput
   department_none: DepartmentWhereInput
@@ -1089,7 +936,7 @@ type Staff {
   id: ID!
   firstname: String!
   lastname: String
-  organization(where: OrganizationWhereInput, orderBy: OrganizationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Organization!]
+  organization: Organization
   team(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Team!]
   isLead: Boolean
   role: String
@@ -1109,7 +956,7 @@ input StaffCreateInput {
   id: ID
   firstname: String!
   lastname: String
-  organization: OrganizationCreateManyWithoutStaffsInput
+  organization: OrganizationCreateOneWithoutStaffInput
   team: TeamCreateManyWithoutLeadInput
   isLead: Boolean
   role: String
@@ -1123,14 +970,14 @@ input StaffCreateManyInput {
   connect: [StaffWhereUniqueInput!]
 }
 
-input StaffCreateManyWithoutOrganizationInput {
-  create: [StaffCreateWithoutOrganizationInput!]
-  connect: [StaffWhereUniqueInput!]
-}
-
 input StaffCreateManyWithoutTeamInput {
   create: [StaffCreateWithoutTeamInput!]
   connect: [StaffWhereUniqueInput!]
+}
+
+input StaffCreateOneWithoutOrganizationInput {
+  create: StaffCreateWithoutOrganizationInput
+  connect: StaffWhereUniqueInput
 }
 
 input StaffCreateWithoutOrganizationInput {
@@ -1149,7 +996,7 @@ input StaffCreateWithoutTeamInput {
   id: ID
   firstname: String!
   lastname: String
-  organization: OrganizationCreateManyWithoutStaffsInput
+  organization: OrganizationCreateOneWithoutStaffInput
   isLead: Boolean
   role: String
   country: String
@@ -1330,7 +1177,7 @@ input StaffSubscriptionWhereInput {
 input StaffUpdateDataInput {
   firstname: String
   lastname: String
-  organization: OrganizationUpdateManyWithoutStaffsInput
+  organization: OrganizationUpdateOneWithoutStaffInput
   team: TeamUpdateManyWithoutLeadInput
   isLead: Boolean
   role: String
@@ -1342,7 +1189,7 @@ input StaffUpdateDataInput {
 input StaffUpdateInput {
   firstname: String
   lastname: String
-  organization: OrganizationUpdateManyWithoutStaffsInput
+  organization: OrganizationUpdateOneWithoutStaffInput
   team: TeamUpdateManyWithoutLeadInput
   isLead: Boolean
   role: String
@@ -1383,18 +1230,6 @@ input StaffUpdateManyMutationInput {
   email: String
 }
 
-input StaffUpdateManyWithoutOrganizationInput {
-  create: [StaffCreateWithoutOrganizationInput!]
-  delete: [StaffWhereUniqueInput!]
-  connect: [StaffWhereUniqueInput!]
-  set: [StaffWhereUniqueInput!]
-  disconnect: [StaffWhereUniqueInput!]
-  update: [StaffUpdateWithWhereUniqueWithoutOrganizationInput!]
-  upsert: [StaffUpsertWithWhereUniqueWithoutOrganizationInput!]
-  deleteMany: [StaffScalarWhereInput!]
-  updateMany: [StaffUpdateManyWithWhereNestedInput!]
-}
-
 input StaffUpdateManyWithoutTeamInput {
   create: [StaffCreateWithoutTeamInput!]
   delete: [StaffWhereUniqueInput!]
@@ -1412,6 +1247,15 @@ input StaffUpdateManyWithWhereNestedInput {
   data: StaffUpdateManyDataInput!
 }
 
+input StaffUpdateOneWithoutOrganizationInput {
+  create: StaffCreateWithoutOrganizationInput
+  update: StaffUpdateWithoutOrganizationDataInput
+  upsert: StaffUpsertWithoutOrganizationInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: StaffWhereUniqueInput
+}
+
 input StaffUpdateWithoutOrganizationDataInput {
   firstname: String
   lastname: String
@@ -1426,7 +1270,7 @@ input StaffUpdateWithoutOrganizationDataInput {
 input StaffUpdateWithoutTeamDataInput {
   firstname: String
   lastname: String
-  organization: OrganizationUpdateManyWithoutStaffsInput
+  organization: OrganizationUpdateOneWithoutStaffInput
   isLead: Boolean
   role: String
   country: String
@@ -1439,26 +1283,20 @@ input StaffUpdateWithWhereUniqueNestedInput {
   data: StaffUpdateDataInput!
 }
 
-input StaffUpdateWithWhereUniqueWithoutOrganizationInput {
-  where: StaffWhereUniqueInput!
-  data: StaffUpdateWithoutOrganizationDataInput!
-}
-
 input StaffUpdateWithWhereUniqueWithoutTeamInput {
   where: StaffWhereUniqueInput!
   data: StaffUpdateWithoutTeamDataInput!
+}
+
+input StaffUpsertWithoutOrganizationInput {
+  update: StaffUpdateWithoutOrganizationDataInput!
+  create: StaffCreateWithoutOrganizationInput!
 }
 
 input StaffUpsertWithWhereUniqueNestedInput {
   where: StaffWhereUniqueInput!
   update: StaffUpdateDataInput!
   create: StaffCreateInput!
-}
-
-input StaffUpsertWithWhereUniqueWithoutOrganizationInput {
-  where: StaffWhereUniqueInput!
-  update: StaffUpdateWithoutOrganizationDataInput!
-  create: StaffCreateWithoutOrganizationInput!
 }
 
 input StaffUpsertWithWhereUniqueWithoutTeamInput {
@@ -1510,9 +1348,7 @@ input StaffWhereInput {
   lastname_not_starts_with: String
   lastname_ends_with: String
   lastname_not_ends_with: String
-  organization_every: OrganizationWhereInput
-  organization_some: OrganizationWhereInput
-  organization_none: OrganizationWhereInput
+  organization: OrganizationWhereInput
   team_every: TeamWhereInput
   team_some: TeamWhereInput
   team_none: TeamWhereInput
