@@ -241,6 +241,7 @@ input DepartmentWhereInput {
 
 input DepartmentWhereUniqueInput {
   id: ID
+  name: String
 }
 
 type Group {
@@ -248,6 +249,7 @@ type Group {
   name: String!
   description: String
   members(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff!]
+  email: String
 }
 
 type GroupConnection {
@@ -261,6 +263,7 @@ input GroupCreateInput {
   name: String!
   description: String
   members: StaffCreateManyInput
+  email: String
 }
 
 type GroupEdge {
@@ -275,12 +278,15 @@ enum GroupOrderByInput {
   name_DESC
   description_ASC
   description_DESC
+  email_ASC
+  email_DESC
 }
 
 type GroupPreviousValues {
   id: ID!
   name: String!
   description: String
+  email: String
 }
 
 type GroupSubscriptionPayload {
@@ -305,11 +311,13 @@ input GroupUpdateInput {
   name: String
   description: String
   members: StaffUpdateManyInput
+  email: String
 }
 
 input GroupUpdateManyMutationInput {
   name: String
   description: String
+  email: String
 }
 
 input GroupWhereInput {
@@ -358,6 +366,20 @@ input GroupWhereInput {
   members_every: StaffWhereInput
   members_some: StaffWhereInput
   members_none: StaffWhereInput
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
   AND: [GroupWhereInput!]
   OR: [GroupWhereInput!]
   NOT: [GroupWhereInput!]
@@ -365,6 +387,8 @@ input GroupWhereInput {
 
 input GroupWhereUniqueInput {
   id: ID
+  name: String
+  email: String
 }
 
 type Lead {
@@ -573,7 +597,7 @@ type Organization {
   email: String
   password: String
   staffs: Int
-  staff: Staff
+  staff(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff!]
   department(where: DepartmentWhereInput, orderBy: DepartmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Department!]
 }
 
@@ -595,7 +619,7 @@ input OrganizationCreateInput {
   email: String
   password: String
   staffs: Int
-  staff: StaffCreateOneWithoutOrganizationInput
+  staff: StaffCreateManyWithoutOrganizationInput
   department: DepartmentCreateManyInput
 }
 
@@ -695,7 +719,7 @@ input OrganizationUpdateInput {
   email: String
   password: String
   staffs: Int
-  staff: StaffUpdateOneWithoutOrganizationInput
+  staff: StaffUpdateManyWithoutOrganizationInput
   department: DepartmentUpdateManyInput
 }
 
@@ -885,7 +909,9 @@ input OrganizationWhereInput {
   staffs_lte: Int
   staffs_gt: Int
   staffs_gte: Int
-  staff: StaffWhereInput
+  staff_every: StaffWhereInput
+  staff_some: StaffWhereInput
+  staff_none: StaffWhereInput
   department_every: DepartmentWhereInput
   department_some: DepartmentWhereInput
   department_none: DepartmentWhereInput
@@ -896,6 +922,7 @@ input OrganizationWhereInput {
 
 input OrganizationWhereUniqueInput {
   id: ID
+  name: String
   state: String
   email: String
 }
@@ -970,14 +997,14 @@ input StaffCreateManyInput {
   connect: [StaffWhereUniqueInput!]
 }
 
-input StaffCreateManyWithoutTeamInput {
-  create: [StaffCreateWithoutTeamInput!]
+input StaffCreateManyWithoutOrganizationInput {
+  create: [StaffCreateWithoutOrganizationInput!]
   connect: [StaffWhereUniqueInput!]
 }
 
-input StaffCreateOneWithoutOrganizationInput {
-  create: StaffCreateWithoutOrganizationInput
-  connect: StaffWhereUniqueInput
+input StaffCreateManyWithoutTeamInput {
+  create: [StaffCreateWithoutTeamInput!]
+  connect: [StaffWhereUniqueInput!]
 }
 
 input StaffCreateWithoutOrganizationInput {
@@ -1230,6 +1257,18 @@ input StaffUpdateManyMutationInput {
   email: String
 }
 
+input StaffUpdateManyWithoutOrganizationInput {
+  create: [StaffCreateWithoutOrganizationInput!]
+  delete: [StaffWhereUniqueInput!]
+  connect: [StaffWhereUniqueInput!]
+  set: [StaffWhereUniqueInput!]
+  disconnect: [StaffWhereUniqueInput!]
+  update: [StaffUpdateWithWhereUniqueWithoutOrganizationInput!]
+  upsert: [StaffUpsertWithWhereUniqueWithoutOrganizationInput!]
+  deleteMany: [StaffScalarWhereInput!]
+  updateMany: [StaffUpdateManyWithWhereNestedInput!]
+}
+
 input StaffUpdateManyWithoutTeamInput {
   create: [StaffCreateWithoutTeamInput!]
   delete: [StaffWhereUniqueInput!]
@@ -1245,15 +1284,6 @@ input StaffUpdateManyWithoutTeamInput {
 input StaffUpdateManyWithWhereNestedInput {
   where: StaffScalarWhereInput!
   data: StaffUpdateManyDataInput!
-}
-
-input StaffUpdateOneWithoutOrganizationInput {
-  create: StaffCreateWithoutOrganizationInput
-  update: StaffUpdateWithoutOrganizationDataInput
-  upsert: StaffUpsertWithoutOrganizationInput
-  delete: Boolean
-  disconnect: Boolean
-  connect: StaffWhereUniqueInput
 }
 
 input StaffUpdateWithoutOrganizationDataInput {
@@ -1283,20 +1313,26 @@ input StaffUpdateWithWhereUniqueNestedInput {
   data: StaffUpdateDataInput!
 }
 
+input StaffUpdateWithWhereUniqueWithoutOrganizationInput {
+  where: StaffWhereUniqueInput!
+  data: StaffUpdateWithoutOrganizationDataInput!
+}
+
 input StaffUpdateWithWhereUniqueWithoutTeamInput {
   where: StaffWhereUniqueInput!
   data: StaffUpdateWithoutTeamDataInput!
-}
-
-input StaffUpsertWithoutOrganizationInput {
-  update: StaffUpdateWithoutOrganizationDataInput!
-  create: StaffCreateWithoutOrganizationInput!
 }
 
 input StaffUpsertWithWhereUniqueNestedInput {
   where: StaffWhereUniqueInput!
   update: StaffUpdateDataInput!
   create: StaffCreateInput!
+}
+
+input StaffUpsertWithWhereUniqueWithoutOrganizationInput {
+  where: StaffWhereUniqueInput!
+  update: StaffUpdateWithoutOrganizationDataInput!
+  create: StaffCreateWithoutOrganizationInput!
 }
 
 input StaffUpsertWithWhereUniqueWithoutTeamInput {
@@ -1425,6 +1461,7 @@ input StaffWhereInput {
 
 input StaffWhereUniqueInput {
   id: ID
+  email: String
 }
 
 type Subscription {
@@ -1752,6 +1789,7 @@ input TeamWhereInput {
 
 input TeamWhereUniqueInput {
   id: ID
+  name: String
 }
 
 type Testers {
@@ -1891,6 +1929,7 @@ input TestersWhereInput {
 
 input TestersWhereUniqueInput {
   id: ID
+  name: String
   email: String
 }
 `

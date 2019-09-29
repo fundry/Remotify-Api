@@ -132,6 +132,7 @@ type User implements Node {
     id: ID!
     name:  String!
     description: String
+    email: String
   }
 
 """A connection to a list of items."""
@@ -179,6 +180,7 @@ input TeamCreateInput {
 input GroupCreateInput {
   name: String
   description: String
+  email: String
 }
 
  

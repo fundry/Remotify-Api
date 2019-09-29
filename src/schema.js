@@ -1,11 +1,9 @@
+require('dotenv').config();
 import { makeExecutableSchema } from 'apollo-server';
 import { importSchema } from 'graphql-import';
 import jwt from 'jsonwebtoken';
 
 import { resolver } from './resolvers.js';
-import { Prisma } from 'prisma-binding';
-
-console.log(process.env.APP_SECRET);
 
 const getUser = (token) => {
   try {

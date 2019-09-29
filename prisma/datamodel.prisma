@@ -1,6 +1,6 @@
 type Team { 
   id: ID! @id
-  name : String!
+  name : String! @unique
   members : Int  
   description: String
   active : Boolean 
@@ -10,15 +10,16 @@ type Team {
 
 type Group {
    id: ID! @id
-  name: String!
+  name: String! @unique
   description: String
   members: [Staff!]
+  email: String @unique
 }
 
 type Organization { 
    id: ID! @id
   createdAt: DateTime! @createdAt
-  name : String!
+  name : String! @unique
   Teams  : Int
   leads : Int
   type: String
@@ -28,21 +29,21 @@ type Organization {
   email : String @unique
   password: String
   staffs :  Int 
-  staff :  Staff @relation(link:INLINE ,name : "OrganizationStaff"  , onDelete: CASCADE)  
+  staff :  [Staff!]! @relation( name : "OrganizationStaff"   , onDelete: CASCADE  )  
  department: [Department!]!
 }
  
 type Department {
   id: ID!  @id
   leads: [Lead!]!
-  name: String!
+  name: String! @unique
   teams: [Team!]!  
   createdAt: DateTime! @createdAt
 }
 
 type Testers {
   id: ID! @id
-  name: String
+  name: String @unique
   email: String @unique
   department: String
 }
@@ -57,13 +58,13 @@ type Staff  {
   id: ID! @id
   firstname: String!
   lastname: String
-  organization :  Organization @relation( name : "OrganizationStaff"  , onDelete: SET_NULL)  
+  organization :  Organization @relation( name : "OrganizationStaff"  )  
   team : [Team!]!
   isLead: Boolean
   role : String
   country: String
   state: String
-  email: String 
+  email: String  @unique
   joinedAt : DateTime! @createdAt
 }
 

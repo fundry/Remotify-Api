@@ -23,8 +23,11 @@ type Query {
 }
 
 type Mutation {
-    createGroup(    name: String!
-      description: String): Group
+    createGroup(
+    name: String!
+    description: String 
+    email: String! 
+): Group
 
   # organization Mutations
     createOrganization(  where: OrganizationWhereUniqueInput 
