@@ -24,7 +24,7 @@ type Organization {
   leads : Int
   type: String
   description: String
-   country : String
+  country : String
   state: String  @unique
   email : String @unique
   password: String

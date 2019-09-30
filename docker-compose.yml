@@ -14,7 +14,7 @@ services:
           default:
             connector: postgres
             host: host.docker.internal
-            database: postgres
+            database: Remotify
             schema: public
             user: postgres
             password: postgres
