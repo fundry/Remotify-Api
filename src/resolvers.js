@@ -10,9 +10,9 @@ const resolver = {
     organization: async (_, ctx, prisma, info) => {
       // logic to  create protected field ===========-->>
 
-      // if (!name) {
-      //   throw new Error('Invalid Login');
-      // }
+      if (!name) {
+        throw new Error('Invalid Login');
+      }
 
       const id = ctx.where.id;
       return prisma.db.query.organization({
@@ -102,14 +102,14 @@ const resolver = {
       }
       const token = jwt.sign(
         {
-          email: email,
+          username: email,
         },
-        process.env.ORGANIZATION_TOKEN,
+        process.env.APP_SECRET,
         {
           expiresIn: '30d',
         }
       );
-      return token;
+      return { token, user };
     },
 
     createStaff: (root, args, context, info) => {

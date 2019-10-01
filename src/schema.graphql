@@ -64,9 +64,9 @@ type Mutation {
 
 # authentication
   loginOrganization(
-    where: OrganizationWhereUniqueInput
-    name: String
-    password: String
+    where: OrganizationWhereUniqueInput!
+    name: String!
+    password: String!
   ) :  AuthPayload
 
 
@@ -77,7 +77,7 @@ type Mutation {
 }
 
 type AuthPayload {
-    token: String!
+    token: String
     organization: Organization
 }
 
