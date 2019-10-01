@@ -13,13 +13,22 @@ services:
         databases:
           default:
             connector: postgres
-            host: host.docker.internal
-            database: Remotify
-            schema: public
-            user: postgres
-            password: postgres
-            ssl: false
-            rawAccess: false
-            port: '5432'
+            host: postgres
+            user: prisma
+            password: prisma
+            rawAccess: true
+            port: 5432
             migrations: true
-   
+  postgres:
+    image: postgres
+    restart: always
+    # Uncomment the next two lines to connect to your your database from outside the Docker environment, e.g. using a database GUI like Postico
+    # ports:
+    # - "5432:5432"
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: prisma
+    volumes:
+      - postgres:/var/lib/postgresql/data
+volumes:
+  postgres:

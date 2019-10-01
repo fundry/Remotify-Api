@@ -5,16 +5,16 @@ import jwt from 'jsonwebtoken';
 
 import { resolver } from './resolvers.js';
 
-const getUser = (token) => {
-  try {
-    if (token) {
-      return jwt.verify(token, process.env.ORGANIZATION_TOKEN);
-    }
-    return null;
-  } catch (err) {
-    return null;
-  }
-};
+// const getUser = (token) => {
+//   try {
+//     if (token) {
+//       return jwt.verify(token, process.env.ORGANIZATION_TOKEN);
+//     }
+//     return null;
+//   } catch (err) {
+//     return null;
+//   }
+// };
 
 const typeDefs = importSchema('src/schema.graphql');
 

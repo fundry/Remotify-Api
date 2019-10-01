@@ -10,9 +10,9 @@ const resolver = {
     organization: async (_, ctx, prisma, info) => {
       // logic to  create protected field ===========-->>
 
-      if (!name) {
-        throw new Error('Invalid Login');
-      }
+      // if (!name) {
+      //   throw new Error('Invalid Login');
+      // }
 
       const id = ctx.where.id;
       return prisma.db.query.organization({
