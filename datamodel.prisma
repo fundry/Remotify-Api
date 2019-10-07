@@ -1,31 +1,43 @@
-type Team { 
+type Testers {
   id: ID! @id
-  name : String! @unique
-  members : Int  
-  description: String
-  active : Boolean 
-  lead : [Staff!]!
-  createdAt: DateTime! @createdAt
-} 
+  firstname: String  
+  lastname: String @unique
+  email: String @unique
+  department: String
+}
 
 type Group {
-   id: ID! @id
+  id: ID! @id
   name: String! @unique
   description: String
-  members: [Staff!]
-  email: String @unique
+  members: Int 
+  member: [GroupMember] @relation( name : "GroupMember"   , onDelete: CASCADE  )
+  email: String! @unique
+  password : String!    
+  team : Team @relation( name : "GroupTeam"   , onDelete: CASCADE  ) 
+  createdAt: DateTime! @createdAt
 }
+
+type GroupMember {
+  id : ID! @id
+  firstname : ID!
+  lastname : ID! @unique
+  password : String!
+  team : String
+  group : Group @relation( name : "GroupMember"  )  
+}
+
 
 type Organization { 
    id: ID! @id
   createdAt: DateTime! @createdAt
   name : String! @unique
   Teams  : Int
-  leads : Int
+  leads : Int  
   type: String
   description: String
   country : String
-  state: String  @unique
+  state: String   
   email : String @unique
   password: String
   staffs :  Int 
@@ -35,36 +47,36 @@ type Organization {
  
 type Department {
   id: ID!  @id
-  leads: [Lead!]!
+  leads:  Int
   name: String! @unique
-  teams: [Team!]!  
+  teams: [Team!]!  @relation( name : "DepartmentTeam"   , onDelete: CASCADE  )  
   createdAt: DateTime! @createdAt
 }
 
-type Testers {
+type Team { 
   id: ID! @id
-  name: String @unique
-  email: String @unique
-  department: String
-}
-
-type Lead { 
-  id: ID! @id
-  staff: [Staff!]!
-  team: [Team!]!
-}
-
+  name : String! @unique
+  members : Int  
+  description: String  
+  department :  Department @relation( name : "DepartmentTeam"  )  
+  active : Boolean 
+  lead : [Staff!]! @relation( name : "TeamLead"   , onDelete: CASCADE  ) 
+  createdAt: DateTime! @createdAt
+} 
+  
 type Staff  {
   id: ID! @id
   firstname: String!
-  lastname: String
+  lastname: String! @unique
   organization :  Organization @relation( name : "OrganizationStaff"  )  
-  team : [Team!]!
+  team :  String
   isLead: Boolean
+  lead:  Team @relation( name : "TeamLead"   ) 
   role : String
   country: String
   state: String
   email: String  @unique
+  password: String   
   joinedAt : DateTime! @createdAt
 }
 

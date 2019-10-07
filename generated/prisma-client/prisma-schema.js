@@ -11,7 +11,7 @@ type AggregateGroup {
   count: Int!
 }
 
-type AggregateLead {
+type AggregateGroupMember {
   count: Int!
 }
 
@@ -39,7 +39,7 @@ scalar DateTime
 
 type Department {
   id: ID!
-  leads(where: LeadWhereInput, orderBy: LeadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Lead!]
+  leads: Int
   name: String!
   teams(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Team!]
   createdAt: DateTime!
@@ -53,14 +53,25 @@ type DepartmentConnection {
 
 input DepartmentCreateInput {
   id: ID
-  leads: LeadCreateManyInput
+  leads: Int
   name: String!
-  teams: TeamCreateManyInput
+  teams: TeamCreateManyWithoutDepartmentInput
 }
 
 input DepartmentCreateManyInput {
   create: [DepartmentCreateInput!]
   connect: [DepartmentWhereUniqueInput!]
+}
+
+input DepartmentCreateOneWithoutTeamsInput {
+  create: DepartmentCreateWithoutTeamsInput
+  connect: DepartmentWhereUniqueInput
+}
+
+input DepartmentCreateWithoutTeamsInput {
+  id: ID
+  leads: Int
+  name: String!
 }
 
 type DepartmentEdge {
@@ -71,6 +82,8 @@ type DepartmentEdge {
 enum DepartmentOrderByInput {
   id_ASC
   id_DESC
+  leads_ASC
+  leads_DESC
   name_ASC
   name_DESC
   createdAt_ASC
@@ -79,6 +92,7 @@ enum DepartmentOrderByInput {
 
 type DepartmentPreviousValues {
   id: ID!
+  leads: Int
   name: String!
   createdAt: DateTime!
 }
@@ -98,6 +112,14 @@ input DepartmentScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  leads: Int
+  leads_not: Int
+  leads_in: [Int!]
+  leads_not_in: [Int!]
+  leads_lt: Int
+  leads_lte: Int
+  leads_gt: Int
+  leads_gte: Int
   name: String
   name_not: String
   name_in: [String!]
@@ -144,18 +166,19 @@ input DepartmentSubscriptionWhereInput {
 }
 
 input DepartmentUpdateDataInput {
-  leads: LeadUpdateManyInput
+  leads: Int
   name: String
-  teams: TeamUpdateManyInput
+  teams: TeamUpdateManyWithoutDepartmentInput
 }
 
 input DepartmentUpdateInput {
-  leads: LeadUpdateManyInput
+  leads: Int
   name: String
-  teams: TeamUpdateManyInput
+  teams: TeamUpdateManyWithoutDepartmentInput
 }
 
 input DepartmentUpdateManyDataInput {
+  leads: Int
   name: String
 }
 
@@ -172,6 +195,7 @@ input DepartmentUpdateManyInput {
 }
 
 input DepartmentUpdateManyMutationInput {
+  leads: Int
   name: String
 }
 
@@ -180,9 +204,28 @@ input DepartmentUpdateManyWithWhereNestedInput {
   data: DepartmentUpdateManyDataInput!
 }
 
+input DepartmentUpdateOneWithoutTeamsInput {
+  create: DepartmentCreateWithoutTeamsInput
+  update: DepartmentUpdateWithoutTeamsDataInput
+  upsert: DepartmentUpsertWithoutTeamsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: DepartmentWhereUniqueInput
+}
+
+input DepartmentUpdateWithoutTeamsDataInput {
+  leads: Int
+  name: String
+}
+
 input DepartmentUpdateWithWhereUniqueNestedInput {
   where: DepartmentWhereUniqueInput!
   data: DepartmentUpdateDataInput!
+}
+
+input DepartmentUpsertWithoutTeamsInput {
+  update: DepartmentUpdateWithoutTeamsDataInput!
+  create: DepartmentCreateWithoutTeamsInput!
 }
 
 input DepartmentUpsertWithWhereUniqueNestedInput {
@@ -206,9 +249,14 @@ input DepartmentWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  leads_every: LeadWhereInput
-  leads_some: LeadWhereInput
-  leads_none: LeadWhereInput
+  leads: Int
+  leads_not: Int
+  leads_in: [Int!]
+  leads_not_in: [Int!]
+  leads_lt: Int
+  leads_lte: Int
+  leads_gt: Int
+  leads_gte: Int
   name: String
   name_not: String
   name_in: [String!]
@@ -248,8 +296,12 @@ type Group {
   id: ID!
   name: String!
   description: String
-  members(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff!]
-  email: String
+  members: Int
+  member(where: GroupMemberWhereInput, orderBy: GroupMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GroupMember!]
+  email: String!
+  password: String!
+  team: Team
+  createdAt: DateTime!
 }
 
 type GroupConnection {
@@ -262,13 +314,327 @@ input GroupCreateInput {
   id: ID
   name: String!
   description: String
-  members: StaffCreateManyInput
-  email: String
+  members: Int
+  member: GroupMemberCreateManyWithoutGroupInput
+  email: String!
+  password: String!
+  team: TeamCreateOneInput
+}
+
+input GroupCreateOneWithoutMemberInput {
+  create: GroupCreateWithoutMemberInput
+  connect: GroupWhereUniqueInput
+}
+
+input GroupCreateWithoutMemberInput {
+  id: ID
+  name: String!
+  description: String
+  members: Int
+  email: String!
+  password: String!
+  team: TeamCreateOneInput
 }
 
 type GroupEdge {
   node: Group!
   cursor: String!
+}
+
+type GroupMember {
+  id: ID!
+  firstname: ID!
+  lastname: ID!
+  password: String!
+  team: String
+  group: Group
+}
+
+type GroupMemberConnection {
+  pageInfo: PageInfo!
+  edges: [GroupMemberEdge]!
+  aggregate: AggregateGroupMember!
+}
+
+input GroupMemberCreateInput {
+  id: ID
+  firstname: ID!
+  lastname: ID!
+  password: String!
+  team: String
+  group: GroupCreateOneWithoutMemberInput
+}
+
+input GroupMemberCreateManyWithoutGroupInput {
+  create: [GroupMemberCreateWithoutGroupInput!]
+  connect: [GroupMemberWhereUniqueInput!]
+}
+
+input GroupMemberCreateWithoutGroupInput {
+  id: ID
+  firstname: ID!
+  lastname: ID!
+  password: String!
+  team: String
+}
+
+type GroupMemberEdge {
+  node: GroupMember!
+  cursor: String!
+}
+
+enum GroupMemberOrderByInput {
+  id_ASC
+  id_DESC
+  firstname_ASC
+  firstname_DESC
+  lastname_ASC
+  lastname_DESC
+  password_ASC
+  password_DESC
+  team_ASC
+  team_DESC
+}
+
+type GroupMemberPreviousValues {
+  id: ID!
+  firstname: ID!
+  lastname: ID!
+  password: String!
+  team: String
+}
+
+input GroupMemberScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  firstname: ID
+  firstname_not: ID
+  firstname_in: [ID!]
+  firstname_not_in: [ID!]
+  firstname_lt: ID
+  firstname_lte: ID
+  firstname_gt: ID
+  firstname_gte: ID
+  firstname_contains: ID
+  firstname_not_contains: ID
+  firstname_starts_with: ID
+  firstname_not_starts_with: ID
+  firstname_ends_with: ID
+  firstname_not_ends_with: ID
+  lastname: ID
+  lastname_not: ID
+  lastname_in: [ID!]
+  lastname_not_in: [ID!]
+  lastname_lt: ID
+  lastname_lte: ID
+  lastname_gt: ID
+  lastname_gte: ID
+  lastname_contains: ID
+  lastname_not_contains: ID
+  lastname_starts_with: ID
+  lastname_not_starts_with: ID
+  lastname_ends_with: ID
+  lastname_not_ends_with: ID
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  team: String
+  team_not: String
+  team_in: [String!]
+  team_not_in: [String!]
+  team_lt: String
+  team_lte: String
+  team_gt: String
+  team_gte: String
+  team_contains: String
+  team_not_contains: String
+  team_starts_with: String
+  team_not_starts_with: String
+  team_ends_with: String
+  team_not_ends_with: String
+  AND: [GroupMemberScalarWhereInput!]
+  OR: [GroupMemberScalarWhereInput!]
+  NOT: [GroupMemberScalarWhereInput!]
+}
+
+type GroupMemberSubscriptionPayload {
+  mutation: MutationType!
+  node: GroupMember
+  updatedFields: [String!]
+  previousValues: GroupMemberPreviousValues
+}
+
+input GroupMemberSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: GroupMemberWhereInput
+  AND: [GroupMemberSubscriptionWhereInput!]
+  OR: [GroupMemberSubscriptionWhereInput!]
+  NOT: [GroupMemberSubscriptionWhereInput!]
+}
+
+input GroupMemberUpdateInput {
+  firstname: ID
+  lastname: ID
+  password: String
+  team: String
+  group: GroupUpdateOneWithoutMemberInput
+}
+
+input GroupMemberUpdateManyDataInput {
+  firstname: ID
+  lastname: ID
+  password: String
+  team: String
+}
+
+input GroupMemberUpdateManyMutationInput {
+  firstname: ID
+  lastname: ID
+  password: String
+  team: String
+}
+
+input GroupMemberUpdateManyWithoutGroupInput {
+  create: [GroupMemberCreateWithoutGroupInput!]
+  delete: [GroupMemberWhereUniqueInput!]
+  connect: [GroupMemberWhereUniqueInput!]
+  set: [GroupMemberWhereUniqueInput!]
+  disconnect: [GroupMemberWhereUniqueInput!]
+  update: [GroupMemberUpdateWithWhereUniqueWithoutGroupInput!]
+  upsert: [GroupMemberUpsertWithWhereUniqueWithoutGroupInput!]
+  deleteMany: [GroupMemberScalarWhereInput!]
+  updateMany: [GroupMemberUpdateManyWithWhereNestedInput!]
+}
+
+input GroupMemberUpdateManyWithWhereNestedInput {
+  where: GroupMemberScalarWhereInput!
+  data: GroupMemberUpdateManyDataInput!
+}
+
+input GroupMemberUpdateWithoutGroupDataInput {
+  firstname: ID
+  lastname: ID
+  password: String
+  team: String
+}
+
+input GroupMemberUpdateWithWhereUniqueWithoutGroupInput {
+  where: GroupMemberWhereUniqueInput!
+  data: GroupMemberUpdateWithoutGroupDataInput!
+}
+
+input GroupMemberUpsertWithWhereUniqueWithoutGroupInput {
+  where: GroupMemberWhereUniqueInput!
+  update: GroupMemberUpdateWithoutGroupDataInput!
+  create: GroupMemberCreateWithoutGroupInput!
+}
+
+input GroupMemberWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  firstname: ID
+  firstname_not: ID
+  firstname_in: [ID!]
+  firstname_not_in: [ID!]
+  firstname_lt: ID
+  firstname_lte: ID
+  firstname_gt: ID
+  firstname_gte: ID
+  firstname_contains: ID
+  firstname_not_contains: ID
+  firstname_starts_with: ID
+  firstname_not_starts_with: ID
+  firstname_ends_with: ID
+  firstname_not_ends_with: ID
+  lastname: ID
+  lastname_not: ID
+  lastname_in: [ID!]
+  lastname_not_in: [ID!]
+  lastname_lt: ID
+  lastname_lte: ID
+  lastname_gt: ID
+  lastname_gte: ID
+  lastname_contains: ID
+  lastname_not_contains: ID
+  lastname_starts_with: ID
+  lastname_not_starts_with: ID
+  lastname_ends_with: ID
+  lastname_not_ends_with: ID
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  team: String
+  team_not: String
+  team_in: [String!]
+  team_not_in: [String!]
+  team_lt: String
+  team_lte: String
+  team_gt: String
+  team_gte: String
+  team_contains: String
+  team_not_contains: String
+  team_starts_with: String
+  team_not_starts_with: String
+  team_ends_with: String
+  team_not_ends_with: String
+  group: GroupWhereInput
+  AND: [GroupMemberWhereInput!]
+  OR: [GroupMemberWhereInput!]
+  NOT: [GroupMemberWhereInput!]
+}
+
+input GroupMemberWhereUniqueInput {
+  id: ID
+  lastname: ID
 }
 
 enum GroupOrderByInput {
@@ -278,15 +644,24 @@ enum GroupOrderByInput {
   name_DESC
   description_ASC
   description_DESC
+  members_ASC
+  members_DESC
   email_ASC
   email_DESC
+  password_ASC
+  password_DESC
+  createdAt_ASC
+  createdAt_DESC
 }
 
 type GroupPreviousValues {
   id: ID!
   name: String!
   description: String
-  email: String
+  members: Int
+  email: String!
+  password: String!
+  createdAt: DateTime!
 }
 
 type GroupSubscriptionPayload {
@@ -310,14 +685,42 @@ input GroupSubscriptionWhereInput {
 input GroupUpdateInput {
   name: String
   description: String
-  members: StaffUpdateManyInput
+  members: Int
+  member: GroupMemberUpdateManyWithoutGroupInput
   email: String
+  password: String
+  team: TeamUpdateOneInput
 }
 
 input GroupUpdateManyMutationInput {
   name: String
   description: String
+  members: Int
   email: String
+  password: String
+}
+
+input GroupUpdateOneWithoutMemberInput {
+  create: GroupCreateWithoutMemberInput
+  update: GroupUpdateWithoutMemberDataInput
+  upsert: GroupUpsertWithoutMemberInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: GroupWhereUniqueInput
+}
+
+input GroupUpdateWithoutMemberDataInput {
+  name: String
+  description: String
+  members: Int
+  email: String
+  password: String
+  team: TeamUpdateOneInput
+}
+
+input GroupUpsertWithoutMemberInput {
+  update: GroupUpdateWithoutMemberDataInput!
+  create: GroupCreateWithoutMemberInput!
 }
 
 input GroupWhereInput {
@@ -363,9 +766,17 @@ input GroupWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
-  members_every: StaffWhereInput
-  members_some: StaffWhereInput
-  members_none: StaffWhereInput
+  members: Int
+  members_not: Int
+  members_in: [Int!]
+  members_not_in: [Int!]
+  members_lt: Int
+  members_lte: Int
+  members_gt: Int
+  members_gte: Int
+  member_every: GroupMemberWhereInput
+  member_some: GroupMemberWhereInput
+  member_none: GroupMemberWhereInput
   email: String
   email_not: String
   email_in: [String!]
@@ -380,6 +791,29 @@ input GroupWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  team: TeamWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
   AND: [GroupWhereInput!]
   OR: [GroupWhereInput!]
   NOT: [GroupWhereInput!]
@@ -389,143 +823,6 @@ input GroupWhereUniqueInput {
   id: ID
   name: String
   email: String
-}
-
-type Lead {
-  id: ID!
-  staff(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff!]
-  team(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Team!]
-}
-
-type LeadConnection {
-  pageInfo: PageInfo!
-  edges: [LeadEdge]!
-  aggregate: AggregateLead!
-}
-
-input LeadCreateInput {
-  id: ID
-  staff: StaffCreateManyInput
-  team: TeamCreateManyInput
-}
-
-input LeadCreateManyInput {
-  create: [LeadCreateInput!]
-  connect: [LeadWhereUniqueInput!]
-}
-
-type LeadEdge {
-  node: Lead!
-  cursor: String!
-}
-
-enum LeadOrderByInput {
-  id_ASC
-  id_DESC
-}
-
-type LeadPreviousValues {
-  id: ID!
-}
-
-input LeadScalarWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  AND: [LeadScalarWhereInput!]
-  OR: [LeadScalarWhereInput!]
-  NOT: [LeadScalarWhereInput!]
-}
-
-type LeadSubscriptionPayload {
-  mutation: MutationType!
-  node: Lead
-  updatedFields: [String!]
-  previousValues: LeadPreviousValues
-}
-
-input LeadSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: LeadWhereInput
-  AND: [LeadSubscriptionWhereInput!]
-  OR: [LeadSubscriptionWhereInput!]
-  NOT: [LeadSubscriptionWhereInput!]
-}
-
-input LeadUpdateDataInput {
-  staff: StaffUpdateManyInput
-  team: TeamUpdateManyInput
-}
-
-input LeadUpdateInput {
-  staff: StaffUpdateManyInput
-  team: TeamUpdateManyInput
-}
-
-input LeadUpdateManyInput {
-  create: [LeadCreateInput!]
-  update: [LeadUpdateWithWhereUniqueNestedInput!]
-  upsert: [LeadUpsertWithWhereUniqueNestedInput!]
-  delete: [LeadWhereUniqueInput!]
-  connect: [LeadWhereUniqueInput!]
-  set: [LeadWhereUniqueInput!]
-  disconnect: [LeadWhereUniqueInput!]
-  deleteMany: [LeadScalarWhereInput!]
-}
-
-input LeadUpdateWithWhereUniqueNestedInput {
-  where: LeadWhereUniqueInput!
-  data: LeadUpdateDataInput!
-}
-
-input LeadUpsertWithWhereUniqueNestedInput {
-  where: LeadWhereUniqueInput!
-  update: LeadUpdateDataInput!
-  create: LeadCreateInput!
-}
-
-input LeadWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  staff_every: StaffWhereInput
-  staff_some: StaffWhereInput
-  staff_none: StaffWhereInput
-  team_every: TeamWhereInput
-  team_some: TeamWhereInput
-  team_none: TeamWhereInput
-  AND: [LeadWhereInput!]
-  OR: [LeadWhereInput!]
-  NOT: [LeadWhereInput!]
-}
-
-input LeadWhereUniqueInput {
-  id: ID
 }
 
 scalar Long
@@ -543,11 +840,12 @@ type Mutation {
   upsertGroup(where: GroupWhereUniqueInput!, create: GroupCreateInput!, update: GroupUpdateInput!): Group!
   deleteGroup(where: GroupWhereUniqueInput!): Group
   deleteManyGroups(where: GroupWhereInput): BatchPayload!
-  createLead(data: LeadCreateInput!): Lead!
-  updateLead(data: LeadUpdateInput!, where: LeadWhereUniqueInput!): Lead
-  upsertLead(where: LeadWhereUniqueInput!, create: LeadCreateInput!, update: LeadUpdateInput!): Lead!
-  deleteLead(where: LeadWhereUniqueInput!): Lead
-  deleteManyLeads(where: LeadWhereInput): BatchPayload!
+  createGroupMember(data: GroupMemberCreateInput!): GroupMember!
+  updateGroupMember(data: GroupMemberUpdateInput!, where: GroupMemberWhereUniqueInput!): GroupMember
+  updateManyGroupMembers(data: GroupMemberUpdateManyMutationInput!, where: GroupMemberWhereInput): BatchPayload!
+  upsertGroupMember(where: GroupMemberWhereUniqueInput!, create: GroupMemberCreateInput!, update: GroupMemberUpdateInput!): GroupMember!
+  deleteGroupMember(where: GroupMemberWhereUniqueInput!): GroupMember
+  deleteManyGroupMembers(where: GroupMemberWhereInput): BatchPayload!
   createOrganization(data: OrganizationCreateInput!): Organization!
   updateOrganization(data: OrganizationUpdateInput!, where: OrganizationWhereUniqueInput!): Organization
   updateManyOrganizations(data: OrganizationUpdateManyMutationInput!, where: OrganizationWhereInput): BatchPayload!
@@ -923,7 +1221,6 @@ input OrganizationWhereInput {
 input OrganizationWhereUniqueInput {
   id: ID
   name: String
-  state: String
   email: String
 }
 
@@ -941,9 +1238,9 @@ type Query {
   group(where: GroupWhereUniqueInput!): Group
   groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group]!
   groupsConnection(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupConnection!
-  lead(where: LeadWhereUniqueInput!): Lead
-  leads(where: LeadWhereInput, orderBy: LeadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Lead]!
-  leadsConnection(where: LeadWhereInput, orderBy: LeadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LeadConnection!
+  groupMember(where: GroupMemberWhereUniqueInput!): GroupMember
+  groupMembers(where: GroupMemberWhereInput, orderBy: GroupMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GroupMember]!
+  groupMembersConnection(where: GroupMemberWhereInput, orderBy: GroupMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupMemberConnection!
   organization(where: OrganizationWhereUniqueInput!): Organization
   organizations(where: OrganizationWhereInput, orderBy: OrganizationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Organization]!
   organizationsConnection(where: OrganizationWhereInput, orderBy: OrganizationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OrganizationConnection!
@@ -962,14 +1259,16 @@ type Query {
 type Staff {
   id: ID!
   firstname: String!
-  lastname: String
+  lastname: String!
   organization: Organization
-  team(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Team!]
+  team: String
   isLead: Boolean
+  lead: Team
   role: String
   country: String
   state: String
   email: String
+  password: String
   joinedAt: DateTime!
 }
 
@@ -982,18 +1281,20 @@ type StaffConnection {
 input StaffCreateInput {
   id: ID
   firstname: String!
-  lastname: String
+  lastname: String!
   organization: OrganizationCreateOneWithoutStaffInput
-  team: TeamCreateManyWithoutLeadInput
+  team: String
   isLead: Boolean
+  lead: TeamCreateOneWithoutLeadInput
   role: String
   country: String
   state: String
   email: String
+  password: String
 }
 
-input StaffCreateManyInput {
-  create: [StaffCreateInput!]
+input StaffCreateManyWithoutLeadInput {
+  create: [StaffCreateWithoutLeadInput!]
   connect: [StaffWhereUniqueInput!]
 }
 
@@ -1002,33 +1303,32 @@ input StaffCreateManyWithoutOrganizationInput {
   connect: [StaffWhereUniqueInput!]
 }
 
-input StaffCreateManyWithoutTeamInput {
-  create: [StaffCreateWithoutTeamInput!]
-  connect: [StaffWhereUniqueInput!]
+input StaffCreateWithoutLeadInput {
+  id: ID
+  firstname: String!
+  lastname: String!
+  organization: OrganizationCreateOneWithoutStaffInput
+  team: String
+  isLead: Boolean
+  role: String
+  country: String
+  state: String
+  email: String
+  password: String
 }
 
 input StaffCreateWithoutOrganizationInput {
   id: ID
   firstname: String!
-  lastname: String
-  team: TeamCreateManyWithoutLeadInput
+  lastname: String!
+  team: String
   isLead: Boolean
+  lead: TeamCreateOneWithoutLeadInput
   role: String
   country: String
   state: String
   email: String
-}
-
-input StaffCreateWithoutTeamInput {
-  id: ID
-  firstname: String!
-  lastname: String
-  organization: OrganizationCreateOneWithoutStaffInput
-  isLead: Boolean
-  role: String
-  country: String
-  state: String
-  email: String
+  password: String
 }
 
 type StaffEdge {
@@ -1043,6 +1343,8 @@ enum StaffOrderByInput {
   firstname_DESC
   lastname_ASC
   lastname_DESC
+  team_ASC
+  team_DESC
   isLead_ASC
   isLead_DESC
   role_ASC
@@ -1053,6 +1355,8 @@ enum StaffOrderByInput {
   state_DESC
   email_ASC
   email_DESC
+  password_ASC
+  password_DESC
   joinedAt_ASC
   joinedAt_DESC
 }
@@ -1060,12 +1364,14 @@ enum StaffOrderByInput {
 type StaffPreviousValues {
   id: ID!
   firstname: String!
-  lastname: String
+  lastname: String!
+  team: String
   isLead: Boolean
   role: String
   country: String
   state: String
   email: String
+  password: String
   joinedAt: DateTime!
 }
 
@@ -1112,6 +1418,20 @@ input StaffScalarWhereInput {
   lastname_not_starts_with: String
   lastname_ends_with: String
   lastname_not_ends_with: String
+  team: String
+  team_not: String
+  team_in: [String!]
+  team_not_in: [String!]
+  team_lt: String
+  team_lte: String
+  team_gt: String
+  team_gte: String
+  team_contains: String
+  team_not_contains: String
+  team_starts_with: String
+  team_not_starts_with: String
+  team_ends_with: String
+  team_not_ends_with: String
   isLead: Boolean
   isLead_not: Boolean
   role: String
@@ -1170,6 +1490,20 @@ input StaffScalarWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
   joinedAt: DateTime
   joinedAt_not: DateTime
   joinedAt_in: [DateTime!]
@@ -1201,60 +1535,54 @@ input StaffSubscriptionWhereInput {
   NOT: [StaffSubscriptionWhereInput!]
 }
 
-input StaffUpdateDataInput {
-  firstname: String
-  lastname: String
-  organization: OrganizationUpdateOneWithoutStaffInput
-  team: TeamUpdateManyWithoutLeadInput
-  isLead: Boolean
-  role: String
-  country: String
-  state: String
-  email: String
-}
-
 input StaffUpdateInput {
   firstname: String
   lastname: String
   organization: OrganizationUpdateOneWithoutStaffInput
-  team: TeamUpdateManyWithoutLeadInput
+  team: String
   isLead: Boolean
+  lead: TeamUpdateOneWithoutLeadInput
   role: String
   country: String
   state: String
   email: String
+  password: String
 }
 
 input StaffUpdateManyDataInput {
   firstname: String
   lastname: String
+  team: String
   isLead: Boolean
   role: String
   country: String
   state: String
   email: String
-}
-
-input StaffUpdateManyInput {
-  create: [StaffCreateInput!]
-  update: [StaffUpdateWithWhereUniqueNestedInput!]
-  upsert: [StaffUpsertWithWhereUniqueNestedInput!]
-  delete: [StaffWhereUniqueInput!]
-  connect: [StaffWhereUniqueInput!]
-  set: [StaffWhereUniqueInput!]
-  disconnect: [StaffWhereUniqueInput!]
-  deleteMany: [StaffScalarWhereInput!]
-  updateMany: [StaffUpdateManyWithWhereNestedInput!]
+  password: String
 }
 
 input StaffUpdateManyMutationInput {
   firstname: String
   lastname: String
+  team: String
   isLead: Boolean
   role: String
   country: String
   state: String
   email: String
+  password: String
+}
+
+input StaffUpdateManyWithoutLeadInput {
+  create: [StaffCreateWithoutLeadInput!]
+  delete: [StaffWhereUniqueInput!]
+  connect: [StaffWhereUniqueInput!]
+  set: [StaffWhereUniqueInput!]
+  disconnect: [StaffWhereUniqueInput!]
+  update: [StaffUpdateWithWhereUniqueWithoutLeadInput!]
+  upsert: [StaffUpsertWithWhereUniqueWithoutLeadInput!]
+  deleteMany: [StaffScalarWhereInput!]
+  updateMany: [StaffUpdateManyWithWhereNestedInput!]
 }
 
 input StaffUpdateManyWithoutOrganizationInput {
@@ -1269,48 +1597,40 @@ input StaffUpdateManyWithoutOrganizationInput {
   updateMany: [StaffUpdateManyWithWhereNestedInput!]
 }
 
-input StaffUpdateManyWithoutTeamInput {
-  create: [StaffCreateWithoutTeamInput!]
-  delete: [StaffWhereUniqueInput!]
-  connect: [StaffWhereUniqueInput!]
-  set: [StaffWhereUniqueInput!]
-  disconnect: [StaffWhereUniqueInput!]
-  update: [StaffUpdateWithWhereUniqueWithoutTeamInput!]
-  upsert: [StaffUpsertWithWhereUniqueWithoutTeamInput!]
-  deleteMany: [StaffScalarWhereInput!]
-  updateMany: [StaffUpdateManyWithWhereNestedInput!]
-}
-
 input StaffUpdateManyWithWhereNestedInput {
   where: StaffScalarWhereInput!
   data: StaffUpdateManyDataInput!
 }
 
-input StaffUpdateWithoutOrganizationDataInput {
-  firstname: String
-  lastname: String
-  team: TeamUpdateManyWithoutLeadInput
-  isLead: Boolean
-  role: String
-  country: String
-  state: String
-  email: String
-}
-
-input StaffUpdateWithoutTeamDataInput {
+input StaffUpdateWithoutLeadDataInput {
   firstname: String
   lastname: String
   organization: OrganizationUpdateOneWithoutStaffInput
+  team: String
   isLead: Boolean
   role: String
   country: String
   state: String
   email: String
+  password: String
 }
 
-input StaffUpdateWithWhereUniqueNestedInput {
+input StaffUpdateWithoutOrganizationDataInput {
+  firstname: String
+  lastname: String
+  team: String
+  isLead: Boolean
+  lead: TeamUpdateOneWithoutLeadInput
+  role: String
+  country: String
+  state: String
+  email: String
+  password: String
+}
+
+input StaffUpdateWithWhereUniqueWithoutLeadInput {
   where: StaffWhereUniqueInput!
-  data: StaffUpdateDataInput!
+  data: StaffUpdateWithoutLeadDataInput!
 }
 
 input StaffUpdateWithWhereUniqueWithoutOrganizationInput {
@@ -1318,27 +1638,16 @@ input StaffUpdateWithWhereUniqueWithoutOrganizationInput {
   data: StaffUpdateWithoutOrganizationDataInput!
 }
 
-input StaffUpdateWithWhereUniqueWithoutTeamInput {
+input StaffUpsertWithWhereUniqueWithoutLeadInput {
   where: StaffWhereUniqueInput!
-  data: StaffUpdateWithoutTeamDataInput!
-}
-
-input StaffUpsertWithWhereUniqueNestedInput {
-  where: StaffWhereUniqueInput!
-  update: StaffUpdateDataInput!
-  create: StaffCreateInput!
+  update: StaffUpdateWithoutLeadDataInput!
+  create: StaffCreateWithoutLeadInput!
 }
 
 input StaffUpsertWithWhereUniqueWithoutOrganizationInput {
   where: StaffWhereUniqueInput!
   update: StaffUpdateWithoutOrganizationDataInput!
   create: StaffCreateWithoutOrganizationInput!
-}
-
-input StaffUpsertWithWhereUniqueWithoutTeamInput {
-  where: StaffWhereUniqueInput!
-  update: StaffUpdateWithoutTeamDataInput!
-  create: StaffCreateWithoutTeamInput!
 }
 
 input StaffWhereInput {
@@ -1385,11 +1694,23 @@ input StaffWhereInput {
   lastname_ends_with: String
   lastname_not_ends_with: String
   organization: OrganizationWhereInput
-  team_every: TeamWhereInput
-  team_some: TeamWhereInput
-  team_none: TeamWhereInput
+  team: String
+  team_not: String
+  team_in: [String!]
+  team_not_in: [String!]
+  team_lt: String
+  team_lte: String
+  team_gt: String
+  team_gte: String
+  team_contains: String
+  team_not_contains: String
+  team_starts_with: String
+  team_not_starts_with: String
+  team_ends_with: String
+  team_not_ends_with: String
   isLead: Boolean
   isLead_not: Boolean
+  lead: TeamWhereInput
   role: String
   role_not: String
   role_in: [String!]
@@ -1446,6 +1767,20 @@ input StaffWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
   joinedAt: DateTime
   joinedAt_not: DateTime
   joinedAt_in: [DateTime!]
@@ -1461,13 +1796,14 @@ input StaffWhereInput {
 
 input StaffWhereUniqueInput {
   id: ID
+  lastname: String
   email: String
 }
 
 type Subscription {
   department(where: DepartmentSubscriptionWhereInput): DepartmentSubscriptionPayload
   group(where: GroupSubscriptionWhereInput): GroupSubscriptionPayload
-  lead(where: LeadSubscriptionWhereInput): LeadSubscriptionPayload
+  groupMember(where: GroupMemberSubscriptionWhereInput): GroupMemberSubscriptionPayload
   organization(where: OrganizationSubscriptionWhereInput): OrganizationSubscriptionPayload
   staff(where: StaffSubscriptionWhereInput): StaffSubscriptionPayload
   team(where: TeamSubscriptionWhereInput): TeamSubscriptionPayload
@@ -1479,6 +1815,7 @@ type Team {
   name: String!
   members: Int
   description: String
+  department: Department
   active: Boolean
   lead(where: StaffWhereInput, orderBy: StaffOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Staff!]
   createdAt: DateTime!
@@ -1495,18 +1832,33 @@ input TeamCreateInput {
   name: String!
   members: Int
   description: String
+  department: DepartmentCreateOneWithoutTeamsInput
   active: Boolean
-  lead: StaffCreateManyWithoutTeamInput
+  lead: StaffCreateManyWithoutLeadInput
 }
 
-input TeamCreateManyInput {
-  create: [TeamCreateInput!]
+input TeamCreateManyWithoutDepartmentInput {
+  create: [TeamCreateWithoutDepartmentInput!]
   connect: [TeamWhereUniqueInput!]
 }
 
-input TeamCreateManyWithoutLeadInput {
-  create: [TeamCreateWithoutLeadInput!]
-  connect: [TeamWhereUniqueInput!]
+input TeamCreateOneInput {
+  create: TeamCreateInput
+  connect: TeamWhereUniqueInput
+}
+
+input TeamCreateOneWithoutLeadInput {
+  create: TeamCreateWithoutLeadInput
+  connect: TeamWhereUniqueInput
+}
+
+input TeamCreateWithoutDepartmentInput {
+  id: ID
+  name: String!
+  members: Int
+  description: String
+  active: Boolean
+  lead: StaffCreateManyWithoutLeadInput
 }
 
 input TeamCreateWithoutLeadInput {
@@ -1514,6 +1866,7 @@ input TeamCreateWithoutLeadInput {
   name: String!
   members: Int
   description: String
+  department: DepartmentCreateOneWithoutTeamsInput
   active: Boolean
 }
 
@@ -1634,16 +1987,18 @@ input TeamUpdateDataInput {
   name: String
   members: Int
   description: String
+  department: DepartmentUpdateOneWithoutTeamsInput
   active: Boolean
-  lead: StaffUpdateManyWithoutTeamInput
+  lead: StaffUpdateManyWithoutLeadInput
 }
 
 input TeamUpdateInput {
   name: String
   members: Int
   description: String
+  department: DepartmentUpdateOneWithoutTeamsInput
   active: Boolean
-  lead: StaffUpdateManyWithoutTeamInput
+  lead: StaffUpdateManyWithoutLeadInput
 }
 
 input TeamUpdateManyDataInput {
@@ -1653,18 +2008,6 @@ input TeamUpdateManyDataInput {
   active: Boolean
 }
 
-input TeamUpdateManyInput {
-  create: [TeamCreateInput!]
-  update: [TeamUpdateWithWhereUniqueNestedInput!]
-  upsert: [TeamUpsertWithWhereUniqueNestedInput!]
-  delete: [TeamWhereUniqueInput!]
-  connect: [TeamWhereUniqueInput!]
-  set: [TeamWhereUniqueInput!]
-  disconnect: [TeamWhereUniqueInput!]
-  deleteMany: [TeamScalarWhereInput!]
-  updateMany: [TeamUpdateManyWithWhereNestedInput!]
-}
-
 input TeamUpdateManyMutationInput {
   name: String
   members: Int
@@ -1672,14 +2015,14 @@ input TeamUpdateManyMutationInput {
   active: Boolean
 }
 
-input TeamUpdateManyWithoutLeadInput {
-  create: [TeamCreateWithoutLeadInput!]
+input TeamUpdateManyWithoutDepartmentInput {
+  create: [TeamCreateWithoutDepartmentInput!]
   delete: [TeamWhereUniqueInput!]
   connect: [TeamWhereUniqueInput!]
   set: [TeamWhereUniqueInput!]
   disconnect: [TeamWhereUniqueInput!]
-  update: [TeamUpdateWithWhereUniqueWithoutLeadInput!]
-  upsert: [TeamUpsertWithWhereUniqueWithoutLeadInput!]
+  update: [TeamUpdateWithWhereUniqueWithoutDepartmentInput!]
+  upsert: [TeamUpsertWithWhereUniqueWithoutDepartmentInput!]
   deleteMany: [TeamScalarWhereInput!]
   updateMany: [TeamUpdateManyWithWhereNestedInput!]
 }
@@ -1689,33 +2032,59 @@ input TeamUpdateManyWithWhereNestedInput {
   data: TeamUpdateManyDataInput!
 }
 
-input TeamUpdateWithoutLeadDataInput {
+input TeamUpdateOneInput {
+  create: TeamCreateInput
+  update: TeamUpdateDataInput
+  upsert: TeamUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: TeamWhereUniqueInput
+}
+
+input TeamUpdateOneWithoutLeadInput {
+  create: TeamCreateWithoutLeadInput
+  update: TeamUpdateWithoutLeadDataInput
+  upsert: TeamUpsertWithoutLeadInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: TeamWhereUniqueInput
+}
+
+input TeamUpdateWithoutDepartmentDataInput {
   name: String
   members: Int
   description: String
   active: Boolean
+  lead: StaffUpdateManyWithoutLeadInput
 }
 
-input TeamUpdateWithWhereUniqueNestedInput {
-  where: TeamWhereUniqueInput!
-  data: TeamUpdateDataInput!
+input TeamUpdateWithoutLeadDataInput {
+  name: String
+  members: Int
+  description: String
+  department: DepartmentUpdateOneWithoutTeamsInput
+  active: Boolean
 }
 
-input TeamUpdateWithWhereUniqueWithoutLeadInput {
+input TeamUpdateWithWhereUniqueWithoutDepartmentInput {
   where: TeamWhereUniqueInput!
-  data: TeamUpdateWithoutLeadDataInput!
+  data: TeamUpdateWithoutDepartmentDataInput!
 }
 
-input TeamUpsertWithWhereUniqueNestedInput {
-  where: TeamWhereUniqueInput!
+input TeamUpsertNestedInput {
   update: TeamUpdateDataInput!
   create: TeamCreateInput!
 }
 
-input TeamUpsertWithWhereUniqueWithoutLeadInput {
-  where: TeamWhereUniqueInput!
+input TeamUpsertWithoutLeadInput {
   update: TeamUpdateWithoutLeadDataInput!
   create: TeamCreateWithoutLeadInput!
+}
+
+input TeamUpsertWithWhereUniqueWithoutDepartmentInput {
+  where: TeamWhereUniqueInput!
+  update: TeamUpdateWithoutDepartmentDataInput!
+  create: TeamCreateWithoutDepartmentInput!
 }
 
 input TeamWhereInput {
@@ -1769,6 +2138,7 @@ input TeamWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
+  department: DepartmentWhereInput
   active: Boolean
   active_not: Boolean
   lead_every: StaffWhereInput
@@ -1794,7 +2164,8 @@ input TeamWhereUniqueInput {
 
 type Testers {
   id: ID!
-  name: String
+  firstname: String
+  lastname: String
   email: String
   department: String
 }
@@ -1807,7 +2178,8 @@ type TestersConnection {
 
 input TestersCreateInput {
   id: ID
-  name: String
+  firstname: String
+  lastname: String
   email: String
   department: String
 }
@@ -1820,8 +2192,10 @@ type TestersEdge {
 enum TestersOrderByInput {
   id_ASC
   id_DESC
-  name_ASC
-  name_DESC
+  firstname_ASC
+  firstname_DESC
+  lastname_ASC
+  lastname_DESC
   email_ASC
   email_DESC
   department_ASC
@@ -1830,7 +2204,8 @@ enum TestersOrderByInput {
 
 type TestersPreviousValues {
   id: ID!
-  name: String
+  firstname: String
+  lastname: String
   email: String
   department: String
 }
@@ -1854,13 +2229,15 @@ input TestersSubscriptionWhereInput {
 }
 
 input TestersUpdateInput {
-  name: String
+  firstname: String
+  lastname: String
   email: String
   department: String
 }
 
 input TestersUpdateManyMutationInput {
-  name: String
+  firstname: String
+  lastname: String
   email: String
   department: String
 }
@@ -1880,20 +2257,34 @@ input TestersWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  name: String
-  name_not: String
-  name_in: [String!]
-  name_not_in: [String!]
-  name_lt: String
-  name_lte: String
-  name_gt: String
-  name_gte: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
+  firstname: String
+  firstname_not: String
+  firstname_in: [String!]
+  firstname_not_in: [String!]
+  firstname_lt: String
+  firstname_lte: String
+  firstname_gt: String
+  firstname_gte: String
+  firstname_contains: String
+  firstname_not_contains: String
+  firstname_starts_with: String
+  firstname_not_starts_with: String
+  firstname_ends_with: String
+  firstname_not_ends_with: String
+  lastname: String
+  lastname_not: String
+  lastname_in: [String!]
+  lastname_not_in: [String!]
+  lastname_lt: String
+  lastname_lte: String
+  lastname_gt: String
+  lastname_gte: String
+  lastname_contains: String
+  lastname_not_contains: String
+  lastname_starts_with: String
+  lastname_not_starts_with: String
+  lastname_ends_with: String
+  lastname_not_ends_with: String
   email: String
   email_not: String
   email_in: [String!]
@@ -1929,7 +2320,7 @@ input TestersWhereInput {
 
 input TestersWhereUniqueInput {
   id: ID
-  name: String
+  lastname: String
   email: String
 }
 `

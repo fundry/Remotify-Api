@@ -18,22 +18,26 @@ type Query {
     allStaff: [Staff!]
     allTeam: [Team!]
     allGroup: [Group!]
-
     node(id: ID!): Node
 }
 
 type Mutation {
-    createGroup(
+    createGroup( where: UniqueInput
     name: String!
     description: String 
-    email: String! 
+    email: String 
+    createdAt: Int
+    members: Int
+    password: String!  
 ): Group
 
+
   # organization Mutations
-    createOrganization(  where: OrganizationWhereUniqueInput 
+    createOrganization(  where: UniqueInput 
         name: String!
         description: String
         createdAt: Int
+        staffs: Int
         type: String
          email: String
          country: String
@@ -42,7 +46,8 @@ type Mutation {
       ): Organization
 
   createDepartment(
-      name: String! 
+      name: String!  
+      createdAt: Int
   ): Organization    
 
     createStaff(    
@@ -52,19 +57,38 @@ type Mutation {
       email: String
       country: String
       state: String
-      isLead: Boolean
+      joinedAt: Int
+      isLead: Boolean 
       ): Staff
 
     createTeam(   
-       name: String!
+      name: String!
       members: Int
       active: Boolean
       createdAt: Int
       description: String): Team
 
-# authentication
+# authentication ================>
   loginOrganization(
-    where: OrganizationWhereUniqueInput!
+    where: UniqueInput!
+    name: String!
+    password: String!
+  ) :  AuthPayload
+
+  loginGroup(
+    where: UniqueInput!
+    name: String!
+    password: String!
+  ) :  AuthPayload
+
+   loginStaff(
+    where: UniqueInput!
+    name: String!
+    password: String!
+  ) :  AuthPayload
+
+   loginGroupMember(
+    where: UniqueInput!
     name: String!
     password: String!
   ) :  AuthPayload
@@ -81,7 +105,7 @@ type AuthPayload {
     organization: Organization
 }
 
-input OrganizationWhereUniqueInput{
+input UniqueInput{
   id : ID
   email: String
 }

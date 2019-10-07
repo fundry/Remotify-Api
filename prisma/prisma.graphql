@@ -167,7 +167,8 @@ input StaffCreateInput {
   joinedAt: Int
   email: String
    country: String
-    state: String
+  state: String
+  password: String
 }
 
 input TeamCreateInput {
@@ -181,6 +182,7 @@ input GroupCreateInput {
   name: String
   description: String
   email: String
+  password: String
 }
 
  
@@ -433,18 +435,22 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
 
 input TeamWhereUniqueInput {
   id : ID
+  email: String
 }
 
 input StaffWhereUniqueInput {
   id : ID
+  email: String
 }
 
 input GroupWhereUniqueInput {
   id : ID
+  email: String
 }
 
 input OrganizationWhereUniqueInput {
@@ -454,6 +460,7 @@ input OrganizationWhereUniqueInput {
 
 input DepartmentWhereUniqueInput {
   id : ID
+  email: String
 }
 
  

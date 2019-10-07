@@ -12,13 +12,17 @@ services:
         # managementApiSecret: my-secret
         databases:
           default:
+            host: host.docker.internal
+            database: Remotify
+            schema: public
+            user: postgres
+            password: postgres
+            ssl: false
             connector: postgres
-            host: postgres
-            user: prisma
-            password: prisma
             rawAccess: true
             port: 5432
             migrations: true
+            database: Remotify
   postgres:
     image: postgres
     restart: always

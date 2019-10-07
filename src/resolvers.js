@@ -1,4 +1,5 @@
 require('dotenv').config();
+//dotenv should be topmost so it loads all  env data
 import Axios from 'axios';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -10,20 +11,22 @@ const resolver = {
     organization: async (_, ctx, prisma, info) => {
       // logic to  create protected field ===========-->>
 
-      if (!name) {
-        throw new Error('Invalid Login');
-      }
+      // if (!name) {
+      //   throw new Error('Invalid Login');
+      // }
 
       const id = ctx.where.id;
+      const email = ctx.where.email;
       return prisma.db.query.organization({
         where: {
-          id,
+          email,
         },
         info,
       });
     },
 
     staff: (_, ctx, prisma, info) => {
+      const email = ctx.where.email;
       const id = ctx.where.id;
       return prisma.db.query.staff({
         where: {
@@ -44,6 +47,7 @@ const resolver = {
     },
 
     group: (_, ctx, prisma, info) => {
+      const email = ctx.where.email;
       const id = ctx.where.id;
       return prisma.db.query.group({
         where: {
@@ -55,6 +59,7 @@ const resolver = {
   },
 
   Mutation: {
+    // ===================>
     createOrganization: async (root, args, context, info) => {
       const hashedPassword = await bcrypt.hash(args.password, 10);
 
@@ -83,9 +88,8 @@ const resolver = {
       });
     },
 
-    loginOrganization: async (parent, { password, where }, ctx, info) => {
+    loginOrganization: async (_, { password, where }, ctx, info) => {
       const email = where.email;
-      const userId = where.id;
       const user = await ctx.db.query.organization({
         where: {
           email: email,
@@ -112,7 +116,19 @@ const resolver = {
       return { token, user };
     },
 
-    createStaff: (root, args, context, info) => {
+    createStaff: async (_, args, context, info) => {
+      const hashedPassword = await bcrypt.hash(args.password, 10);
+
+      // cloud function here
+      const Email = args.email;
+      try {
+        Axios.post('http://localhost:8080/', {
+          email: Email,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
       return context.db.mutation.createStaff({
         data: {
           name: args.name,
@@ -121,11 +137,12 @@ const resolver = {
           email: args.email,
           country: args.country,
           state: args.state,
+          password: hashedPassword,
         },
       });
     },
 
-    createTeam: (root, args, context, info) => {
+    createTeam: (_, args, context, info) => {
       return context.db.mutation.createTeam({
         data: {
           name: args.name,
@@ -136,11 +153,24 @@ const resolver = {
       });
     },
 
-    createGroup: (root, args, context, info) => {
+    createGroup: async (_, args, context, info) => {
+      const hashedPassword = await bcrypt.hash(args.password, 10);
+
+      // cloud function here
+      const Email = args.email;
+      try {
+        Axios.post('http://localhost:8080/', {
+          email: Email,
+        });
+      } catch (error) {
+        console.log(error);
+      }
       return context.db.mutation.createGroup({
         data: {
           name: args.name,
           description: args.description,
+          email: args.email,
+          password: hashedPassword,
         },
       });
     },
