@@ -114,7 +114,8 @@ const resolver = {
 
       return context.db.mutation.createStaff({
         data: {
-          name: args.name,
+          firstname: args.firstname,
+          lastname: args.lastname,
           role: args.role,
           isLead: args.isLead,
           email: args.email,

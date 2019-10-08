@@ -23,6 +23,7 @@ export interface Exists {
   eventTeam: (where?: EventTeamWhereInput) => Promise<boolean>;
   group: (where?: GroupWhereInput) => Promise<boolean>;
   groupMember: (where?: GroupMemberWhereInput) => Promise<boolean>;
+  groupTeam: (where?: GroupTeamWhereInput) => Promise<boolean>;
   organization: (where?: OrganizationWhereInput) => Promise<boolean>;
   staff: (where?: StaffWhereInput) => Promise<boolean>;
   team: (where?: TeamWhereInput) => Promise<boolean>;
@@ -185,6 +186,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => GroupMemberConnectionPromise;
+  groupTeam: (where: GroupTeamWhereUniqueInput) => GroupTeamNullablePromise;
+  groupTeams: (args?: {
+    where?: GroupTeamWhereInput;
+    orderBy?: GroupTeamOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<GroupTeam>;
+  groupTeamsConnection: (args?: {
+    where?: GroupTeamWhereInput;
+    orderBy?: GroupTeamOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => GroupTeamConnectionPromise;
   organization: (
     where: OrganizationWhereUniqueInput
   ) => OrganizationNullablePromise;
@@ -385,6 +405,22 @@ export interface Prisma {
   deleteManyGroupMembers: (
     where?: GroupMemberWhereInput
   ) => BatchPayloadPromise;
+  createGroupTeam: (data: GroupTeamCreateInput) => GroupTeamPromise;
+  updateGroupTeam: (args: {
+    data: GroupTeamUpdateInput;
+    where: GroupTeamWhereUniqueInput;
+  }) => GroupTeamPromise;
+  updateManyGroupTeams: (args: {
+    data: GroupTeamUpdateManyMutationInput;
+    where?: GroupTeamWhereInput;
+  }) => BatchPayloadPromise;
+  upsertGroupTeam: (args: {
+    where: GroupTeamWhereUniqueInput;
+    create: GroupTeamCreateInput;
+    update: GroupTeamUpdateInput;
+  }) => GroupTeamPromise;
+  deleteGroupTeam: (where: GroupTeamWhereUniqueInput) => GroupTeamPromise;
+  deleteManyGroupTeams: (where?: GroupTeamWhereInput) => BatchPayloadPromise;
   createOrganization: (data: OrganizationCreateInput) => OrganizationPromise;
   updateOrganization: (args: {
     data: OrganizationUpdateInput;
@@ -483,6 +519,9 @@ export interface Subscription {
   groupMember: (
     where?: GroupMemberSubscriptionWhereInput
   ) => GroupMemberSubscriptionPayloadSubscription;
+  groupTeam: (
+    where?: GroupTeamSubscriptionWhereInput
+  ) => GroupTeamSubscriptionPayloadSubscription;
   organization: (
     where?: OrganizationSubscriptionWhereInput
   ) => OrganizationSubscriptionPayloadSubscription;
@@ -527,6 +566,38 @@ export type EventOrderByInput =
   | "teams_ASC"
   | "teams_DESC";
 
+export type DepartmentOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "leads_ASC"
+  | "leads_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC";
+
+export type EventTeamOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "description_ASC"
+  | "description_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC";
+
+export type TestersOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "firstname_ASC"
+  | "firstname_DESC"
+  | "lastname_ASC"
+  | "lastname_DESC"
+  | "email_ASC"
+  | "email_DESC"
+  | "department_ASC"
+  | "department_DESC";
+
 export type StaffOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -551,37 +622,13 @@ export type StaffOrderByInput =
   | "joinedAt_ASC"
   | "joinedAt_DESC";
 
-export type EventTeamOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "name_ASC"
-  | "name_DESC"
-  | "description_ASC"
-  | "description_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC";
-
-export type TestersOrderByInput =
+export type EventMemberOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "firstname_ASC"
   | "firstname_DESC"
   | "lastname_ASC"
-  | "lastname_DESC"
-  | "email_ASC"
-  | "email_DESC"
-  | "department_ASC"
-  | "department_DESC";
-
-export type DepartmentOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "leads_ASC"
-  | "leads_DESC"
-  | "name_ASC"
-  | "name_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC";
+  | "lastname_DESC";
 
 export type TeamOrderByInput =
   | "id_ASC"
@@ -596,14 +643,6 @@ export type TeamOrderByInput =
   | "active_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC";
-
-export type EventMemberOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "firstname_ASC"
-  | "firstname_DESC"
-  | "lastname_ASC"
-  | "lastname_DESC";
 
 export type EventLeadOrderByInput =
   | "id_ASC"
@@ -653,7 +692,9 @@ export type GroupMemberOrderByInput =
   | "password_ASC"
   | "password_DESC"
   | "team_ASC"
-  | "team_DESC";
+  | "team_DESC"
+  | "isLead_ASC"
+  | "isLead_DESC";
 
 export type GroupOrderByInput =
   | "id_ASC"
@@ -677,15 +718,92 @@ export type GroupOrderByInput =
   | "createdAt_ASC"
   | "createdAt_DESC";
 
-export interface EventMemberUpdateWithoutEventDataInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
+export type GroupTeamOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "members_ASC"
+  | "members_DESC"
+  | "description_ASC"
+  | "description_DESC"
+  | "active_ASC"
+  | "active_DESC"
+  | "lead_ASC"
+  | "lead_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC";
+
+export interface EventMemberUpdateWithWhereUniqueWithoutEventInput {
+  where: EventMemberWhereUniqueInput;
+  data: EventMemberUpdateWithoutEventDataInput;
 }
 
 export type DepartmentWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
   name?: Maybe<String>;
 }>;
+
+export interface StaffUpdateWithoutLeadDataInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  organization?: Maybe<OrganizationUpdateOneWithoutStaffInput>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface GroupMemberUpdateManyDataInput {
+  firstname?: Maybe<ID_Input>;
+  lastname?: Maybe<ID_Input>;
+  password?: Maybe<String>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+}
+
+export interface OrganizationUpdateOneWithoutStaffInput {
+  create?: Maybe<OrganizationCreateWithoutStaffInput>;
+  update?: Maybe<OrganizationUpdateWithoutStaffDataInput>;
+  upsert?: Maybe<OrganizationUpsertWithoutStaffInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<OrganizationWhereUniqueInput>;
+}
+
+export interface EventLeadUpdateWithoutEventDataInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+}
+
+export interface OrganizationUpdateWithoutStaffDataInput {
+  name?: Maybe<String>;
+  website?: Maybe<String>;
+  Teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
+  type?: Maybe<String>;
+  description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  staffs?: Maybe<Int>;
+  department?: Maybe<DepartmentUpdateManyInput>;
+}
+
+export interface TeamSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<TeamWhereInput>;
+  AND?: Maybe<TeamSubscriptionWhereInput[] | TeamSubscriptionWhereInput>;
+  OR?: Maybe<TeamSubscriptionWhereInput[] | TeamSubscriptionWhereInput>;
+  NOT?: Maybe<TeamSubscriptionWhereInput[] | TeamSubscriptionWhereInput>;
+}
 
 export interface DepartmentUpdateManyInput {
   create?: Maybe<DepartmentCreateInput[] | DepartmentCreateInput>;
@@ -708,7 +826,1793 @@ export interface DepartmentUpdateManyInput {
   >;
 }
 
-export interface GroupMemberScalarWhereInput {
+export interface OrganizationSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<OrganizationWhereInput>;
+  AND?: Maybe<
+    OrganizationSubscriptionWhereInput[] | OrganizationSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    OrganizationSubscriptionWhereInput[] | OrganizationSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    OrganizationSubscriptionWhereInput[] | OrganizationSubscriptionWhereInput
+  >;
+}
+
+export interface DepartmentUpdateWithWhereUniqueNestedInput {
+  where: DepartmentWhereUniqueInput;
+  data: DepartmentUpdateDataInput;
+}
+
+export interface GroupTeamSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<GroupTeamWhereInput>;
+  AND?: Maybe<
+    GroupTeamSubscriptionWhereInput[] | GroupTeamSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    GroupTeamSubscriptionWhereInput[] | GroupTeamSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    GroupTeamSubscriptionWhereInput[] | GroupTeamSubscriptionWhereInput
+  >;
+}
+
+export interface DepartmentUpdateDataInput {
+  leads?: Maybe<Int>;
+  name?: Maybe<String>;
+  teams?: Maybe<TeamUpdateManyWithoutDepartmentInput>;
+}
+
+export interface EventWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
+  website?: Maybe<String>;
+  website_not?: Maybe<String>;
+  website_in?: Maybe<String[] | String>;
+  website_not_in?: Maybe<String[] | String>;
+  website_lt?: Maybe<String>;
+  website_lte?: Maybe<String>;
+  website_gt?: Maybe<String>;
+  website_gte?: Maybe<String>;
+  website_contains?: Maybe<String>;
+  website_not_contains?: Maybe<String>;
+  website_starts_with?: Maybe<String>;
+  website_not_starts_with?: Maybe<String>;
+  website_ends_with?: Maybe<String>;
+  website_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  members?: Maybe<Int>;
+  members_not?: Maybe<Int>;
+  members_in?: Maybe<Int[] | Int>;
+  members_not_in?: Maybe<Int[] | Int>;
+  members_lt?: Maybe<Int>;
+  members_lte?: Maybe<Int>;
+  members_gt?: Maybe<Int>;
+  members_gte?: Maybe<Int>;
+  member_every?: Maybe<EventMemberWhereInput>;
+  member_some?: Maybe<EventMemberWhereInput>;
+  member_none?: Maybe<EventMemberWhereInput>;
+  leads?: Maybe<Int>;
+  leads_not?: Maybe<Int>;
+  leads_in?: Maybe<Int[] | Int>;
+  leads_not_in?: Maybe<Int[] | Int>;
+  leads_lt?: Maybe<Int>;
+  leads_lte?: Maybe<Int>;
+  leads_gt?: Maybe<Int>;
+  leads_gte?: Maybe<Int>;
+  lead_every?: Maybe<EventLeadWhereInput>;
+  lead_some?: Maybe<EventLeadWhereInput>;
+  lead_none?: Maybe<EventLeadWhereInput>;
+  teams?: Maybe<Int>;
+  teams_not?: Maybe<Int>;
+  teams_in?: Maybe<Int[] | Int>;
+  teams_not_in?: Maybe<Int[] | Int>;
+  teams_lt?: Maybe<Int>;
+  teams_lte?: Maybe<Int>;
+  teams_gt?: Maybe<Int>;
+  teams_gte?: Maybe<Int>;
+  team_every?: Maybe<EventTeamWhereInput>;
+  team_some?: Maybe<EventTeamWhereInput>;
+  team_none?: Maybe<EventTeamWhereInput>;
+  AND?: Maybe<EventWhereInput[] | EventWhereInput>;
+  OR?: Maybe<EventWhereInput[] | EventWhereInput>;
+  NOT?: Maybe<EventWhereInput[] | EventWhereInput>;
+}
+
+export interface DepartmentUpsertWithWhereUniqueNestedInput {
+  where: DepartmentWhereUniqueInput;
+  update: DepartmentUpdateDataInput;
+  create: DepartmentCreateInput;
+}
+
+export interface EventTeamWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  event?: Maybe<EventWhereInput>;
+  AND?: Maybe<EventTeamWhereInput[] | EventTeamWhereInput>;
+  OR?: Maybe<EventTeamWhereInput[] | EventTeamWhereInput>;
+  NOT?: Maybe<EventTeamWhereInput[] | EventTeamWhereInput>;
+}
+
+export interface DepartmentScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  leads?: Maybe<Int>;
+  leads_not?: Maybe<Int>;
+  leads_in?: Maybe<Int[] | Int>;
+  leads_not_in?: Maybe<Int[] | Int>;
+  leads_lt?: Maybe<Int>;
+  leads_lte?: Maybe<Int>;
+  leads_gt?: Maybe<Int>;
+  leads_gte?: Maybe<Int>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<DepartmentScalarWhereInput[] | DepartmentScalarWhereInput>;
+  OR?: Maybe<DepartmentScalarWhereInput[] | DepartmentScalarWhereInput>;
+  NOT?: Maybe<DepartmentScalarWhereInput[] | DepartmentScalarWhereInput>;
+}
+
+export interface GroupSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<GroupWhereInput>;
+  AND?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
+  OR?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
+  NOT?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
+}
+
+export interface DepartmentUpdateManyWithWhereNestedInput {
+  where: DepartmentScalarWhereInput;
+  data: DepartmentUpdateManyDataInput;
+}
+
+export interface EventTeamSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<EventTeamWhereInput>;
+  AND?: Maybe<
+    EventTeamSubscriptionWhereInput[] | EventTeamSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    EventTeamSubscriptionWhereInput[] | EventTeamSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    EventTeamSubscriptionWhereInput[] | EventTeamSubscriptionWhereInput
+  >;
+}
+
+export interface DepartmentUpdateManyDataInput {
+  leads?: Maybe<Int>;
+  name?: Maybe<String>;
+}
+
+export interface EventMemberSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<EventMemberWhereInput>;
+  AND?: Maybe<
+    EventMemberSubscriptionWhereInput[] | EventMemberSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    EventMemberSubscriptionWhereInput[] | EventMemberSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    EventMemberSubscriptionWhereInput[] | EventMemberSubscriptionWhereInput
+  >;
+}
+
+export interface OrganizationUpsertWithoutStaffInput {
+  update: OrganizationUpdateWithoutStaffDataInput;
+  create: OrganizationCreateWithoutStaffInput;
+}
+
+export interface EventSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<EventWhereInput>;
+  AND?: Maybe<EventSubscriptionWhereInput[] | EventSubscriptionWhereInput>;
+  OR?: Maybe<EventSubscriptionWhereInput[] | EventSubscriptionWhereInput>;
+  NOT?: Maybe<EventSubscriptionWhereInput[] | EventSubscriptionWhereInput>;
+}
+
+export interface StaffUpsertWithWhereUniqueWithoutLeadInput {
+  where: StaffWhereUniqueInput;
+  update: StaffUpdateWithoutLeadDataInput;
+  create: StaffCreateWithoutLeadInput;
+}
+
+export interface TestersUpdateManyMutationInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  email?: Maybe<String>;
+  department?: Maybe<String>;
+}
+
+export interface StaffScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  firstname?: Maybe<String>;
+  firstname_not?: Maybe<String>;
+  firstname_in?: Maybe<String[] | String>;
+  firstname_not_in?: Maybe<String[] | String>;
+  firstname_lt?: Maybe<String>;
+  firstname_lte?: Maybe<String>;
+  firstname_gt?: Maybe<String>;
+  firstname_gte?: Maybe<String>;
+  firstname_contains?: Maybe<String>;
+  firstname_not_contains?: Maybe<String>;
+  firstname_starts_with?: Maybe<String>;
+  firstname_not_starts_with?: Maybe<String>;
+  firstname_ends_with?: Maybe<String>;
+  firstname_not_ends_with?: Maybe<String>;
+  lastname?: Maybe<String>;
+  lastname_not?: Maybe<String>;
+  lastname_in?: Maybe<String[] | String>;
+  lastname_not_in?: Maybe<String[] | String>;
+  lastname_lt?: Maybe<String>;
+  lastname_lte?: Maybe<String>;
+  lastname_gt?: Maybe<String>;
+  lastname_gte?: Maybe<String>;
+  lastname_contains?: Maybe<String>;
+  lastname_not_contains?: Maybe<String>;
+  lastname_starts_with?: Maybe<String>;
+  lastname_not_starts_with?: Maybe<String>;
+  lastname_ends_with?: Maybe<String>;
+  lastname_not_ends_with?: Maybe<String>;
+  team?: Maybe<String>;
+  team_not?: Maybe<String>;
+  team_in?: Maybe<String[] | String>;
+  team_not_in?: Maybe<String[] | String>;
+  team_lt?: Maybe<String>;
+  team_lte?: Maybe<String>;
+  team_gt?: Maybe<String>;
+  team_gte?: Maybe<String>;
+  team_contains?: Maybe<String>;
+  team_not_contains?: Maybe<String>;
+  team_starts_with?: Maybe<String>;
+  team_not_starts_with?: Maybe<String>;
+  team_ends_with?: Maybe<String>;
+  team_not_ends_with?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  isLead_not?: Maybe<Boolean>;
+  role?: Maybe<String>;
+  role_not?: Maybe<String>;
+  role_in?: Maybe<String[] | String>;
+  role_not_in?: Maybe<String[] | String>;
+  role_lt?: Maybe<String>;
+  role_lte?: Maybe<String>;
+  role_gt?: Maybe<String>;
+  role_gte?: Maybe<String>;
+  role_contains?: Maybe<String>;
+  role_not_contains?: Maybe<String>;
+  role_starts_with?: Maybe<String>;
+  role_not_starts_with?: Maybe<String>;
+  role_ends_with?: Maybe<String>;
+  role_not_ends_with?: Maybe<String>;
+  country?: Maybe<String>;
+  country_not?: Maybe<String>;
+  country_in?: Maybe<String[] | String>;
+  country_not_in?: Maybe<String[] | String>;
+  country_lt?: Maybe<String>;
+  country_lte?: Maybe<String>;
+  country_gt?: Maybe<String>;
+  country_gte?: Maybe<String>;
+  country_contains?: Maybe<String>;
+  country_not_contains?: Maybe<String>;
+  country_starts_with?: Maybe<String>;
+  country_not_starts_with?: Maybe<String>;
+  country_ends_with?: Maybe<String>;
+  country_not_ends_with?: Maybe<String>;
+  state?: Maybe<String>;
+  state_not?: Maybe<String>;
+  state_in?: Maybe<String[] | String>;
+  state_not_in?: Maybe<String[] | String>;
+  state_lt?: Maybe<String>;
+  state_lte?: Maybe<String>;
+  state_gt?: Maybe<String>;
+  state_gte?: Maybe<String>;
+  state_contains?: Maybe<String>;
+  state_not_contains?: Maybe<String>;
+  state_starts_with?: Maybe<String>;
+  state_not_starts_with?: Maybe<String>;
+  state_ends_with?: Maybe<String>;
+  state_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
+  joinedAt?: Maybe<DateTimeInput>;
+  joinedAt_not?: Maybe<DateTimeInput>;
+  joinedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  joinedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  joinedAt_lt?: Maybe<DateTimeInput>;
+  joinedAt_lte?: Maybe<DateTimeInput>;
+  joinedAt_gt?: Maybe<DateTimeInput>;
+  joinedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
+  OR?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
+  NOT?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
+}
+
+export interface TestersUpdateInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  email?: Maybe<String>;
+  department?: Maybe<String>;
+}
+
+export interface StaffUpdateManyWithWhereNestedInput {
+  where: StaffScalarWhereInput;
+  data: StaffUpdateManyDataInput;
+}
+
+export interface TeamUpdateManyMutationInput {
+  name?: Maybe<String>;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  active?: Maybe<Boolean>;
+}
+
+export interface StaffUpdateManyDataInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface TeamUpdateInput {
+  name?: Maybe<String>;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  department?: Maybe<DepartmentUpdateOneWithoutTeamsInput>;
+  active?: Maybe<Boolean>;
+  lead?: Maybe<StaffUpdateManyWithoutLeadInput>;
+}
+
+export interface TeamUpsertWithWhereUniqueWithoutDepartmentInput {
+  where: TeamWhereUniqueInput;
+  update: TeamUpdateWithoutDepartmentDataInput;
+  create: TeamCreateWithoutDepartmentInput;
+}
+
+export interface StaffUpdateManyMutationInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface TeamScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  members?: Maybe<Int>;
+  members_not?: Maybe<Int>;
+  members_in?: Maybe<Int[] | Int>;
+  members_not_in?: Maybe<Int[] | Int>;
+  members_lt?: Maybe<Int>;
+  members_lte?: Maybe<Int>;
+  members_gt?: Maybe<Int>;
+  members_gte?: Maybe<Int>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  active?: Maybe<Boolean>;
+  active_not?: Maybe<Boolean>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<TeamScalarWhereInput[] | TeamScalarWhereInput>;
+  OR?: Maybe<TeamScalarWhereInput[] | TeamScalarWhereInput>;
+  NOT?: Maybe<TeamScalarWhereInput[] | TeamScalarWhereInput>;
+}
+
+export interface StaffUpdateInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  organization?: Maybe<OrganizationUpdateOneWithoutStaffInput>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  lead?: Maybe<TeamUpdateOneWithoutLeadInput>;
+  role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface TeamUpdateManyWithWhereNestedInput {
+  where: TeamScalarWhereInput;
+  data: TeamUpdateManyDataInput;
+}
+
+export interface OrganizationUpdateManyMutationInput {
+  name?: Maybe<String>;
+  website?: Maybe<String>;
+  Teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
+  type?: Maybe<String>;
+  description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  staffs?: Maybe<Int>;
+}
+
+export interface TeamUpdateManyDataInput {
+  name?: Maybe<String>;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  active?: Maybe<Boolean>;
+}
+
+export interface StaffUpsertWithWhereUniqueWithoutOrganizationInput {
+  where: StaffWhereUniqueInput;
+  update: StaffUpdateWithoutOrganizationDataInput;
+  create: StaffCreateWithoutOrganizationInput;
+}
+
+export interface DepartmentUpdateManyMutationInput {
+  leads?: Maybe<Int>;
+  name?: Maybe<String>;
+}
+
+export interface GroupWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  members?: Maybe<Int>;
+  members_not?: Maybe<Int>;
+  members_in?: Maybe<Int[] | Int>;
+  members_not_in?: Maybe<Int[] | Int>;
+  members_lt?: Maybe<Int>;
+  members_lte?: Maybe<Int>;
+  members_gt?: Maybe<Int>;
+  members_gte?: Maybe<Int>;
+  member_every?: Maybe<GroupMemberWhereInput>;
+  member_some?: Maybe<GroupMemberWhereInput>;
+  member_none?: Maybe<GroupMemberWhereInput>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
+  website?: Maybe<String>;
+  website_not?: Maybe<String>;
+  website_in?: Maybe<String[] | String>;
+  website_not_in?: Maybe<String[] | String>;
+  website_lt?: Maybe<String>;
+  website_lte?: Maybe<String>;
+  website_gt?: Maybe<String>;
+  website_gte?: Maybe<String>;
+  website_contains?: Maybe<String>;
+  website_not_contains?: Maybe<String>;
+  website_starts_with?: Maybe<String>;
+  website_not_starts_with?: Maybe<String>;
+  website_ends_with?: Maybe<String>;
+  website_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
+  teams?: Maybe<Int>;
+  teams_not?: Maybe<Int>;
+  teams_in?: Maybe<Int[] | Int>;
+  teams_not_in?: Maybe<Int[] | Int>;
+  teams_lt?: Maybe<Int>;
+  teams_lte?: Maybe<Int>;
+  teams_gt?: Maybe<Int>;
+  teams_gte?: Maybe<Int>;
+  team?: Maybe<GroupTeamWhereInput>;
+  leads?: Maybe<Int>;
+  leads_not?: Maybe<Int>;
+  leads_in?: Maybe<Int[] | Int>;
+  leads_not_in?: Maybe<Int[] | Int>;
+  leads_lt?: Maybe<Int>;
+  leads_lte?: Maybe<Int>;
+  leads_gt?: Maybe<Int>;
+  leads_gte?: Maybe<Int>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<GroupWhereInput[] | GroupWhereInput>;
+  OR?: Maybe<GroupWhereInput[] | GroupWhereInput>;
+  NOT?: Maybe<GroupWhereInput[] | GroupWhereInput>;
+}
+
+export interface GroupUpdateManyMutationInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  members?: Maybe<Int>;
+  email?: Maybe<String>;
+  website?: Maybe<String>;
+  password?: Maybe<String>;
+  teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
+}
+
+export interface TeamUpsertWithoutLeadInput {
+  update: TeamUpdateWithoutLeadDataInput;
+  create: TeamCreateWithoutLeadInput;
+}
+
+export interface GroupTeamUpsertNestedInput {
+  update: GroupTeamUpdateDataInput;
+  create: GroupTeamCreateInput;
+}
+
+export interface DepartmentUpdateWithoutTeamsDataInput {
+  leads?: Maybe<Int>;
+  name?: Maybe<String>;
+}
+
+export interface EventCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description?: Maybe<String>;
+  email: String;
+  website?: Maybe<String>;
+  password: String;
+  members?: Maybe<Int>;
+  member?: Maybe<EventMemberCreateManyWithoutEventInput>;
+  leads?: Maybe<Int>;
+  lead?: Maybe<EventLeadCreateManyWithoutEventInput>;
+  teams?: Maybe<Int>;
+  team?: Maybe<EventTeamCreateManyWithoutEventInput>;
+}
+
+export interface DepartmentUpdateOneWithoutTeamsInput {
+  create?: Maybe<DepartmentCreateWithoutTeamsInput>;
+  update?: Maybe<DepartmentUpdateWithoutTeamsDataInput>;
+  upsert?: Maybe<DepartmentUpsertWithoutTeamsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<DepartmentWhereUniqueInput>;
+}
+
+export interface EventMemberCreateManyWithoutEventInput {
+  create?: Maybe<
+    EventMemberCreateWithoutEventInput[] | EventMemberCreateWithoutEventInput
+  >;
+  connect?: Maybe<EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput>;
+}
+
+export interface TeamUpdateOneWithoutLeadInput {
+  create?: Maybe<TeamCreateWithoutLeadInput>;
+  update?: Maybe<TeamUpdateWithoutLeadDataInput>;
+  upsert?: Maybe<TeamUpsertWithoutLeadInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<TeamWhereUniqueInput>;
+}
+
+export interface EventMemberCreateWithoutEventInput {
+  id?: Maybe<ID_Input>;
+  firstname: String;
+  lastname: String;
+}
+
+export interface StaffUpdateWithoutOrganizationDataInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  lead?: Maybe<TeamUpdateOneWithoutLeadInput>;
+  role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface EventLeadCreateManyWithoutEventInput {
+  create?: Maybe<
+    EventLeadCreateWithoutEventInput[] | EventLeadCreateWithoutEventInput
+  >;
+  connect?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
+}
+
+export interface StaffUpdateManyWithoutOrganizationInput {
+  create?: Maybe<
+    StaffCreateWithoutOrganizationInput[] | StaffCreateWithoutOrganizationInput
+  >;
+  delete?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+  connect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+  set?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+  disconnect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+  update?: Maybe<
+    | StaffUpdateWithWhereUniqueWithoutOrganizationInput[]
+    | StaffUpdateWithWhereUniqueWithoutOrganizationInput
+  >;
+  upsert?: Maybe<
+    | StaffUpsertWithWhereUniqueWithoutOrganizationInput[]
+    | StaffUpsertWithWhereUniqueWithoutOrganizationInput
+  >;
+  deleteMany?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
+  updateMany?: Maybe<
+    StaffUpdateManyWithWhereNestedInput[] | StaffUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface EventLeadCreateWithoutEventInput {
+  id?: Maybe<ID_Input>;
+  firstname: String;
+  lastname: String;
+}
+
+export interface TeamWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  members?: Maybe<Int>;
+  members_not?: Maybe<Int>;
+  members_in?: Maybe<Int[] | Int>;
+  members_not_in?: Maybe<Int[] | Int>;
+  members_lt?: Maybe<Int>;
+  members_lte?: Maybe<Int>;
+  members_gt?: Maybe<Int>;
+  members_gte?: Maybe<Int>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  department?: Maybe<DepartmentWhereInput>;
+  active?: Maybe<Boolean>;
+  active_not?: Maybe<Boolean>;
+  lead_every?: Maybe<StaffWhereInput>;
+  lead_some?: Maybe<StaffWhereInput>;
+  lead_none?: Maybe<StaffWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<TeamWhereInput[] | TeamWhereInput>;
+  OR?: Maybe<TeamWhereInput[] | TeamWhereInput>;
+  NOT?: Maybe<TeamWhereInput[] | TeamWhereInput>;
+}
+
+export interface EventTeamCreateManyWithoutEventInput {
+  create?: Maybe<
+    EventTeamCreateWithoutEventInput[] | EventTeamCreateWithoutEventInput
+  >;
+  connect?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
+}
+
+export interface DepartmentCreateWithoutTeamsInput {
+  id?: Maybe<ID_Input>;
+  leads?: Maybe<Int>;
+  name: String;
+}
+
+export interface EventTeamCreateWithoutEventInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description: String;
+}
+
+export type OrganizationWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+}>;
+
+export interface EventUpdateInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  email?: Maybe<String>;
+  website?: Maybe<String>;
+  password?: Maybe<String>;
+  members?: Maybe<Int>;
+  member?: Maybe<EventMemberUpdateManyWithoutEventInput>;
+  leads?: Maybe<Int>;
+  lead?: Maybe<EventLeadUpdateManyWithoutEventInput>;
+  teams?: Maybe<Int>;
+  team?: Maybe<EventTeamUpdateManyWithoutEventInput>;
+}
+
+export interface TeamCreateOneWithoutLeadInput {
+  create?: Maybe<TeamCreateWithoutLeadInput>;
+  connect?: Maybe<TeamWhereUniqueInput>;
+}
+
+export interface EventMemberUpdateManyWithoutEventInput {
+  create?: Maybe<
+    EventMemberCreateWithoutEventInput[] | EventMemberCreateWithoutEventInput
+  >;
+  delete?: Maybe<EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput>;
+  connect?: Maybe<EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput>;
+  set?: Maybe<EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput>;
+  disconnect?: Maybe<
+    EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput
+  >;
+  update?: Maybe<
+    | EventMemberUpdateWithWhereUniqueWithoutEventInput[]
+    | EventMemberUpdateWithWhereUniqueWithoutEventInput
+  >;
+  upsert?: Maybe<
+    | EventMemberUpsertWithWhereUniqueWithoutEventInput[]
+    | EventMemberUpsertWithWhereUniqueWithoutEventInput
+  >;
+  deleteMany?: Maybe<
+    EventMemberScalarWhereInput[] | EventMemberScalarWhereInput
+  >;
+  updateMany?: Maybe<
+    | EventMemberUpdateManyWithWhereNestedInput[]
+    | EventMemberUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface StaffCreateManyWithoutOrganizationInput {
+  create?: Maybe<
+    StaffCreateWithoutOrganizationInput[] | StaffCreateWithoutOrganizationInput
+  >;
+  connect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+}
+
+export interface GroupTeamUpdateDataInput {
+  name?: Maybe<String>;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  active?: Maybe<Boolean>;
+  lead?: Maybe<String>;
+}
+
+export interface OrganizationCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  website?: Maybe<String>;
+  Teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
+  type?: Maybe<String>;
+  description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  staffs?: Maybe<Int>;
+  staff?: Maybe<StaffCreateManyWithoutOrganizationInput>;
+  department?: Maybe<DepartmentCreateManyInput>;
+}
+
+export interface EventMemberUpdateWithoutEventDataInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+}
+
+export interface GroupTeamUpdateInput {
+  name?: Maybe<String>;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  active?: Maybe<Boolean>;
+  lead?: Maybe<String>;
+}
+
+export interface EventMemberUpsertWithWhereUniqueWithoutEventInput {
+  where: EventMemberWhereUniqueInput;
+  update: EventMemberUpdateWithoutEventDataInput;
+  create: EventMemberCreateWithoutEventInput;
+}
+
+export interface GroupMemberUpdateManyMutationInput {
+  firstname?: Maybe<ID_Input>;
+  lastname?: Maybe<ID_Input>;
+  password?: Maybe<String>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+}
+
+export interface EventMemberScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  firstname?: Maybe<String>;
+  firstname_not?: Maybe<String>;
+  firstname_in?: Maybe<String[] | String>;
+  firstname_not_in?: Maybe<String[] | String>;
+  firstname_lt?: Maybe<String>;
+  firstname_lte?: Maybe<String>;
+  firstname_gt?: Maybe<String>;
+  firstname_gte?: Maybe<String>;
+  firstname_contains?: Maybe<String>;
+  firstname_not_contains?: Maybe<String>;
+  firstname_starts_with?: Maybe<String>;
+  firstname_not_starts_with?: Maybe<String>;
+  firstname_ends_with?: Maybe<String>;
+  firstname_not_ends_with?: Maybe<String>;
+  lastname?: Maybe<String>;
+  lastname_not?: Maybe<String>;
+  lastname_in?: Maybe<String[] | String>;
+  lastname_not_in?: Maybe<String[] | String>;
+  lastname_lt?: Maybe<String>;
+  lastname_lte?: Maybe<String>;
+  lastname_gt?: Maybe<String>;
+  lastname_gte?: Maybe<String>;
+  lastname_contains?: Maybe<String>;
+  lastname_not_contains?: Maybe<String>;
+  lastname_starts_with?: Maybe<String>;
+  lastname_not_starts_with?: Maybe<String>;
+  lastname_ends_with?: Maybe<String>;
+  lastname_not_ends_with?: Maybe<String>;
+  AND?: Maybe<EventMemberScalarWhereInput[] | EventMemberScalarWhereInput>;
+  OR?: Maybe<EventMemberScalarWhereInput[] | EventMemberScalarWhereInput>;
+  NOT?: Maybe<EventMemberScalarWhereInput[] | EventMemberScalarWhereInput>;
+}
+
+export interface GroupUpdateWithoutMemberDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  members?: Maybe<Int>;
+  email?: Maybe<String>;
+  website?: Maybe<String>;
+  password?: Maybe<String>;
+  teams?: Maybe<Int>;
+  team?: Maybe<GroupTeamUpdateOneInput>;
+  leads?: Maybe<Int>;
+}
+
+export interface EventMemberUpdateManyWithWhereNestedInput {
+  where: EventMemberScalarWhereInput;
+  data: EventMemberUpdateManyDataInput;
+}
+
+export interface GroupUpdateOneWithoutMemberInput {
+  create?: Maybe<GroupCreateWithoutMemberInput>;
+  update?: Maybe<GroupUpdateWithoutMemberDataInput>;
+  upsert?: Maybe<GroupUpsertWithoutMemberInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<GroupWhereUniqueInput>;
+}
+
+export interface EventMemberUpdateManyDataInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+}
+
+export interface GroupMemberUpdateInput {
+  firstname?: Maybe<ID_Input>;
+  lastname?: Maybe<ID_Input>;
+  password?: Maybe<String>;
+  team?: Maybe<String>;
+  group?: Maybe<GroupUpdateOneWithoutMemberInput>;
+  isLead?: Maybe<Boolean>;
+}
+
+export interface EventLeadUpdateManyWithoutEventInput {
+  create?: Maybe<
+    EventLeadCreateWithoutEventInput[] | EventLeadCreateWithoutEventInput
+  >;
+  delete?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
+  connect?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
+  set?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
+  disconnect?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
+  update?: Maybe<
+    | EventLeadUpdateWithWhereUniqueWithoutEventInput[]
+    | EventLeadUpdateWithWhereUniqueWithoutEventInput
+  >;
+  upsert?: Maybe<
+    | EventLeadUpsertWithWhereUniqueWithoutEventInput[]
+    | EventLeadUpsertWithWhereUniqueWithoutEventInput
+  >;
+  deleteMany?: Maybe<EventLeadScalarWhereInput[] | EventLeadScalarWhereInput>;
+  updateMany?: Maybe<
+    | EventLeadUpdateManyWithWhereNestedInput[]
+    | EventLeadUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface GroupCreateOneWithoutMemberInput {
+  create?: Maybe<GroupCreateWithoutMemberInput>;
+  connect?: Maybe<GroupWhereUniqueInput>;
+}
+
+export interface EventLeadUpdateWithWhereUniqueWithoutEventInput {
+  where: EventLeadWhereUniqueInput;
+  data: EventLeadUpdateWithoutEventDataInput;
+}
+
+export interface TeamCreateManyWithoutDepartmentInput {
+  create?: Maybe<
+    TeamCreateWithoutDepartmentInput[] | TeamCreateWithoutDepartmentInput
+  >;
+  connect?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
+}
+
+export interface GroupTeamUpdateOneInput {
+  create?: Maybe<GroupTeamCreateInput>;
+  update?: Maybe<GroupTeamUpdateDataInput>;
+  upsert?: Maybe<GroupTeamUpsertNestedInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<GroupTeamWhereUniqueInput>;
+}
+
+export interface StaffCreateManyWithoutLeadInput {
+  create?: Maybe<StaffCreateWithoutLeadInput[] | StaffCreateWithoutLeadInput>;
+  connect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+}
+
+export interface EventLeadUpsertWithWhereUniqueWithoutEventInput {
+  where: EventLeadWhereUniqueInput;
+  update: EventLeadUpdateWithoutEventDataInput;
+  create: EventLeadCreateWithoutEventInput;
+}
+
+export interface OrganizationCreateOneWithoutStaffInput {
+  create?: Maybe<OrganizationCreateWithoutStaffInput>;
+  connect?: Maybe<OrganizationWhereUniqueInput>;
+}
+
+export interface EventLeadScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  firstname?: Maybe<String>;
+  firstname_not?: Maybe<String>;
+  firstname_in?: Maybe<String[] | String>;
+  firstname_not_in?: Maybe<String[] | String>;
+  firstname_lt?: Maybe<String>;
+  firstname_lte?: Maybe<String>;
+  firstname_gt?: Maybe<String>;
+  firstname_gte?: Maybe<String>;
+  firstname_contains?: Maybe<String>;
+  firstname_not_contains?: Maybe<String>;
+  firstname_starts_with?: Maybe<String>;
+  firstname_not_starts_with?: Maybe<String>;
+  firstname_ends_with?: Maybe<String>;
+  firstname_not_ends_with?: Maybe<String>;
+  lastname?: Maybe<String>;
+  lastname_not?: Maybe<String>;
+  lastname_in?: Maybe<String[] | String>;
+  lastname_not_in?: Maybe<String[] | String>;
+  lastname_lt?: Maybe<String>;
+  lastname_lte?: Maybe<String>;
+  lastname_gt?: Maybe<String>;
+  lastname_gte?: Maybe<String>;
+  lastname_contains?: Maybe<String>;
+  lastname_not_contains?: Maybe<String>;
+  lastname_starts_with?: Maybe<String>;
+  lastname_not_starts_with?: Maybe<String>;
+  lastname_ends_with?: Maybe<String>;
+  lastname_not_ends_with?: Maybe<String>;
+  AND?: Maybe<EventLeadScalarWhereInput[] | EventLeadScalarWhereInput>;
+  OR?: Maybe<EventLeadScalarWhereInput[] | EventLeadScalarWhereInput>;
+  NOT?: Maybe<EventLeadScalarWhereInput[] | EventLeadScalarWhereInput>;
+}
+
+export interface DepartmentCreateManyInput {
+  create?: Maybe<DepartmentCreateInput[] | DepartmentCreateInput>;
+  connect?: Maybe<DepartmentWhereUniqueInput[] | DepartmentWhereUniqueInput>;
+}
+
+export interface EventLeadUpdateManyWithWhereNestedInput {
+  where: EventLeadScalarWhereInput;
+  data: EventLeadUpdateManyDataInput;
+}
+
+export interface TeamUpdateManyWithoutDepartmentInput {
+  create?: Maybe<
+    TeamCreateWithoutDepartmentInput[] | TeamCreateWithoutDepartmentInput
+  >;
+  delete?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
+  connect?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
+  set?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
+  disconnect?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
+  update?: Maybe<
+    | TeamUpdateWithWhereUniqueWithoutDepartmentInput[]
+    | TeamUpdateWithWhereUniqueWithoutDepartmentInput
+  >;
+  upsert?: Maybe<
+    | TeamUpsertWithWhereUniqueWithoutDepartmentInput[]
+    | TeamUpsertWithWhereUniqueWithoutDepartmentInput
+  >;
+  deleteMany?: Maybe<TeamScalarWhereInput[] | TeamScalarWhereInput>;
+  updateMany?: Maybe<
+    TeamUpdateManyWithWhereNestedInput[] | TeamUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface EventLeadUpdateManyDataInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+}
+
+export interface TeamUpdateWithoutDepartmentDataInput {
+  name?: Maybe<String>;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  active?: Maybe<Boolean>;
+  lead?: Maybe<StaffUpdateManyWithoutLeadInput>;
+}
+
+export interface EventTeamUpdateManyWithoutEventInput {
+  create?: Maybe<
+    EventTeamCreateWithoutEventInput[] | EventTeamCreateWithoutEventInput
+  >;
+  delete?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
+  connect?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
+  set?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
+  disconnect?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
+  update?: Maybe<
+    | EventTeamUpdateWithWhereUniqueWithoutEventInput[]
+    | EventTeamUpdateWithWhereUniqueWithoutEventInput
+  >;
+  upsert?: Maybe<
+    | EventTeamUpsertWithWhereUniqueWithoutEventInput[]
+    | EventTeamUpsertWithWhereUniqueWithoutEventInput
+  >;
+  deleteMany?: Maybe<EventTeamScalarWhereInput[] | EventTeamScalarWhereInput>;
+  updateMany?: Maybe<
+    | EventTeamUpdateManyWithWhereNestedInput[]
+    | EventTeamUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface StaffUpdateWithWhereUniqueWithoutLeadInput {
+  where: StaffWhereUniqueInput;
+  data: StaffUpdateWithoutLeadDataInput;
+}
+
+export interface EventTeamUpdateWithWhereUniqueWithoutEventInput {
+  where: EventTeamWhereUniqueInput;
+  data: EventTeamUpdateWithoutEventDataInput;
+}
+
+export interface StaffSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<StaffWhereInput>;
+  AND?: Maybe<StaffSubscriptionWhereInput[] | StaffSubscriptionWhereInput>;
+  OR?: Maybe<StaffSubscriptionWhereInput[] | StaffSubscriptionWhereInput>;
+  NOT?: Maybe<StaffSubscriptionWhereInput[] | StaffSubscriptionWhereInput>;
+}
+
+export interface EventTeamUpdateWithoutEventDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+}
+
+export interface EventMemberWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  firstname?: Maybe<String>;
+  firstname_not?: Maybe<String>;
+  firstname_in?: Maybe<String[] | String>;
+  firstname_not_in?: Maybe<String[] | String>;
+  firstname_lt?: Maybe<String>;
+  firstname_lte?: Maybe<String>;
+  firstname_gt?: Maybe<String>;
+  firstname_gte?: Maybe<String>;
+  firstname_contains?: Maybe<String>;
+  firstname_not_contains?: Maybe<String>;
+  firstname_starts_with?: Maybe<String>;
+  firstname_not_starts_with?: Maybe<String>;
+  firstname_ends_with?: Maybe<String>;
+  firstname_not_ends_with?: Maybe<String>;
+  lastname?: Maybe<String>;
+  lastname_not?: Maybe<String>;
+  lastname_in?: Maybe<String[] | String>;
+  lastname_not_in?: Maybe<String[] | String>;
+  lastname_lt?: Maybe<String>;
+  lastname_lte?: Maybe<String>;
+  lastname_gt?: Maybe<String>;
+  lastname_gte?: Maybe<String>;
+  lastname_contains?: Maybe<String>;
+  lastname_not_contains?: Maybe<String>;
+  lastname_starts_with?: Maybe<String>;
+  lastname_not_starts_with?: Maybe<String>;
+  lastname_ends_with?: Maybe<String>;
+  lastname_not_ends_with?: Maybe<String>;
+  event?: Maybe<EventWhereInput>;
+  AND?: Maybe<EventMemberWhereInput[] | EventMemberWhereInput>;
+  OR?: Maybe<EventMemberWhereInput[] | EventMemberWhereInput>;
+  NOT?: Maybe<EventMemberWhereInput[] | EventMemberWhereInput>;
+}
+
+export interface EventTeamUpsertWithWhereUniqueWithoutEventInput {
+  where: EventTeamWhereUniqueInput;
+  update: EventTeamUpdateWithoutEventDataInput;
+  create: EventTeamCreateWithoutEventInput;
+}
+
+export interface GroupMemberSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<GroupMemberWhereInput>;
+  AND?: Maybe<
+    GroupMemberSubscriptionWhereInput[] | GroupMemberSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    GroupMemberSubscriptionWhereInput[] | GroupMemberSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    GroupMemberSubscriptionWhereInput[] | GroupMemberSubscriptionWhereInput
+  >;
+}
+
+export interface EventTeamScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<EventTeamScalarWhereInput[] | EventTeamScalarWhereInput>;
+  OR?: Maybe<EventTeamScalarWhereInput[] | EventTeamScalarWhereInput>;
+  NOT?: Maybe<EventTeamScalarWhereInput[] | EventTeamScalarWhereInput>;
+}
+
+export interface StaffWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  firstname?: Maybe<String>;
+  firstname_not?: Maybe<String>;
+  firstname_in?: Maybe<String[] | String>;
+  firstname_not_in?: Maybe<String[] | String>;
+  firstname_lt?: Maybe<String>;
+  firstname_lte?: Maybe<String>;
+  firstname_gt?: Maybe<String>;
+  firstname_gte?: Maybe<String>;
+  firstname_contains?: Maybe<String>;
+  firstname_not_contains?: Maybe<String>;
+  firstname_starts_with?: Maybe<String>;
+  firstname_not_starts_with?: Maybe<String>;
+  firstname_ends_with?: Maybe<String>;
+  firstname_not_ends_with?: Maybe<String>;
+  lastname?: Maybe<String>;
+  lastname_not?: Maybe<String>;
+  lastname_in?: Maybe<String[] | String>;
+  lastname_not_in?: Maybe<String[] | String>;
+  lastname_lt?: Maybe<String>;
+  lastname_lte?: Maybe<String>;
+  lastname_gt?: Maybe<String>;
+  lastname_gte?: Maybe<String>;
+  lastname_contains?: Maybe<String>;
+  lastname_not_contains?: Maybe<String>;
+  lastname_starts_with?: Maybe<String>;
+  lastname_not_starts_with?: Maybe<String>;
+  lastname_ends_with?: Maybe<String>;
+  lastname_not_ends_with?: Maybe<String>;
+  organization?: Maybe<OrganizationWhereInput>;
+  team?: Maybe<String>;
+  team_not?: Maybe<String>;
+  team_in?: Maybe<String[] | String>;
+  team_not_in?: Maybe<String[] | String>;
+  team_lt?: Maybe<String>;
+  team_lte?: Maybe<String>;
+  team_gt?: Maybe<String>;
+  team_gte?: Maybe<String>;
+  team_contains?: Maybe<String>;
+  team_not_contains?: Maybe<String>;
+  team_starts_with?: Maybe<String>;
+  team_not_starts_with?: Maybe<String>;
+  team_ends_with?: Maybe<String>;
+  team_not_ends_with?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  isLead_not?: Maybe<Boolean>;
+  lead?: Maybe<TeamWhereInput>;
+  role?: Maybe<String>;
+  role_not?: Maybe<String>;
+  role_in?: Maybe<String[] | String>;
+  role_not_in?: Maybe<String[] | String>;
+  role_lt?: Maybe<String>;
+  role_lte?: Maybe<String>;
+  role_gt?: Maybe<String>;
+  role_gte?: Maybe<String>;
+  role_contains?: Maybe<String>;
+  role_not_contains?: Maybe<String>;
+  role_starts_with?: Maybe<String>;
+  role_not_starts_with?: Maybe<String>;
+  role_ends_with?: Maybe<String>;
+  role_not_ends_with?: Maybe<String>;
+  country?: Maybe<String>;
+  country_not?: Maybe<String>;
+  country_in?: Maybe<String[] | String>;
+  country_not_in?: Maybe<String[] | String>;
+  country_lt?: Maybe<String>;
+  country_lte?: Maybe<String>;
+  country_gt?: Maybe<String>;
+  country_gte?: Maybe<String>;
+  country_contains?: Maybe<String>;
+  country_not_contains?: Maybe<String>;
+  country_starts_with?: Maybe<String>;
+  country_not_starts_with?: Maybe<String>;
+  country_ends_with?: Maybe<String>;
+  country_not_ends_with?: Maybe<String>;
+  state?: Maybe<String>;
+  state_not?: Maybe<String>;
+  state_in?: Maybe<String[] | String>;
+  state_not_in?: Maybe<String[] | String>;
+  state_lt?: Maybe<String>;
+  state_lte?: Maybe<String>;
+  state_gt?: Maybe<String>;
+  state_gte?: Maybe<String>;
+  state_contains?: Maybe<String>;
+  state_not_contains?: Maybe<String>;
+  state_starts_with?: Maybe<String>;
+  state_not_starts_with?: Maybe<String>;
+  state_ends_with?: Maybe<String>;
+  state_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
+  joinedAt?: Maybe<DateTimeInput>;
+  joinedAt_not?: Maybe<DateTimeInput>;
+  joinedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  joinedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  joinedAt_lt?: Maybe<DateTimeInput>;
+  joinedAt_lte?: Maybe<DateTimeInput>;
+  joinedAt_gt?: Maybe<DateTimeInput>;
+  joinedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<StaffWhereInput[] | StaffWhereInput>;
+  OR?: Maybe<StaffWhereInput[] | StaffWhereInput>;
+  NOT?: Maybe<StaffWhereInput[] | StaffWhereInput>;
+}
+
+export interface EventTeamUpdateManyWithWhereNestedInput {
+  where: EventTeamScalarWhereInput;
+  data: EventTeamUpdateManyDataInput;
+}
+
+export interface DepartmentSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<DepartmentWhereInput>;
+  AND?: Maybe<
+    DepartmentSubscriptionWhereInput[] | DepartmentSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    DepartmentSubscriptionWhereInput[] | DepartmentSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    DepartmentSubscriptionWhereInput[] | DepartmentSubscriptionWhereInput
+  >;
+}
+
+export interface EventTeamUpdateManyDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+}
+
+export interface TestersCreateInput {
+  id?: Maybe<ID_Input>;
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  email?: Maybe<String>;
+  department?: Maybe<String>;
+}
+
+export interface EventUpdateManyMutationInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  email?: Maybe<String>;
+  website?: Maybe<String>;
+  password?: Maybe<String>;
+  members?: Maybe<Int>;
+  leads?: Maybe<Int>;
+  teams?: Maybe<Int>;
+}
+
+export interface TeamCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  department?: Maybe<DepartmentCreateOneWithoutTeamsInput>;
+  active?: Maybe<Boolean>;
+  lead?: Maybe<StaffCreateManyWithoutLeadInput>;
+}
+
+export interface EventLeadCreateInput {
+  id?: Maybe<ID_Input>;
+  firstname: String;
+  lastname: String;
+  event?: Maybe<EventCreateOneWithoutLeadInput>;
+}
+
+export interface StaffCreateInput {
+  id?: Maybe<ID_Input>;
+  firstname: String;
+  lastname: String;
+  organization?: Maybe<OrganizationCreateOneWithoutStaffInput>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  lead?: Maybe<TeamCreateOneWithoutLeadInput>;
+  role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface EventCreateOneWithoutLeadInput {
+  create?: Maybe<EventCreateWithoutLeadInput>;
+  connect?: Maybe<EventWhereUniqueInput>;
+}
+
+export interface GroupMemberWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -779,109 +2683,248 @@ export interface GroupMemberScalarWhereInput {
   team_not_starts_with?: Maybe<String>;
   team_ends_with?: Maybe<String>;
   team_not_ends_with?: Maybe<String>;
-  AND?: Maybe<GroupMemberScalarWhereInput[] | GroupMemberScalarWhereInput>;
-  OR?: Maybe<GroupMemberScalarWhereInput[] | GroupMemberScalarWhereInput>;
-  NOT?: Maybe<GroupMemberScalarWhereInput[] | GroupMemberScalarWhereInput>;
+  group?: Maybe<GroupWhereInput>;
+  isLead?: Maybe<Boolean>;
+  isLead_not?: Maybe<Boolean>;
+  AND?: Maybe<GroupMemberWhereInput[] | GroupMemberWhereInput>;
+  OR?: Maybe<GroupMemberWhereInput[] | GroupMemberWhereInput>;
+  NOT?: Maybe<GroupMemberWhereInput[] | GroupMemberWhereInput>;
 }
 
-export interface DepartmentUpdateWithWhereUniqueNestedInput {
-  where: DepartmentWhereUniqueInput;
-  data: DepartmentUpdateDataInput;
+export interface EventCreateWithoutLeadInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description?: Maybe<String>;
+  email: String;
+  website?: Maybe<String>;
+  password: String;
+  members?: Maybe<Int>;
+  member?: Maybe<EventMemberCreateManyWithoutEventInput>;
+  leads?: Maybe<Int>;
+  teams?: Maybe<Int>;
+  team?: Maybe<EventTeamCreateManyWithoutEventInput>;
 }
 
-export interface EventLeadUpdateWithoutEventDataInput {
+export interface DepartmentUpsertWithoutTeamsInput {
+  update: DepartmentUpdateWithoutTeamsDataInput;
+  create: DepartmentCreateWithoutTeamsInput;
+}
+
+export interface EventLeadUpdateInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  event?: Maybe<EventUpdateOneWithoutLeadInput>;
+}
+
+export interface TeamUpdateWithoutLeadDataInput {
+  name?: Maybe<String>;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  department?: Maybe<DepartmentUpdateOneWithoutTeamsInput>;
+  active?: Maybe<Boolean>;
+}
+
+export interface EventUpdateOneWithoutLeadInput {
+  create?: Maybe<EventCreateWithoutLeadInput>;
+  update?: Maybe<EventUpdateWithoutLeadDataInput>;
+  upsert?: Maybe<EventUpsertWithoutLeadInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<EventWhereUniqueInput>;
+}
+
+export interface StaffUpdateWithWhereUniqueWithoutOrganizationInput {
+  where: StaffWhereUniqueInput;
+  data: StaffUpdateWithoutOrganizationDataInput;
+}
+
+export interface EventUpdateWithoutLeadDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  email?: Maybe<String>;
+  website?: Maybe<String>;
+  password?: Maybe<String>;
+  members?: Maybe<Int>;
+  member?: Maybe<EventMemberUpdateManyWithoutEventInput>;
+  leads?: Maybe<Int>;
+  teams?: Maybe<Int>;
+  team?: Maybe<EventTeamUpdateManyWithoutEventInput>;
+}
+
+export interface OrganizationUpdateInput {
+  name?: Maybe<String>;
+  website?: Maybe<String>;
+  Teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
+  type?: Maybe<String>;
+  description?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  staffs?: Maybe<Int>;
+  staff?: Maybe<StaffUpdateManyWithoutOrganizationInput>;
+  department?: Maybe<DepartmentUpdateManyInput>;
+}
+
+export interface EventUpsertWithoutLeadInput {
+  update: EventUpdateWithoutLeadDataInput;
+  create: EventCreateWithoutLeadInput;
+}
+
+export interface TeamCreateWithoutLeadInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  department?: Maybe<DepartmentCreateOneWithoutTeamsInput>;
+  active?: Maybe<Boolean>;
+}
+
+export interface EventLeadUpdateManyMutationInput {
   firstname?: Maybe<String>;
   lastname?: Maybe<String>;
 }
 
-export interface DepartmentUpdateDataInput {
+export type StaffWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  lastname?: Maybe<String>;
+  email?: Maybe<String>;
+}>;
+
+export interface EventMemberCreateInput {
+  id?: Maybe<ID_Input>;
+  firstname: String;
+  lastname: String;
+  event?: Maybe<EventCreateOneWithoutMemberInput>;
+}
+
+export type TeamWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<String>;
+}>;
+
+export interface EventCreateOneWithoutMemberInput {
+  create?: Maybe<EventCreateWithoutMemberInput>;
+  connect?: Maybe<EventWhereUniqueInput>;
+}
+
+export type TestersWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  lastname?: Maybe<String>;
+  email?: Maybe<String>;
+}>;
+
+export interface EventCreateWithoutMemberInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description?: Maybe<String>;
+  email: String;
+  website?: Maybe<String>;
+  password: String;
+  members?: Maybe<Int>;
+  leads?: Maybe<Int>;
+  lead?: Maybe<EventLeadCreateManyWithoutEventInput>;
+  teams?: Maybe<Int>;
+  team?: Maybe<EventTeamCreateManyWithoutEventInput>;
+}
+
+export interface GroupCreateWithoutMemberInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description?: Maybe<String>;
+  members?: Maybe<Int>;
+  email: String;
+  website?: Maybe<String>;
+  password: String;
+  teams?: Maybe<Int>;
+  team?: Maybe<GroupTeamCreateOneInput>;
+  leads?: Maybe<Int>;
+}
+
+export interface EventMemberUpdateInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
+  event?: Maybe<EventUpdateOneWithoutMemberInput>;
+}
+
+export interface DepartmentCreateInput {
+  id?: Maybe<ID_Input>;
+  leads?: Maybe<Int>;
+  name: String;
+  teams?: Maybe<TeamCreateManyWithoutDepartmentInput>;
+}
+
+export interface EventUpdateOneWithoutMemberInput {
+  create?: Maybe<EventCreateWithoutMemberInput>;
+  update?: Maybe<EventUpdateWithoutMemberDataInput>;
+  upsert?: Maybe<EventUpsertWithoutMemberInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<EventWhereUniqueInput>;
+}
+
+export interface StaffCreateWithoutLeadInput {
+  id?: Maybe<ID_Input>;
+  firstname: String;
+  lastname: String;
+  organization?: Maybe<OrganizationCreateOneWithoutStaffInput>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  role?: Maybe<String>;
+  country?: Maybe<String>;
+  state?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface EventUpdateWithoutMemberDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  email?: Maybe<String>;
+  website?: Maybe<String>;
+  password?: Maybe<String>;
+  members?: Maybe<Int>;
+  leads?: Maybe<Int>;
+  lead?: Maybe<EventLeadUpdateManyWithoutEventInput>;
+  teams?: Maybe<Int>;
+  team?: Maybe<EventTeamUpdateManyWithoutEventInput>;
+}
+
+export interface DepartmentUpdateInput {
   leads?: Maybe<Int>;
   name?: Maybe<String>;
   teams?: Maybe<TeamUpdateManyWithoutDepartmentInput>;
 }
 
-export interface TeamSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<TeamWhereInput>;
-  AND?: Maybe<TeamSubscriptionWhereInput[] | TeamSubscriptionWhereInput>;
-  OR?: Maybe<TeamSubscriptionWhereInput[] | TeamSubscriptionWhereInput>;
-  NOT?: Maybe<TeamSubscriptionWhereInput[] | TeamSubscriptionWhereInput>;
+export interface EventUpsertWithoutMemberInput {
+  update: EventUpdateWithoutMemberDataInput;
+  create: EventCreateWithoutMemberInput;
 }
 
-export interface DepartmentUpsertWithWhereUniqueNestedInput {
-  where: DepartmentWhereUniqueInput;
-  update: DepartmentUpdateDataInput;
-  create: DepartmentCreateInput;
-}
-
-export interface OrganizationSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<OrganizationWhereInput>;
-  AND?: Maybe<
-    OrganizationSubscriptionWhereInput[] | OrganizationSubscriptionWhereInput
+export interface StaffUpdateManyWithoutLeadInput {
+  create?: Maybe<StaffCreateWithoutLeadInput[] | StaffCreateWithoutLeadInput>;
+  delete?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+  connect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+  set?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+  disconnect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
+  update?: Maybe<
+    | StaffUpdateWithWhereUniqueWithoutLeadInput[]
+    | StaffUpdateWithWhereUniqueWithoutLeadInput
   >;
-  OR?: Maybe<
-    OrganizationSubscriptionWhereInput[] | OrganizationSubscriptionWhereInput
+  upsert?: Maybe<
+    | StaffUpsertWithWhereUniqueWithoutLeadInput[]
+    | StaffUpsertWithWhereUniqueWithoutLeadInput
   >;
-  NOT?: Maybe<
-    OrganizationSubscriptionWhereInput[] | OrganizationSubscriptionWhereInput
+  deleteMany?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
+  updateMany?: Maybe<
+    StaffUpdateManyWithWhereNestedInput[] | StaffUpdateManyWithWhereNestedInput
   >;
 }
 
-export interface DepartmentScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  leads?: Maybe<Int>;
-  leads_not?: Maybe<Int>;
-  leads_in?: Maybe<Int[] | Int>;
-  leads_not_in?: Maybe<Int[] | Int>;
-  leads_lt?: Maybe<Int>;
-  leads_lte?: Maybe<Int>;
-  leads_gt?: Maybe<Int>;
-  leads_gte?: Maybe<Int>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<DepartmentScalarWhereInput[] | DepartmentScalarWhereInput>;
-  OR?: Maybe<DepartmentScalarWhereInput[] | DepartmentScalarWhereInput>;
-  NOT?: Maybe<DepartmentScalarWhereInput[] | DepartmentScalarWhereInput>;
+export interface EventMemberUpdateManyMutationInput {
+  firstname?: Maybe<String>;
+  lastname?: Maybe<String>;
 }
 
 export type EventWhereUniqueInput = AtLeastOne<{
@@ -890,117 +2933,11 @@ export type EventWhereUniqueInput = AtLeastOne<{
   email?: Maybe<String>;
 }>;
 
-export interface DepartmentUpdateManyWithWhereNestedInput {
-  where: DepartmentScalarWhereInput;
-  data: DepartmentUpdateManyDataInput;
-}
-
-export interface EventMemberWhereInput {
+export interface EventTeamCreateInput {
   id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  firstname?: Maybe<String>;
-  firstname_not?: Maybe<String>;
-  firstname_in?: Maybe<String[] | String>;
-  firstname_not_in?: Maybe<String[] | String>;
-  firstname_lt?: Maybe<String>;
-  firstname_lte?: Maybe<String>;
-  firstname_gt?: Maybe<String>;
-  firstname_gte?: Maybe<String>;
-  firstname_contains?: Maybe<String>;
-  firstname_not_contains?: Maybe<String>;
-  firstname_starts_with?: Maybe<String>;
-  firstname_not_starts_with?: Maybe<String>;
-  firstname_ends_with?: Maybe<String>;
-  firstname_not_ends_with?: Maybe<String>;
-  lastname?: Maybe<String>;
-  lastname_not?: Maybe<String>;
-  lastname_in?: Maybe<String[] | String>;
-  lastname_not_in?: Maybe<String[] | String>;
-  lastname_lt?: Maybe<String>;
-  lastname_lte?: Maybe<String>;
-  lastname_gt?: Maybe<String>;
-  lastname_gte?: Maybe<String>;
-  lastname_contains?: Maybe<String>;
-  lastname_not_contains?: Maybe<String>;
-  lastname_starts_with?: Maybe<String>;
-  lastname_not_starts_with?: Maybe<String>;
-  lastname_ends_with?: Maybe<String>;
-  lastname_not_ends_with?: Maybe<String>;
-  event?: Maybe<EventWhereInput>;
-  AND?: Maybe<EventMemberWhereInput[] | EventMemberWhereInput>;
-  OR?: Maybe<EventMemberWhereInput[] | EventMemberWhereInput>;
-  NOT?: Maybe<EventMemberWhereInput[] | EventMemberWhereInput>;
-}
-
-export interface DepartmentUpdateManyDataInput {
-  leads?: Maybe<Int>;
-  name?: Maybe<String>;
-}
-
-export interface EventLeadWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  firstname?: Maybe<String>;
-  firstname_not?: Maybe<String>;
-  firstname_in?: Maybe<String[] | String>;
-  firstname_not_in?: Maybe<String[] | String>;
-  firstname_lt?: Maybe<String>;
-  firstname_lte?: Maybe<String>;
-  firstname_gt?: Maybe<String>;
-  firstname_gte?: Maybe<String>;
-  firstname_contains?: Maybe<String>;
-  firstname_not_contains?: Maybe<String>;
-  firstname_starts_with?: Maybe<String>;
-  firstname_not_starts_with?: Maybe<String>;
-  firstname_ends_with?: Maybe<String>;
-  firstname_not_ends_with?: Maybe<String>;
-  lastname?: Maybe<String>;
-  lastname_not?: Maybe<String>;
-  lastname_in?: Maybe<String[] | String>;
-  lastname_not_in?: Maybe<String[] | String>;
-  lastname_lt?: Maybe<String>;
-  lastname_lte?: Maybe<String>;
-  lastname_gt?: Maybe<String>;
-  lastname_gte?: Maybe<String>;
-  lastname_contains?: Maybe<String>;
-  lastname_not_contains?: Maybe<String>;
-  lastname_starts_with?: Maybe<String>;
-  lastname_not_starts_with?: Maybe<String>;
-  lastname_ends_with?: Maybe<String>;
-  lastname_not_ends_with?: Maybe<String>;
-  event?: Maybe<EventWhereInput>;
-  AND?: Maybe<EventLeadWhereInput[] | EventLeadWhereInput>;
-  OR?: Maybe<EventLeadWhereInput[] | EventLeadWhereInput>;
-  NOT?: Maybe<EventLeadWhereInput[] | EventLeadWhereInput>;
-}
-
-export interface OrganizationUpsertWithoutStaffInput {
-  update: OrganizationUpdateWithoutStaffDataInput;
-  create: OrganizationCreateWithoutStaffInput;
+  name: String;
+  description: String;
+  event?: Maybe<EventCreateOneWithoutTeamInput>;
 }
 
 export interface OrganizationWhereInput {
@@ -1173,1913 +3110,15 @@ export interface OrganizationWhereInput {
   NOT?: Maybe<OrganizationWhereInput[] | OrganizationWhereInput>;
 }
 
-export interface StaffUpsertWithWhereUniqueWithoutLeadInput {
-  where: StaffWhereUniqueInput;
-  update: StaffUpdateWithoutLeadDataInput;
-  create: StaffCreateWithoutLeadInput;
-}
-
-export interface StaffWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  firstname?: Maybe<String>;
-  firstname_not?: Maybe<String>;
-  firstname_in?: Maybe<String[] | String>;
-  firstname_not_in?: Maybe<String[] | String>;
-  firstname_lt?: Maybe<String>;
-  firstname_lte?: Maybe<String>;
-  firstname_gt?: Maybe<String>;
-  firstname_gte?: Maybe<String>;
-  firstname_contains?: Maybe<String>;
-  firstname_not_contains?: Maybe<String>;
-  firstname_starts_with?: Maybe<String>;
-  firstname_not_starts_with?: Maybe<String>;
-  firstname_ends_with?: Maybe<String>;
-  firstname_not_ends_with?: Maybe<String>;
-  lastname?: Maybe<String>;
-  lastname_not?: Maybe<String>;
-  lastname_in?: Maybe<String[] | String>;
-  lastname_not_in?: Maybe<String[] | String>;
-  lastname_lt?: Maybe<String>;
-  lastname_lte?: Maybe<String>;
-  lastname_gt?: Maybe<String>;
-  lastname_gte?: Maybe<String>;
-  lastname_contains?: Maybe<String>;
-  lastname_not_contains?: Maybe<String>;
-  lastname_starts_with?: Maybe<String>;
-  lastname_not_starts_with?: Maybe<String>;
-  lastname_ends_with?: Maybe<String>;
-  lastname_not_ends_with?: Maybe<String>;
-  organization?: Maybe<OrganizationWhereInput>;
-  team?: Maybe<String>;
-  team_not?: Maybe<String>;
-  team_in?: Maybe<String[] | String>;
-  team_not_in?: Maybe<String[] | String>;
-  team_lt?: Maybe<String>;
-  team_lte?: Maybe<String>;
-  team_gt?: Maybe<String>;
-  team_gte?: Maybe<String>;
-  team_contains?: Maybe<String>;
-  team_not_contains?: Maybe<String>;
-  team_starts_with?: Maybe<String>;
-  team_not_starts_with?: Maybe<String>;
-  team_ends_with?: Maybe<String>;
-  team_not_ends_with?: Maybe<String>;
-  isLead?: Maybe<Boolean>;
-  isLead_not?: Maybe<Boolean>;
-  lead?: Maybe<TeamWhereInput>;
-  role?: Maybe<String>;
-  role_not?: Maybe<String>;
-  role_in?: Maybe<String[] | String>;
-  role_not_in?: Maybe<String[] | String>;
-  role_lt?: Maybe<String>;
-  role_lte?: Maybe<String>;
-  role_gt?: Maybe<String>;
-  role_gte?: Maybe<String>;
-  role_contains?: Maybe<String>;
-  role_not_contains?: Maybe<String>;
-  role_starts_with?: Maybe<String>;
-  role_not_starts_with?: Maybe<String>;
-  role_ends_with?: Maybe<String>;
-  role_not_ends_with?: Maybe<String>;
-  country?: Maybe<String>;
-  country_not?: Maybe<String>;
-  country_in?: Maybe<String[] | String>;
-  country_not_in?: Maybe<String[] | String>;
-  country_lt?: Maybe<String>;
-  country_lte?: Maybe<String>;
-  country_gt?: Maybe<String>;
-  country_gte?: Maybe<String>;
-  country_contains?: Maybe<String>;
-  country_not_contains?: Maybe<String>;
-  country_starts_with?: Maybe<String>;
-  country_not_starts_with?: Maybe<String>;
-  country_ends_with?: Maybe<String>;
-  country_not_ends_with?: Maybe<String>;
-  state?: Maybe<String>;
-  state_not?: Maybe<String>;
-  state_in?: Maybe<String[] | String>;
-  state_not_in?: Maybe<String[] | String>;
-  state_lt?: Maybe<String>;
-  state_lte?: Maybe<String>;
-  state_gt?: Maybe<String>;
-  state_gte?: Maybe<String>;
-  state_contains?: Maybe<String>;
-  state_not_contains?: Maybe<String>;
-  state_starts_with?: Maybe<String>;
-  state_not_starts_with?: Maybe<String>;
-  state_ends_with?: Maybe<String>;
-  state_not_ends_with?: Maybe<String>;
-  email?: Maybe<String>;
-  email_not?: Maybe<String>;
-  email_in?: Maybe<String[] | String>;
-  email_not_in?: Maybe<String[] | String>;
-  email_lt?: Maybe<String>;
-  email_lte?: Maybe<String>;
-  email_gt?: Maybe<String>;
-  email_gte?: Maybe<String>;
-  email_contains?: Maybe<String>;
-  email_not_contains?: Maybe<String>;
-  email_starts_with?: Maybe<String>;
-  email_not_starts_with?: Maybe<String>;
-  email_ends_with?: Maybe<String>;
-  email_not_ends_with?: Maybe<String>;
-  password?: Maybe<String>;
-  password_not?: Maybe<String>;
-  password_in?: Maybe<String[] | String>;
-  password_not_in?: Maybe<String[] | String>;
-  password_lt?: Maybe<String>;
-  password_lte?: Maybe<String>;
-  password_gt?: Maybe<String>;
-  password_gte?: Maybe<String>;
-  password_contains?: Maybe<String>;
-  password_not_contains?: Maybe<String>;
-  password_starts_with?: Maybe<String>;
-  password_not_starts_with?: Maybe<String>;
-  password_ends_with?: Maybe<String>;
-  password_not_ends_with?: Maybe<String>;
-  joinedAt?: Maybe<DateTimeInput>;
-  joinedAt_not?: Maybe<DateTimeInput>;
-  joinedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  joinedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  joinedAt_lt?: Maybe<DateTimeInput>;
-  joinedAt_lte?: Maybe<DateTimeInput>;
-  joinedAt_gt?: Maybe<DateTimeInput>;
-  joinedAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<StaffWhereInput[] | StaffWhereInput>;
-  OR?: Maybe<StaffWhereInput[] | StaffWhereInput>;
-  NOT?: Maybe<StaffWhereInput[] | StaffWhereInput>;
-}
-
-export interface StaffScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  firstname?: Maybe<String>;
-  firstname_not?: Maybe<String>;
-  firstname_in?: Maybe<String[] | String>;
-  firstname_not_in?: Maybe<String[] | String>;
-  firstname_lt?: Maybe<String>;
-  firstname_lte?: Maybe<String>;
-  firstname_gt?: Maybe<String>;
-  firstname_gte?: Maybe<String>;
-  firstname_contains?: Maybe<String>;
-  firstname_not_contains?: Maybe<String>;
-  firstname_starts_with?: Maybe<String>;
-  firstname_not_starts_with?: Maybe<String>;
-  firstname_ends_with?: Maybe<String>;
-  firstname_not_ends_with?: Maybe<String>;
-  lastname?: Maybe<String>;
-  lastname_not?: Maybe<String>;
-  lastname_in?: Maybe<String[] | String>;
-  lastname_not_in?: Maybe<String[] | String>;
-  lastname_lt?: Maybe<String>;
-  lastname_lte?: Maybe<String>;
-  lastname_gt?: Maybe<String>;
-  lastname_gte?: Maybe<String>;
-  lastname_contains?: Maybe<String>;
-  lastname_not_contains?: Maybe<String>;
-  lastname_starts_with?: Maybe<String>;
-  lastname_not_starts_with?: Maybe<String>;
-  lastname_ends_with?: Maybe<String>;
-  lastname_not_ends_with?: Maybe<String>;
-  team?: Maybe<String>;
-  team_not?: Maybe<String>;
-  team_in?: Maybe<String[] | String>;
-  team_not_in?: Maybe<String[] | String>;
-  team_lt?: Maybe<String>;
-  team_lte?: Maybe<String>;
-  team_gt?: Maybe<String>;
-  team_gte?: Maybe<String>;
-  team_contains?: Maybe<String>;
-  team_not_contains?: Maybe<String>;
-  team_starts_with?: Maybe<String>;
-  team_not_starts_with?: Maybe<String>;
-  team_ends_with?: Maybe<String>;
-  team_not_ends_with?: Maybe<String>;
-  isLead?: Maybe<Boolean>;
-  isLead_not?: Maybe<Boolean>;
-  role?: Maybe<String>;
-  role_not?: Maybe<String>;
-  role_in?: Maybe<String[] | String>;
-  role_not_in?: Maybe<String[] | String>;
-  role_lt?: Maybe<String>;
-  role_lte?: Maybe<String>;
-  role_gt?: Maybe<String>;
-  role_gte?: Maybe<String>;
-  role_contains?: Maybe<String>;
-  role_not_contains?: Maybe<String>;
-  role_starts_with?: Maybe<String>;
-  role_not_starts_with?: Maybe<String>;
-  role_ends_with?: Maybe<String>;
-  role_not_ends_with?: Maybe<String>;
-  country?: Maybe<String>;
-  country_not?: Maybe<String>;
-  country_in?: Maybe<String[] | String>;
-  country_not_in?: Maybe<String[] | String>;
-  country_lt?: Maybe<String>;
-  country_lte?: Maybe<String>;
-  country_gt?: Maybe<String>;
-  country_gte?: Maybe<String>;
-  country_contains?: Maybe<String>;
-  country_not_contains?: Maybe<String>;
-  country_starts_with?: Maybe<String>;
-  country_not_starts_with?: Maybe<String>;
-  country_ends_with?: Maybe<String>;
-  country_not_ends_with?: Maybe<String>;
-  state?: Maybe<String>;
-  state_not?: Maybe<String>;
-  state_in?: Maybe<String[] | String>;
-  state_not_in?: Maybe<String[] | String>;
-  state_lt?: Maybe<String>;
-  state_lte?: Maybe<String>;
-  state_gt?: Maybe<String>;
-  state_gte?: Maybe<String>;
-  state_contains?: Maybe<String>;
-  state_not_contains?: Maybe<String>;
-  state_starts_with?: Maybe<String>;
-  state_not_starts_with?: Maybe<String>;
-  state_ends_with?: Maybe<String>;
-  state_not_ends_with?: Maybe<String>;
-  email?: Maybe<String>;
-  email_not?: Maybe<String>;
-  email_in?: Maybe<String[] | String>;
-  email_not_in?: Maybe<String[] | String>;
-  email_lt?: Maybe<String>;
-  email_lte?: Maybe<String>;
-  email_gt?: Maybe<String>;
-  email_gte?: Maybe<String>;
-  email_contains?: Maybe<String>;
-  email_not_contains?: Maybe<String>;
-  email_starts_with?: Maybe<String>;
-  email_not_starts_with?: Maybe<String>;
-  email_ends_with?: Maybe<String>;
-  email_not_ends_with?: Maybe<String>;
-  password?: Maybe<String>;
-  password_not?: Maybe<String>;
-  password_in?: Maybe<String[] | String>;
-  password_not_in?: Maybe<String[] | String>;
-  password_lt?: Maybe<String>;
-  password_lte?: Maybe<String>;
-  password_gt?: Maybe<String>;
-  password_gte?: Maybe<String>;
-  password_contains?: Maybe<String>;
-  password_not_contains?: Maybe<String>;
-  password_starts_with?: Maybe<String>;
-  password_not_starts_with?: Maybe<String>;
-  password_ends_with?: Maybe<String>;
-  password_not_ends_with?: Maybe<String>;
-  joinedAt?: Maybe<DateTimeInput>;
-  joinedAt_not?: Maybe<DateTimeInput>;
-  joinedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  joinedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  joinedAt_lt?: Maybe<DateTimeInput>;
-  joinedAt_lte?: Maybe<DateTimeInput>;
-  joinedAt_gt?: Maybe<DateTimeInput>;
-  joinedAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
-  OR?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
-  NOT?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
-}
-
-export interface EventLeadSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<EventLeadWhereInput>;
-  AND?: Maybe<
-    EventLeadSubscriptionWhereInput[] | EventLeadSubscriptionWhereInput
-  >;
-  OR?: Maybe<
-    EventLeadSubscriptionWhereInput[] | EventLeadSubscriptionWhereInput
-  >;
-  NOT?: Maybe<
-    EventLeadSubscriptionWhereInput[] | EventLeadSubscriptionWhereInput
-  >;
-}
-
-export interface StaffUpdateManyWithWhereNestedInput {
-  where: StaffScalarWhereInput;
-  data: StaffUpdateManyDataInput;
-}
-
-export interface DepartmentSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<DepartmentWhereInput>;
-  AND?: Maybe<
-    DepartmentSubscriptionWhereInput[] | DepartmentSubscriptionWhereInput
-  >;
-  OR?: Maybe<
-    DepartmentSubscriptionWhereInput[] | DepartmentSubscriptionWhereInput
-  >;
-  NOT?: Maybe<
-    DepartmentSubscriptionWhereInput[] | DepartmentSubscriptionWhereInput
-  >;
-}
-
-export interface StaffUpdateManyDataInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-  team?: Maybe<String>;
-  isLead?: Maybe<Boolean>;
-  role?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-}
-
-export interface TestersUpdateInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-  email?: Maybe<String>;
-  department?: Maybe<String>;
-}
-
-export interface TeamUpsertWithWhereUniqueWithoutDepartmentInput {
-  where: TeamWhereUniqueInput;
-  update: TeamUpdateWithoutDepartmentDataInput;
-  create: TeamCreateWithoutDepartmentInput;
+export interface EventCreateOneWithoutTeamInput {
+  create?: Maybe<EventCreateWithoutTeamInput>;
+  connect?: Maybe<EventWhereUniqueInput>;
 }
 
 export type EventLeadWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
   lastname?: Maybe<String>;
 }>;
-
-export interface TeamScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  members?: Maybe<Int>;
-  members_not?: Maybe<Int>;
-  members_in?: Maybe<Int[] | Int>;
-  members_not_in?: Maybe<Int[] | Int>;
-  members_lt?: Maybe<Int>;
-  members_lte?: Maybe<Int>;
-  members_gt?: Maybe<Int>;
-  members_gte?: Maybe<Int>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  active?: Maybe<Boolean>;
-  active_not?: Maybe<Boolean>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<TeamScalarWhereInput[] | TeamScalarWhereInput>;
-  OR?: Maybe<TeamScalarWhereInput[] | TeamScalarWhereInput>;
-  NOT?: Maybe<TeamScalarWhereInput[] | TeamScalarWhereInput>;
-}
-
-export interface TeamUpdateInput {
-  name?: Maybe<String>;
-  members?: Maybe<Int>;
-  description?: Maybe<String>;
-  department?: Maybe<DepartmentUpdateOneWithoutTeamsInput>;
-  active?: Maybe<Boolean>;
-  lead?: Maybe<StaffUpdateManyWithoutLeadInput>;
-}
-
-export interface TeamUpdateManyWithWhereNestedInput {
-  where: TeamScalarWhereInput;
-  data: TeamUpdateManyDataInput;
-}
-
-export type EventMemberWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  lastname?: Maybe<String>;
-}>;
-
-export interface TeamUpdateManyDataInput {
-  name?: Maybe<String>;
-  members?: Maybe<Int>;
-  description?: Maybe<String>;
-  active?: Maybe<Boolean>;
-}
-
-export interface StaffCreateInput {
-  id?: Maybe<ID_Input>;
-  firstname: String;
-  lastname: String;
-  organization?: Maybe<OrganizationCreateOneWithoutStaffInput>;
-  team?: Maybe<String>;
-  isLead?: Maybe<Boolean>;
-  lead?: Maybe<TeamCreateOneWithoutLeadInput>;
-  role?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-}
-
-export interface DepartmentUpdateManyMutationInput {
-  leads?: Maybe<Int>;
-  name?: Maybe<String>;
-}
-
-export type EventTeamWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  name?: Maybe<String>;
-}>;
-
-export interface TeamUpdateDataInput {
-  name?: Maybe<String>;
-  members?: Maybe<Int>;
-  description?: Maybe<String>;
-  department?: Maybe<DepartmentUpdateOneWithoutTeamsInput>;
-  active?: Maybe<Boolean>;
-  lead?: Maybe<StaffUpdateManyWithoutLeadInput>;
-}
-
-export interface TeamUpsertWithoutLeadInput {
-  update: TeamUpdateWithoutLeadDataInput;
-  create: TeamCreateWithoutLeadInput;
-}
-
-export interface TeamUpdateOneInput {
-  create?: Maybe<TeamCreateInput>;
-  update?: Maybe<TeamUpdateDataInput>;
-  upsert?: Maybe<TeamUpsertNestedInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<TeamWhereUniqueInput>;
-}
-
-export type GroupWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-}>;
-
-export interface EventCreateInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  description?: Maybe<String>;
-  email: String;
-  website?: Maybe<String>;
-  password: String;
-  members?: Maybe<Int>;
-  member?: Maybe<EventMemberCreateManyWithoutEventInput>;
-  leads?: Maybe<Int>;
-  lead?: Maybe<EventLeadCreateManyWithoutEventInput>;
-  teams?: Maybe<Int>;
-  team?: Maybe<EventTeamCreateManyWithoutEventInput>;
-}
-
-export interface GroupMemberWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  firstname?: Maybe<ID_Input>;
-  firstname_not?: Maybe<ID_Input>;
-  firstname_in?: Maybe<ID_Input[] | ID_Input>;
-  firstname_not_in?: Maybe<ID_Input[] | ID_Input>;
-  firstname_lt?: Maybe<ID_Input>;
-  firstname_lte?: Maybe<ID_Input>;
-  firstname_gt?: Maybe<ID_Input>;
-  firstname_gte?: Maybe<ID_Input>;
-  firstname_contains?: Maybe<ID_Input>;
-  firstname_not_contains?: Maybe<ID_Input>;
-  firstname_starts_with?: Maybe<ID_Input>;
-  firstname_not_starts_with?: Maybe<ID_Input>;
-  firstname_ends_with?: Maybe<ID_Input>;
-  firstname_not_ends_with?: Maybe<ID_Input>;
-  lastname?: Maybe<ID_Input>;
-  lastname_not?: Maybe<ID_Input>;
-  lastname_in?: Maybe<ID_Input[] | ID_Input>;
-  lastname_not_in?: Maybe<ID_Input[] | ID_Input>;
-  lastname_lt?: Maybe<ID_Input>;
-  lastname_lte?: Maybe<ID_Input>;
-  lastname_gt?: Maybe<ID_Input>;
-  lastname_gte?: Maybe<ID_Input>;
-  lastname_contains?: Maybe<ID_Input>;
-  lastname_not_contains?: Maybe<ID_Input>;
-  lastname_starts_with?: Maybe<ID_Input>;
-  lastname_not_starts_with?: Maybe<ID_Input>;
-  lastname_ends_with?: Maybe<ID_Input>;
-  lastname_not_ends_with?: Maybe<ID_Input>;
-  password?: Maybe<String>;
-  password_not?: Maybe<String>;
-  password_in?: Maybe<String[] | String>;
-  password_not_in?: Maybe<String[] | String>;
-  password_lt?: Maybe<String>;
-  password_lte?: Maybe<String>;
-  password_gt?: Maybe<String>;
-  password_gte?: Maybe<String>;
-  password_contains?: Maybe<String>;
-  password_not_contains?: Maybe<String>;
-  password_starts_with?: Maybe<String>;
-  password_not_starts_with?: Maybe<String>;
-  password_ends_with?: Maybe<String>;
-  password_not_ends_with?: Maybe<String>;
-  team?: Maybe<String>;
-  team_not?: Maybe<String>;
-  team_in?: Maybe<String[] | String>;
-  team_not_in?: Maybe<String[] | String>;
-  team_lt?: Maybe<String>;
-  team_lte?: Maybe<String>;
-  team_gt?: Maybe<String>;
-  team_gte?: Maybe<String>;
-  team_contains?: Maybe<String>;
-  team_not_contains?: Maybe<String>;
-  team_starts_with?: Maybe<String>;
-  team_not_starts_with?: Maybe<String>;
-  team_ends_with?: Maybe<String>;
-  team_not_ends_with?: Maybe<String>;
-  group?: Maybe<GroupWhereInput>;
-  AND?: Maybe<GroupMemberWhereInput[] | GroupMemberWhereInput>;
-  OR?: Maybe<GroupMemberWhereInput[] | GroupMemberWhereInput>;
-  NOT?: Maybe<GroupMemberWhereInput[] | GroupMemberWhereInput>;
-}
-
-export interface EventMemberCreateManyWithoutEventInput {
-  create?: Maybe<
-    EventMemberCreateWithoutEventInput[] | EventMemberCreateWithoutEventInput
-  >;
-  connect?: Maybe<EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput>;
-}
-
-export interface DepartmentWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  leads?: Maybe<Int>;
-  leads_not?: Maybe<Int>;
-  leads_in?: Maybe<Int[] | Int>;
-  leads_not_in?: Maybe<Int[] | Int>;
-  leads_lt?: Maybe<Int>;
-  leads_lte?: Maybe<Int>;
-  leads_gt?: Maybe<Int>;
-  leads_gte?: Maybe<Int>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  teams_every?: Maybe<TeamWhereInput>;
-  teams_some?: Maybe<TeamWhereInput>;
-  teams_none?: Maybe<TeamWhereInput>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<DepartmentWhereInput[] | DepartmentWhereInput>;
-  OR?: Maybe<DepartmentWhereInput[] | DepartmentWhereInput>;
-  NOT?: Maybe<DepartmentWhereInput[] | DepartmentWhereInput>;
-}
-
-export interface EventMemberCreateWithoutEventInput {
-  id?: Maybe<ID_Input>;
-  firstname: String;
-  lastname: String;
-}
-
-export interface TeamWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  members?: Maybe<Int>;
-  members_not?: Maybe<Int>;
-  members_in?: Maybe<Int[] | Int>;
-  members_not_in?: Maybe<Int[] | Int>;
-  members_lt?: Maybe<Int>;
-  members_lte?: Maybe<Int>;
-  members_gt?: Maybe<Int>;
-  members_gte?: Maybe<Int>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  department?: Maybe<DepartmentWhereInput>;
-  active?: Maybe<Boolean>;
-  active_not?: Maybe<Boolean>;
-  lead_every?: Maybe<StaffWhereInput>;
-  lead_some?: Maybe<StaffWhereInput>;
-  lead_none?: Maybe<StaffWhereInput>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<TeamWhereInput[] | TeamWhereInput>;
-  OR?: Maybe<TeamWhereInput[] | TeamWhereInput>;
-  NOT?: Maybe<TeamWhereInput[] | TeamWhereInput>;
-}
-
-export interface EventLeadCreateManyWithoutEventInput {
-  create?: Maybe<
-    EventLeadCreateWithoutEventInput[] | EventLeadCreateWithoutEventInput
-  >;
-  connect?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
-}
-
-export interface StaffUpdateManyWithoutOrganizationInput {
-  create?: Maybe<
-    StaffCreateWithoutOrganizationInput[] | StaffCreateWithoutOrganizationInput
-  >;
-  delete?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-  connect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-  set?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-  disconnect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-  update?: Maybe<
-    | StaffUpdateWithWhereUniqueWithoutOrganizationInput[]
-    | StaffUpdateWithWhereUniqueWithoutOrganizationInput
-  >;
-  upsert?: Maybe<
-    | StaffUpsertWithWhereUniqueWithoutOrganizationInput[]
-    | StaffUpsertWithWhereUniqueWithoutOrganizationInput
-  >;
-  deleteMany?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
-  updateMany?: Maybe<
-    StaffUpdateManyWithWhereNestedInput[] | StaffUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface EventLeadCreateWithoutEventInput {
-  id?: Maybe<ID_Input>;
-  firstname: String;
-  lastname: String;
-}
-
-export type GroupMemberWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  lastname?: Maybe<ID_Input>;
-}>;
-
-export interface EventTeamCreateManyWithoutEventInput {
-  create?: Maybe<
-    EventTeamCreateWithoutEventInput[] | EventTeamCreateWithoutEventInput
-  >;
-  connect?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
-}
-
-export interface TeamCreateOneWithoutLeadInput {
-  create?: Maybe<TeamCreateWithoutLeadInput>;
-  connect?: Maybe<TeamWhereUniqueInput>;
-}
-
-export interface EventTeamCreateWithoutEventInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  description: String;
-}
-
-export type OrganizationWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-}>;
-
-export interface EventUpdateInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  email?: Maybe<String>;
-  website?: Maybe<String>;
-  password?: Maybe<String>;
-  members?: Maybe<Int>;
-  member?: Maybe<EventMemberUpdateManyWithoutEventInput>;
-  leads?: Maybe<Int>;
-  lead?: Maybe<EventLeadUpdateManyWithoutEventInput>;
-  teams?: Maybe<Int>;
-  team?: Maybe<EventTeamUpdateManyWithoutEventInput>;
-}
-
-export interface OrganizationCreateInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  website?: Maybe<String>;
-  Teams?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  type?: Maybe<String>;
-  description?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  staffs?: Maybe<Int>;
-  staff?: Maybe<StaffCreateManyWithoutOrganizationInput>;
-  department?: Maybe<DepartmentCreateManyInput>;
-}
-
-export interface EventMemberUpdateManyWithoutEventInput {
-  create?: Maybe<
-    EventMemberCreateWithoutEventInput[] | EventMemberCreateWithoutEventInput
-  >;
-  delete?: Maybe<EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput>;
-  connect?: Maybe<EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput>;
-  set?: Maybe<EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput>;
-  disconnect?: Maybe<
-    EventMemberWhereUniqueInput[] | EventMemberWhereUniqueInput
-  >;
-  update?: Maybe<
-    | EventMemberUpdateWithWhereUniqueWithoutEventInput[]
-    | EventMemberUpdateWithWhereUniqueWithoutEventInput
-  >;
-  upsert?: Maybe<
-    | EventMemberUpsertWithWhereUniqueWithoutEventInput[]
-    | EventMemberUpsertWithWhereUniqueWithoutEventInput
-  >;
-  deleteMany?: Maybe<
-    EventMemberScalarWhereInput[] | EventMemberScalarWhereInput
-  >;
-  updateMany?: Maybe<
-    | EventMemberUpdateManyWithWhereNestedInput[]
-    | EventMemberUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface GroupUpsertWithoutMemberInput {
-  update: GroupUpdateWithoutMemberDataInput;
-  create: GroupCreateWithoutMemberInput;
-}
-
-export interface EventMemberUpdateWithWhereUniqueWithoutEventInput {
-  where: EventMemberWhereUniqueInput;
-  data: EventMemberUpdateWithoutEventDataInput;
-}
-
-export interface GroupUpdateWithoutMemberDataInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  members?: Maybe<Int>;
-  email?: Maybe<String>;
-  website?: Maybe<String>;
-  password?: Maybe<String>;
-  teams?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  team?: Maybe<TeamUpdateOneInput>;
-}
-
-export interface GroupMemberUpdateManyDataInput {
-  firstname?: Maybe<ID_Input>;
-  lastname?: Maybe<ID_Input>;
-  password?: Maybe<String>;
-  team?: Maybe<String>;
-}
-
-export interface GroupMemberUpdateInput {
-  firstname?: Maybe<ID_Input>;
-  lastname?: Maybe<ID_Input>;
-  password?: Maybe<String>;
-  team?: Maybe<String>;
-  group?: Maybe<GroupUpdateOneWithoutMemberInput>;
-}
-
-export interface EventMemberUpsertWithWhereUniqueWithoutEventInput {
-  where: EventMemberWhereUniqueInput;
-  update: EventMemberUpdateWithoutEventDataInput;
-  create: EventMemberCreateWithoutEventInput;
-}
-
-export interface GroupCreateWithoutMemberInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  description?: Maybe<String>;
-  members?: Maybe<Int>;
-  email: String;
-  website?: Maybe<String>;
-  password: String;
-  teams?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  team?: Maybe<TeamCreateOneInput>;
-}
-
-export interface EventMemberScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  firstname?: Maybe<String>;
-  firstname_not?: Maybe<String>;
-  firstname_in?: Maybe<String[] | String>;
-  firstname_not_in?: Maybe<String[] | String>;
-  firstname_lt?: Maybe<String>;
-  firstname_lte?: Maybe<String>;
-  firstname_gt?: Maybe<String>;
-  firstname_gte?: Maybe<String>;
-  firstname_contains?: Maybe<String>;
-  firstname_not_contains?: Maybe<String>;
-  firstname_starts_with?: Maybe<String>;
-  firstname_not_starts_with?: Maybe<String>;
-  firstname_ends_with?: Maybe<String>;
-  firstname_not_ends_with?: Maybe<String>;
-  lastname?: Maybe<String>;
-  lastname_not?: Maybe<String>;
-  lastname_in?: Maybe<String[] | String>;
-  lastname_not_in?: Maybe<String[] | String>;
-  lastname_lt?: Maybe<String>;
-  lastname_lte?: Maybe<String>;
-  lastname_gt?: Maybe<String>;
-  lastname_gte?: Maybe<String>;
-  lastname_contains?: Maybe<String>;
-  lastname_not_contains?: Maybe<String>;
-  lastname_starts_with?: Maybe<String>;
-  lastname_not_starts_with?: Maybe<String>;
-  lastname_ends_with?: Maybe<String>;
-  lastname_not_ends_with?: Maybe<String>;
-  AND?: Maybe<EventMemberScalarWhereInput[] | EventMemberScalarWhereInput>;
-  OR?: Maybe<EventMemberScalarWhereInput[] | EventMemberScalarWhereInput>;
-  NOT?: Maybe<EventMemberScalarWhereInput[] | EventMemberScalarWhereInput>;
-}
-
-export interface GroupMemberCreateInput {
-  id?: Maybe<ID_Input>;
-  firstname: ID_Input;
-  lastname: ID_Input;
-  password: String;
-  team?: Maybe<String>;
-  group?: Maybe<GroupCreateOneWithoutMemberInput>;
-}
-
-export interface EventMemberUpdateManyWithWhereNestedInput {
-  where: EventMemberScalarWhereInput;
-  data: EventMemberUpdateManyDataInput;
-}
-
-export interface GroupUpdateManyMutationInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  members?: Maybe<Int>;
-  email?: Maybe<String>;
-  website?: Maybe<String>;
-  password?: Maybe<String>;
-  teams?: Maybe<Int>;
-  leads?: Maybe<Int>;
-}
-
-export interface EventMemberUpdateManyDataInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-}
-
-export interface TeamUpsertNestedInput {
-  update: TeamUpdateDataInput;
-  create: TeamCreateInput;
-}
-
-export interface EventLeadUpdateManyWithoutEventInput {
-  create?: Maybe<
-    EventLeadCreateWithoutEventInput[] | EventLeadCreateWithoutEventInput
-  >;
-  delete?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
-  connect?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
-  set?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
-  disconnect?: Maybe<EventLeadWhereUniqueInput[] | EventLeadWhereUniqueInput>;
-  update?: Maybe<
-    | EventLeadUpdateWithWhereUniqueWithoutEventInput[]
-    | EventLeadUpdateWithWhereUniqueWithoutEventInput
-  >;
-  upsert?: Maybe<
-    | EventLeadUpsertWithWhereUniqueWithoutEventInput[]
-    | EventLeadUpsertWithWhereUniqueWithoutEventInput
-  >;
-  deleteMany?: Maybe<EventLeadScalarWhereInput[] | EventLeadScalarWhereInput>;
-  updateMany?: Maybe<
-    | EventLeadUpdateManyWithWhereNestedInput[]
-    | EventLeadUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface DepartmentUpdateWithoutTeamsDataInput {
-  leads?: Maybe<Int>;
-  name?: Maybe<String>;
-}
-
-export interface EventLeadUpdateWithWhereUniqueWithoutEventInput {
-  where: EventLeadWhereUniqueInput;
-  data: EventLeadUpdateWithoutEventDataInput;
-}
-
-export interface TeamCreateManyWithoutDepartmentInput {
-  create?: Maybe<
-    TeamCreateWithoutDepartmentInput[] | TeamCreateWithoutDepartmentInput
-  >;
-  connect?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
-}
-
-export interface GroupMemberUpdateManyWithWhereNestedInput {
-  where: GroupMemberScalarWhereInput;
-  data: GroupMemberUpdateManyDataInput;
-}
-
-export interface StaffCreateManyWithoutLeadInput {
-  create?: Maybe<StaffCreateWithoutLeadInput[] | StaffCreateWithoutLeadInput>;
-  connect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-}
-
-export interface EventLeadUpsertWithWhereUniqueWithoutEventInput {
-  where: EventLeadWhereUniqueInput;
-  update: EventLeadUpdateWithoutEventDataInput;
-  create: EventLeadCreateWithoutEventInput;
-}
-
-export interface OrganizationCreateOneWithoutStaffInput {
-  create?: Maybe<OrganizationCreateWithoutStaffInput>;
-  connect?: Maybe<OrganizationWhereUniqueInput>;
-}
-
-export interface EventLeadScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  firstname?: Maybe<String>;
-  firstname_not?: Maybe<String>;
-  firstname_in?: Maybe<String[] | String>;
-  firstname_not_in?: Maybe<String[] | String>;
-  firstname_lt?: Maybe<String>;
-  firstname_lte?: Maybe<String>;
-  firstname_gt?: Maybe<String>;
-  firstname_gte?: Maybe<String>;
-  firstname_contains?: Maybe<String>;
-  firstname_not_contains?: Maybe<String>;
-  firstname_starts_with?: Maybe<String>;
-  firstname_not_starts_with?: Maybe<String>;
-  firstname_ends_with?: Maybe<String>;
-  firstname_not_ends_with?: Maybe<String>;
-  lastname?: Maybe<String>;
-  lastname_not?: Maybe<String>;
-  lastname_in?: Maybe<String[] | String>;
-  lastname_not_in?: Maybe<String[] | String>;
-  lastname_lt?: Maybe<String>;
-  lastname_lte?: Maybe<String>;
-  lastname_gt?: Maybe<String>;
-  lastname_gte?: Maybe<String>;
-  lastname_contains?: Maybe<String>;
-  lastname_not_contains?: Maybe<String>;
-  lastname_starts_with?: Maybe<String>;
-  lastname_not_starts_with?: Maybe<String>;
-  lastname_ends_with?: Maybe<String>;
-  lastname_not_ends_with?: Maybe<String>;
-  AND?: Maybe<EventLeadScalarWhereInput[] | EventLeadScalarWhereInput>;
-  OR?: Maybe<EventLeadScalarWhereInput[] | EventLeadScalarWhereInput>;
-  NOT?: Maybe<EventLeadScalarWhereInput[] | EventLeadScalarWhereInput>;
-}
-
-export interface DepartmentCreateManyInput {
-  create?: Maybe<DepartmentCreateInput[] | DepartmentCreateInput>;
-  connect?: Maybe<DepartmentWhereUniqueInput[] | DepartmentWhereUniqueInput>;
-}
-
-export interface EventLeadUpdateManyWithWhereNestedInput {
-  where: EventLeadScalarWhereInput;
-  data: EventLeadUpdateManyDataInput;
-}
-
-export interface TeamUpdateManyWithoutDepartmentInput {
-  create?: Maybe<
-    TeamCreateWithoutDepartmentInput[] | TeamCreateWithoutDepartmentInput
-  >;
-  delete?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
-  connect?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
-  set?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
-  disconnect?: Maybe<TeamWhereUniqueInput[] | TeamWhereUniqueInput>;
-  update?: Maybe<
-    | TeamUpdateWithWhereUniqueWithoutDepartmentInput[]
-    | TeamUpdateWithWhereUniqueWithoutDepartmentInput
-  >;
-  upsert?: Maybe<
-    | TeamUpsertWithWhereUniqueWithoutDepartmentInput[]
-    | TeamUpsertWithWhereUniqueWithoutDepartmentInput
-  >;
-  deleteMany?: Maybe<TeamScalarWhereInput[] | TeamScalarWhereInput>;
-  updateMany?: Maybe<
-    TeamUpdateManyWithWhereNestedInput[] | TeamUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface EventLeadUpdateManyDataInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-}
-
-export interface TeamUpdateWithoutDepartmentDataInput {
-  name?: Maybe<String>;
-  members?: Maybe<Int>;
-  description?: Maybe<String>;
-  active?: Maybe<Boolean>;
-  lead?: Maybe<StaffUpdateManyWithoutLeadInput>;
-}
-
-export interface EventTeamUpdateManyWithoutEventInput {
-  create?: Maybe<
-    EventTeamCreateWithoutEventInput[] | EventTeamCreateWithoutEventInput
-  >;
-  delete?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
-  connect?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
-  set?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
-  disconnect?: Maybe<EventTeamWhereUniqueInput[] | EventTeamWhereUniqueInput>;
-  update?: Maybe<
-    | EventTeamUpdateWithWhereUniqueWithoutEventInput[]
-    | EventTeamUpdateWithWhereUniqueWithoutEventInput
-  >;
-  upsert?: Maybe<
-    | EventTeamUpsertWithWhereUniqueWithoutEventInput[]
-    | EventTeamUpsertWithWhereUniqueWithoutEventInput
-  >;
-  deleteMany?: Maybe<EventTeamScalarWhereInput[] | EventTeamScalarWhereInput>;
-  updateMany?: Maybe<
-    | EventTeamUpdateManyWithWhereNestedInput[]
-    | EventTeamUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface StaffUpdateWithWhereUniqueWithoutLeadInput {
-  where: StaffWhereUniqueInput;
-  data: StaffUpdateWithoutLeadDataInput;
-}
-
-export interface EventTeamUpdateWithWhereUniqueWithoutEventInput {
-  where: EventTeamWhereUniqueInput;
-  data: EventTeamUpdateWithoutEventDataInput;
-}
-
-export interface OrganizationUpdateOneWithoutStaffInput {
-  create?: Maybe<OrganizationCreateWithoutStaffInput>;
-  update?: Maybe<OrganizationUpdateWithoutStaffDataInput>;
-  upsert?: Maybe<OrganizationUpsertWithoutStaffInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<OrganizationWhereUniqueInput>;
-}
-
-export interface EventTeamUpdateWithoutEventDataInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-}
-
-export interface TestersSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<TestersWhereInput>;
-  AND?: Maybe<TestersSubscriptionWhereInput[] | TestersSubscriptionWhereInput>;
-  OR?: Maybe<TestersSubscriptionWhereInput[] | TestersSubscriptionWhereInput>;
-  NOT?: Maybe<TestersSubscriptionWhereInput[] | TestersSubscriptionWhereInput>;
-}
-
-export interface EventTeamUpsertWithWhereUniqueWithoutEventInput {
-  where: EventTeamWhereUniqueInput;
-  update: EventTeamUpdateWithoutEventDataInput;
-  create: EventTeamCreateWithoutEventInput;
-}
-
-export interface GroupMemberSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<GroupMemberWhereInput>;
-  AND?: Maybe<
-    GroupMemberSubscriptionWhereInput[] | GroupMemberSubscriptionWhereInput
-  >;
-  OR?: Maybe<
-    GroupMemberSubscriptionWhereInput[] | GroupMemberSubscriptionWhereInput
-  >;
-  NOT?: Maybe<
-    GroupMemberSubscriptionWhereInput[] | GroupMemberSubscriptionWhereInput
-  >;
-}
-
-export interface EventTeamScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<EventTeamScalarWhereInput[] | EventTeamScalarWhereInput>;
-  OR?: Maybe<EventTeamScalarWhereInput[] | EventTeamScalarWhereInput>;
-  NOT?: Maybe<EventTeamScalarWhereInput[] | EventTeamScalarWhereInput>;
-}
-
-export interface EventWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  email?: Maybe<String>;
-  email_not?: Maybe<String>;
-  email_in?: Maybe<String[] | String>;
-  email_not_in?: Maybe<String[] | String>;
-  email_lt?: Maybe<String>;
-  email_lte?: Maybe<String>;
-  email_gt?: Maybe<String>;
-  email_gte?: Maybe<String>;
-  email_contains?: Maybe<String>;
-  email_not_contains?: Maybe<String>;
-  email_starts_with?: Maybe<String>;
-  email_not_starts_with?: Maybe<String>;
-  email_ends_with?: Maybe<String>;
-  email_not_ends_with?: Maybe<String>;
-  website?: Maybe<String>;
-  website_not?: Maybe<String>;
-  website_in?: Maybe<String[] | String>;
-  website_not_in?: Maybe<String[] | String>;
-  website_lt?: Maybe<String>;
-  website_lte?: Maybe<String>;
-  website_gt?: Maybe<String>;
-  website_gte?: Maybe<String>;
-  website_contains?: Maybe<String>;
-  website_not_contains?: Maybe<String>;
-  website_starts_with?: Maybe<String>;
-  website_not_starts_with?: Maybe<String>;
-  website_ends_with?: Maybe<String>;
-  website_not_ends_with?: Maybe<String>;
-  password?: Maybe<String>;
-  password_not?: Maybe<String>;
-  password_in?: Maybe<String[] | String>;
-  password_not_in?: Maybe<String[] | String>;
-  password_lt?: Maybe<String>;
-  password_lte?: Maybe<String>;
-  password_gt?: Maybe<String>;
-  password_gte?: Maybe<String>;
-  password_contains?: Maybe<String>;
-  password_not_contains?: Maybe<String>;
-  password_starts_with?: Maybe<String>;
-  password_not_starts_with?: Maybe<String>;
-  password_ends_with?: Maybe<String>;
-  password_not_ends_with?: Maybe<String>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  members?: Maybe<Int>;
-  members_not?: Maybe<Int>;
-  members_in?: Maybe<Int[] | Int>;
-  members_not_in?: Maybe<Int[] | Int>;
-  members_lt?: Maybe<Int>;
-  members_lte?: Maybe<Int>;
-  members_gt?: Maybe<Int>;
-  members_gte?: Maybe<Int>;
-  member_every?: Maybe<EventMemberWhereInput>;
-  member_some?: Maybe<EventMemberWhereInput>;
-  member_none?: Maybe<EventMemberWhereInput>;
-  leads?: Maybe<Int>;
-  leads_not?: Maybe<Int>;
-  leads_in?: Maybe<Int[] | Int>;
-  leads_not_in?: Maybe<Int[] | Int>;
-  leads_lt?: Maybe<Int>;
-  leads_lte?: Maybe<Int>;
-  leads_gt?: Maybe<Int>;
-  leads_gte?: Maybe<Int>;
-  lead_every?: Maybe<EventLeadWhereInput>;
-  lead_some?: Maybe<EventLeadWhereInput>;
-  lead_none?: Maybe<EventLeadWhereInput>;
-  teams?: Maybe<Int>;
-  teams_not?: Maybe<Int>;
-  teams_in?: Maybe<Int[] | Int>;
-  teams_not_in?: Maybe<Int[] | Int>;
-  teams_lt?: Maybe<Int>;
-  teams_lte?: Maybe<Int>;
-  teams_gt?: Maybe<Int>;
-  teams_gte?: Maybe<Int>;
-  team_every?: Maybe<EventTeamWhereInput>;
-  team_some?: Maybe<EventTeamWhereInput>;
-  team_none?: Maybe<EventTeamWhereInput>;
-  AND?: Maybe<EventWhereInput[] | EventWhereInput>;
-  OR?: Maybe<EventWhereInput[] | EventWhereInput>;
-  NOT?: Maybe<EventWhereInput[] | EventWhereInput>;
-}
-
-export interface EventTeamUpdateManyWithWhereNestedInput {
-  where: EventTeamScalarWhereInput;
-  data: EventTeamUpdateManyDataInput;
-}
-
-export interface EventTeamSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<EventTeamWhereInput>;
-  AND?: Maybe<
-    EventTeamSubscriptionWhereInput[] | EventTeamSubscriptionWhereInput
-  >;
-  OR?: Maybe<
-    EventTeamSubscriptionWhereInput[] | EventTeamSubscriptionWhereInput
-  >;
-  NOT?: Maybe<
-    EventTeamSubscriptionWhereInput[] | EventTeamSubscriptionWhereInput
-  >;
-}
-
-export interface EventTeamUpdateManyDataInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-}
-
-export interface EventSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<EventWhereInput>;
-  AND?: Maybe<EventSubscriptionWhereInput[] | EventSubscriptionWhereInput>;
-  OR?: Maybe<EventSubscriptionWhereInput[] | EventSubscriptionWhereInput>;
-  NOT?: Maybe<EventSubscriptionWhereInput[] | EventSubscriptionWhereInput>;
-}
-
-export interface EventUpdateManyMutationInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  email?: Maybe<String>;
-  website?: Maybe<String>;
-  password?: Maybe<String>;
-  members?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  teams?: Maybe<Int>;
-}
-
-export interface TestersCreateInput {
-  id?: Maybe<ID_Input>;
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-  email?: Maybe<String>;
-  department?: Maybe<String>;
-}
-
-export interface EventLeadCreateInput {
-  id?: Maybe<ID_Input>;
-  firstname: String;
-  lastname: String;
-  event?: Maybe<EventCreateOneWithoutLeadInput>;
-}
-
-export interface StaffUpdateManyMutationInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-  team?: Maybe<String>;
-  isLead?: Maybe<Boolean>;
-  role?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-}
-
-export interface EventCreateOneWithoutLeadInput {
-  create?: Maybe<EventCreateWithoutLeadInput>;
-  connect?: Maybe<EventWhereUniqueInput>;
-}
-
-export interface OrganizationUpdateManyMutationInput {
-  name?: Maybe<String>;
-  website?: Maybe<String>;
-  Teams?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  type?: Maybe<String>;
-  description?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  staffs?: Maybe<Int>;
-}
-
-export interface EventCreateWithoutLeadInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  description?: Maybe<String>;
-  email: String;
-  website?: Maybe<String>;
-  password: String;
-  members?: Maybe<Int>;
-  member?: Maybe<EventMemberCreateManyWithoutEventInput>;
-  leads?: Maybe<Int>;
-  teams?: Maybe<Int>;
-  team?: Maybe<EventTeamCreateManyWithoutEventInput>;
-}
-
-export interface TeamUpdateWithoutLeadDataInput {
-  name?: Maybe<String>;
-  members?: Maybe<Int>;
-  description?: Maybe<String>;
-  department?: Maybe<DepartmentUpdateOneWithoutTeamsInput>;
-  active?: Maybe<Boolean>;
-}
-
-export interface EventLeadUpdateInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-  event?: Maybe<EventUpdateOneWithoutLeadInput>;
-}
-
-export interface GroupWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  members?: Maybe<Int>;
-  members_not?: Maybe<Int>;
-  members_in?: Maybe<Int[] | Int>;
-  members_not_in?: Maybe<Int[] | Int>;
-  members_lt?: Maybe<Int>;
-  members_lte?: Maybe<Int>;
-  members_gt?: Maybe<Int>;
-  members_gte?: Maybe<Int>;
-  member_every?: Maybe<GroupMemberWhereInput>;
-  member_some?: Maybe<GroupMemberWhereInput>;
-  member_none?: Maybe<GroupMemberWhereInput>;
-  email?: Maybe<String>;
-  email_not?: Maybe<String>;
-  email_in?: Maybe<String[] | String>;
-  email_not_in?: Maybe<String[] | String>;
-  email_lt?: Maybe<String>;
-  email_lte?: Maybe<String>;
-  email_gt?: Maybe<String>;
-  email_gte?: Maybe<String>;
-  email_contains?: Maybe<String>;
-  email_not_contains?: Maybe<String>;
-  email_starts_with?: Maybe<String>;
-  email_not_starts_with?: Maybe<String>;
-  email_ends_with?: Maybe<String>;
-  email_not_ends_with?: Maybe<String>;
-  website?: Maybe<String>;
-  website_not?: Maybe<String>;
-  website_in?: Maybe<String[] | String>;
-  website_not_in?: Maybe<String[] | String>;
-  website_lt?: Maybe<String>;
-  website_lte?: Maybe<String>;
-  website_gt?: Maybe<String>;
-  website_gte?: Maybe<String>;
-  website_contains?: Maybe<String>;
-  website_not_contains?: Maybe<String>;
-  website_starts_with?: Maybe<String>;
-  website_not_starts_with?: Maybe<String>;
-  website_ends_with?: Maybe<String>;
-  website_not_ends_with?: Maybe<String>;
-  password?: Maybe<String>;
-  password_not?: Maybe<String>;
-  password_in?: Maybe<String[] | String>;
-  password_not_in?: Maybe<String[] | String>;
-  password_lt?: Maybe<String>;
-  password_lte?: Maybe<String>;
-  password_gt?: Maybe<String>;
-  password_gte?: Maybe<String>;
-  password_contains?: Maybe<String>;
-  password_not_contains?: Maybe<String>;
-  password_starts_with?: Maybe<String>;
-  password_not_starts_with?: Maybe<String>;
-  password_ends_with?: Maybe<String>;
-  password_not_ends_with?: Maybe<String>;
-  teams?: Maybe<Int>;
-  teams_not?: Maybe<Int>;
-  teams_in?: Maybe<Int[] | Int>;
-  teams_not_in?: Maybe<Int[] | Int>;
-  teams_lt?: Maybe<Int>;
-  teams_lte?: Maybe<Int>;
-  teams_gt?: Maybe<Int>;
-  teams_gte?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  leads_not?: Maybe<Int>;
-  leads_in?: Maybe<Int[] | Int>;
-  leads_not_in?: Maybe<Int[] | Int>;
-  leads_lt?: Maybe<Int>;
-  leads_lte?: Maybe<Int>;
-  leads_gt?: Maybe<Int>;
-  leads_gte?: Maybe<Int>;
-  team?: Maybe<TeamWhereInput>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<GroupWhereInput[] | GroupWhereInput>;
-  OR?: Maybe<GroupWhereInput[] | GroupWhereInput>;
-  NOT?: Maybe<GroupWhereInput[] | GroupWhereInput>;
-}
-
-export interface EventUpdateOneWithoutLeadInput {
-  create?: Maybe<EventCreateWithoutLeadInput>;
-  update?: Maybe<EventUpdateWithoutLeadDataInput>;
-  upsert?: Maybe<EventUpsertWithoutLeadInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<EventWhereUniqueInput>;
-}
-
-export interface StaffUpdateWithWhereUniqueWithoutOrganizationInput {
-  where: StaffWhereUniqueInput;
-  data: StaffUpdateWithoutOrganizationDataInput;
-}
-
-export interface EventUpdateWithoutLeadDataInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  email?: Maybe<String>;
-  website?: Maybe<String>;
-  password?: Maybe<String>;
-  members?: Maybe<Int>;
-  member?: Maybe<EventMemberUpdateManyWithoutEventInput>;
-  leads?: Maybe<Int>;
-  teams?: Maybe<Int>;
-  team?: Maybe<EventTeamUpdateManyWithoutEventInput>;
-}
-
-export interface TeamCreateWithoutLeadInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  members?: Maybe<Int>;
-  description?: Maybe<String>;
-  department?: Maybe<DepartmentCreateOneWithoutTeamsInput>;
-  active?: Maybe<Boolean>;
-}
-
-export interface EventUpsertWithoutLeadInput {
-  update: EventUpdateWithoutLeadDataInput;
-  create: EventCreateWithoutLeadInput;
-}
-
-export interface StaffCreateManyWithoutOrganizationInput {
-  create?: Maybe<
-    StaffCreateWithoutOrganizationInput[] | StaffCreateWithoutOrganizationInput
-  >;
-  connect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-}
-
-export interface EventLeadUpdateManyMutationInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-}
-
-export type StaffWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  lastname?: Maybe<String>;
-  email?: Maybe<String>;
-}>;
-
-export interface EventMemberCreateInput {
-  id?: Maybe<ID_Input>;
-  firstname: String;
-  lastname: String;
-  event?: Maybe<EventCreateOneWithoutMemberInput>;
-}
-
-export type TeamWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  name?: Maybe<String>;
-}>;
-
-export interface EventCreateOneWithoutMemberInput {
-  create?: Maybe<EventCreateWithoutMemberInput>;
-  connect?: Maybe<EventWhereUniqueInput>;
-}
-
-export type TestersWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  lastname?: Maybe<String>;
-  email?: Maybe<String>;
-}>;
-
-export interface EventCreateWithoutMemberInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  description?: Maybe<String>;
-  email: String;
-  website?: Maybe<String>;
-  password: String;
-  members?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  lead?: Maybe<EventLeadCreateManyWithoutEventInput>;
-  teams?: Maybe<Int>;
-  team?: Maybe<EventTeamCreateManyWithoutEventInput>;
-}
-
-export interface DepartmentUpsertWithoutTeamsInput {
-  update: DepartmentUpdateWithoutTeamsDataInput;
-  create: DepartmentCreateWithoutTeamsInput;
-}
-
-export interface EventMemberUpdateInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-  event?: Maybe<EventUpdateOneWithoutMemberInput>;
-}
-
-export interface DepartmentCreateInput {
-  id?: Maybe<ID_Input>;
-  leads?: Maybe<Int>;
-  name: String;
-  teams?: Maybe<TeamCreateManyWithoutDepartmentInput>;
-}
-
-export interface EventUpdateOneWithoutMemberInput {
-  create?: Maybe<EventCreateWithoutMemberInput>;
-  update?: Maybe<EventUpdateWithoutMemberDataInput>;
-  upsert?: Maybe<EventUpsertWithoutMemberInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<EventWhereUniqueInput>;
-}
-
-export interface StaffCreateWithoutLeadInput {
-  id?: Maybe<ID_Input>;
-  firstname: String;
-  lastname: String;
-  organization?: Maybe<OrganizationCreateOneWithoutStaffInput>;
-  team?: Maybe<String>;
-  isLead?: Maybe<Boolean>;
-  role?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-}
-
-export interface EventUpdateWithoutMemberDataInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  email?: Maybe<String>;
-  website?: Maybe<String>;
-  password?: Maybe<String>;
-  members?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  lead?: Maybe<EventLeadUpdateManyWithoutEventInput>;
-  teams?: Maybe<Int>;
-  team?: Maybe<EventTeamUpdateManyWithoutEventInput>;
-}
-
-export interface DepartmentUpdateInput {
-  leads?: Maybe<Int>;
-  name?: Maybe<String>;
-  teams?: Maybe<TeamUpdateManyWithoutDepartmentInput>;
-}
-
-export interface EventUpsertWithoutMemberInput {
-  update: EventUpdateWithoutMemberDataInput;
-  create: EventCreateWithoutMemberInput;
-}
-
-export interface StaffUpdateManyWithoutLeadInput {
-  create?: Maybe<StaffCreateWithoutLeadInput[] | StaffCreateWithoutLeadInput>;
-  delete?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-  connect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-  set?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-  disconnect?: Maybe<StaffWhereUniqueInput[] | StaffWhereUniqueInput>;
-  update?: Maybe<
-    | StaffUpdateWithWhereUniqueWithoutLeadInput[]
-    | StaffUpdateWithWhereUniqueWithoutLeadInput
-  >;
-  upsert?: Maybe<
-    | StaffUpsertWithWhereUniqueWithoutLeadInput[]
-    | StaffUpsertWithWhereUniqueWithoutLeadInput
-  >;
-  deleteMany?: Maybe<StaffScalarWhereInput[] | StaffScalarWhereInput>;
-  updateMany?: Maybe<
-    StaffUpdateManyWithWhereNestedInput[] | StaffUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface EventMemberUpdateManyMutationInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-}
-
-export interface OrganizationUpdateWithoutStaffDataInput {
-  name?: Maybe<String>;
-  website?: Maybe<String>;
-  Teams?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  type?: Maybe<String>;
-  description?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  staffs?: Maybe<Int>;
-  department?: Maybe<DepartmentUpdateManyInput>;
-}
-
-export interface EventTeamCreateInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  description: String;
-  event?: Maybe<EventCreateOneWithoutTeamInput>;
-}
-
-export interface GroupSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<GroupWhereInput>;
-  AND?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
-  OR?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
-  NOT?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
-}
-
-export interface EventCreateOneWithoutTeamInput {
-  create?: Maybe<EventCreateWithoutTeamInput>;
-  connect?: Maybe<EventWhereUniqueInput>;
-}
-
-export interface EventMemberSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<EventMemberWhereInput>;
-  AND?: Maybe<
-    EventMemberSubscriptionWhereInput[] | EventMemberSubscriptionWhereInput
-  >;
-  OR?: Maybe<
-    EventMemberSubscriptionWhereInput[] | EventMemberSubscriptionWhereInput
-  >;
-  NOT?: Maybe<
-    EventMemberSubscriptionWhereInput[] | EventMemberSubscriptionWhereInput
-  >;
-}
 
 export interface EventCreateWithoutTeamInput {
   id?: Maybe<ID_Input>;
@@ -3095,12 +3134,10 @@ export interface EventCreateWithoutTeamInput {
   teams?: Maybe<Int>;
 }
 
-export interface TeamUpdateManyMutationInput {
+export type EventTeamWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
   name?: Maybe<String>;
-  members?: Maybe<Int>;
-  description?: Maybe<String>;
-  active?: Maybe<Boolean>;
-}
+}>;
 
 export interface EventTeamUpdateInput {
   name?: Maybe<String>;
@@ -3108,10 +3145,84 @@ export interface EventTeamUpdateInput {
   event?: Maybe<EventUpdateOneWithoutTeamInput>;
 }
 
-export interface StaffUpsertWithWhereUniqueWithoutOrganizationInput {
-  where: StaffWhereUniqueInput;
-  update: StaffUpdateWithoutOrganizationDataInput;
-  create: StaffCreateWithoutOrganizationInput;
+export interface GroupTeamWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  members?: Maybe<Int>;
+  members_not?: Maybe<Int>;
+  members_in?: Maybe<Int[] | Int>;
+  members_not_in?: Maybe<Int[] | Int>;
+  members_lt?: Maybe<Int>;
+  members_lte?: Maybe<Int>;
+  members_gt?: Maybe<Int>;
+  members_gte?: Maybe<Int>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  active?: Maybe<Boolean>;
+  active_not?: Maybe<Boolean>;
+  lead?: Maybe<String>;
+  lead_not?: Maybe<String>;
+  lead_in?: Maybe<String[] | String>;
+  lead_not_in?: Maybe<String[] | String>;
+  lead_lt?: Maybe<String>;
+  lead_lte?: Maybe<String>;
+  lead_gt?: Maybe<String>;
+  lead_gte?: Maybe<String>;
+  lead_contains?: Maybe<String>;
+  lead_not_contains?: Maybe<String>;
+  lead_starts_with?: Maybe<String>;
+  lead_not_starts_with?: Maybe<String>;
+  lead_ends_with?: Maybe<String>;
+  lead_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<GroupTeamWhereInput[] | GroupTeamWhereInput>;
+  OR?: Maybe<GroupTeamWhereInput[] | GroupTeamWhereInput>;
+  NOT?: Maybe<GroupTeamWhereInput[] | GroupTeamWhereInput>;
 }
 
 export interface EventUpdateOneWithoutTeamInput {
@@ -3123,18 +3234,10 @@ export interface EventUpdateOneWithoutTeamInput {
   connect?: Maybe<EventWhereUniqueInput>;
 }
 
-export interface StaffUpdateWithoutOrganizationDataInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-  team?: Maybe<String>;
-  isLead?: Maybe<Boolean>;
-  lead?: Maybe<TeamUpdateOneWithoutLeadInput>;
-  role?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-}
+export type GroupMemberWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  lastname?: Maybe<ID_Input>;
+}>;
 
 export interface EventUpdateWithoutTeamDataInput {
   name?: Maybe<String>;
@@ -3149,18 +3252,9 @@ export interface EventUpdateWithoutTeamDataInput {
   teams?: Maybe<Int>;
 }
 
-export interface StaffCreateWithoutOrganizationInput {
-  id?: Maybe<ID_Input>;
-  firstname: String;
-  lastname: String;
-  team?: Maybe<String>;
-  isLead?: Maybe<Boolean>;
-  lead?: Maybe<TeamCreateOneWithoutLeadInput>;
-  role?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
+export interface DepartmentCreateOneWithoutTeamsInput {
+  create?: Maybe<DepartmentCreateWithoutTeamsInput>;
+  connect?: Maybe<DepartmentWhereUniqueInput>;
 }
 
 export interface EventUpsertWithoutTeamInput {
@@ -3168,13 +3262,12 @@ export interface EventUpsertWithoutTeamInput {
   create: EventCreateWithoutTeamInput;
 }
 
-export interface GroupUpdateOneWithoutMemberInput {
-  create?: Maybe<GroupCreateWithoutMemberInput>;
-  update?: Maybe<GroupUpdateWithoutMemberDataInput>;
-  upsert?: Maybe<GroupUpsertWithoutMemberInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<GroupWhereUniqueInput>;
+export interface GroupTeamUpdateManyMutationInput {
+  name?: Maybe<String>;
+  members?: Maybe<Int>;
+  description?: Maybe<String>;
+  active?: Maybe<Boolean>;
+  lead?: Maybe<String>;
 }
 
 export interface EventTeamUpdateManyMutationInput {
@@ -3268,8 +3361,8 @@ export interface GroupCreateInput {
   website?: Maybe<String>;
   password: String;
   teams?: Maybe<Int>;
+  team?: Maybe<GroupTeamCreateOneInput>;
   leads?: Maybe<Int>;
-  team?: Maybe<TeamCreateOneInput>;
 }
 
 export interface TeamCreateWithoutDepartmentInput {
@@ -3299,75 +3392,128 @@ export interface GroupMemberCreateWithoutGroupInput {
   lastname: ID_Input;
   password: String;
   team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
 }
 
-export interface StaffSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<StaffWhereInput>;
-  AND?: Maybe<StaffSubscriptionWhereInput[] | StaffSubscriptionWhereInput>;
-  OR?: Maybe<StaffSubscriptionWhereInput[] | StaffSubscriptionWhereInput>;
-  NOT?: Maybe<StaffSubscriptionWhereInput[] | StaffSubscriptionWhereInput>;
-}
-
-export interface TeamCreateOneInput {
-  create?: Maybe<TeamCreateInput>;
-  connect?: Maybe<TeamWhereUniqueInput>;
-}
-
-export interface TestersUpdateManyMutationInput {
+export interface EventLeadWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
   firstname?: Maybe<String>;
+  firstname_not?: Maybe<String>;
+  firstname_in?: Maybe<String[] | String>;
+  firstname_not_in?: Maybe<String[] | String>;
+  firstname_lt?: Maybe<String>;
+  firstname_lte?: Maybe<String>;
+  firstname_gt?: Maybe<String>;
+  firstname_gte?: Maybe<String>;
+  firstname_contains?: Maybe<String>;
+  firstname_not_contains?: Maybe<String>;
+  firstname_starts_with?: Maybe<String>;
+  firstname_not_starts_with?: Maybe<String>;
+  firstname_ends_with?: Maybe<String>;
+  firstname_not_ends_with?: Maybe<String>;
   lastname?: Maybe<String>;
-  email?: Maybe<String>;
-  department?: Maybe<String>;
+  lastname_not?: Maybe<String>;
+  lastname_in?: Maybe<String[] | String>;
+  lastname_not_in?: Maybe<String[] | String>;
+  lastname_lt?: Maybe<String>;
+  lastname_lte?: Maybe<String>;
+  lastname_gt?: Maybe<String>;
+  lastname_gte?: Maybe<String>;
+  lastname_contains?: Maybe<String>;
+  lastname_not_contains?: Maybe<String>;
+  lastname_starts_with?: Maybe<String>;
+  lastname_not_starts_with?: Maybe<String>;
+  lastname_ends_with?: Maybe<String>;
+  lastname_not_ends_with?: Maybe<String>;
+  event?: Maybe<EventWhereInput>;
+  AND?: Maybe<EventLeadWhereInput[] | EventLeadWhereInput>;
+  OR?: Maybe<EventLeadWhereInput[] | EventLeadWhereInput>;
+  NOT?: Maybe<EventLeadWhereInput[] | EventLeadWhereInput>;
 }
 
-export interface TeamCreateInput {
+export interface GroupTeamCreateOneInput {
+  create?: Maybe<GroupTeamCreateInput>;
+  connect?: Maybe<GroupTeamWhereUniqueInput>;
+}
+
+export type EventMemberWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  lastname?: Maybe<String>;
+}>;
+
+export interface GroupTeamCreateInput {
   id?: Maybe<ID_Input>;
   name: String;
   members?: Maybe<Int>;
   description?: Maybe<String>;
-  department?: Maybe<DepartmentCreateOneWithoutTeamsInput>;
   active?: Maybe<Boolean>;
-  lead?: Maybe<StaffCreateManyWithoutLeadInput>;
+  lead?: Maybe<String>;
 }
 
-export interface TeamUpdateOneWithoutLeadInput {
-  create?: Maybe<TeamCreateWithoutLeadInput>;
-  update?: Maybe<TeamUpdateWithoutLeadDataInput>;
-  upsert?: Maybe<TeamUpsertWithoutLeadInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<TeamWhereUniqueInput>;
-}
-
-export interface DepartmentCreateOneWithoutTeamsInput {
-  create?: Maybe<DepartmentCreateWithoutTeamsInput>;
-  connect?: Maybe<DepartmentWhereUniqueInput>;
-}
-
-export interface GroupMemberUpdateManyMutationInput {
-  firstname?: Maybe<ID_Input>;
-  lastname?: Maybe<ID_Input>;
-  password?: Maybe<String>;
-  team?: Maybe<String>;
-}
-
-export interface DepartmentCreateWithoutTeamsInput {
+export interface DepartmentWhereInput {
   id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
   leads?: Maybe<Int>;
-  name: String;
-}
-
-export interface DepartmentUpdateOneWithoutTeamsInput {
-  create?: Maybe<DepartmentCreateWithoutTeamsInput>;
-  update?: Maybe<DepartmentUpdateWithoutTeamsDataInput>;
-  upsert?: Maybe<DepartmentUpsertWithoutTeamsInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<DepartmentWhereUniqueInput>;
+  leads_not?: Maybe<Int>;
+  leads_in?: Maybe<Int[] | Int>;
+  leads_not_in?: Maybe<Int[] | Int>;
+  leads_lt?: Maybe<Int>;
+  leads_lte?: Maybe<Int>;
+  leads_gt?: Maybe<Int>;
+  leads_gte?: Maybe<Int>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  teams_every?: Maybe<TeamWhereInput>;
+  teams_some?: Maybe<TeamWhereInput>;
+  teams_none?: Maybe<TeamWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<DepartmentWhereInput[] | DepartmentWhereInput>;
+  OR?: Maybe<DepartmentWhereInput[] | DepartmentWhereInput>;
+  NOT?: Maybe<DepartmentWhereInput[] | DepartmentWhereInput>;
 }
 
 export interface GroupUpdateInput {
@@ -3379,39 +3525,22 @@ export interface GroupUpdateInput {
   website?: Maybe<String>;
   password?: Maybe<String>;
   teams?: Maybe<Int>;
+  team?: Maybe<GroupTeamUpdateOneInput>;
   leads?: Maybe<Int>;
-  team?: Maybe<TeamUpdateOneInput>;
 }
 
-export interface StaffUpdateWithoutLeadDataInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-  organization?: Maybe<OrganizationUpdateOneWithoutStaffInput>;
+export interface StaffCreateWithoutOrganizationInput {
+  id?: Maybe<ID_Input>;
+  firstname: String;
+  lastname: String;
   team?: Maybe<String>;
   isLead?: Maybe<Boolean>;
+  lead?: Maybe<TeamCreateOneWithoutLeadInput>;
   role?: Maybe<String>;
   country?: Maybe<String>;
   state?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
-}
-
-export interface GroupMemberUpsertWithWhereUniqueWithoutGroupInput {
-  where: GroupMemberWhereUniqueInput;
-  update: GroupMemberUpdateWithoutGroupDataInput;
-  create: GroupMemberCreateWithoutGroupInput;
-}
-
-export interface GroupMemberUpdateWithoutGroupDataInput {
-  firstname?: Maybe<ID_Input>;
-  lastname?: Maybe<ID_Input>;
-  password?: Maybe<String>;
-  team?: Maybe<String>;
-}
-
-export interface GroupMemberUpdateWithWhereUniqueWithoutGroupInput {
-  where: GroupMemberWhereUniqueInput;
-  data: GroupMemberUpdateWithoutGroupDataInput;
 }
 
 export interface GroupMemberUpdateManyWithoutGroupInput {
@@ -3441,7 +3570,38 @@ export interface GroupMemberUpdateManyWithoutGroupInput {
   >;
 }
 
-export interface EventTeamWhereInput {
+export interface GroupMemberCreateInput {
+  id?: Maybe<ID_Input>;
+  firstname: ID_Input;
+  lastname: ID_Input;
+  password: String;
+  team?: Maybe<String>;
+  group?: Maybe<GroupCreateOneWithoutMemberInput>;
+  isLead?: Maybe<Boolean>;
+}
+
+export interface GroupMemberUpdateWithWhereUniqueWithoutGroupInput {
+  where: GroupMemberWhereUniqueInput;
+  data: GroupMemberUpdateWithoutGroupDataInput;
+}
+
+export interface TestersSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<TestersWhereInput>;
+  AND?: Maybe<TestersSubscriptionWhereInput[] | TestersSubscriptionWhereInput>;
+  OR?: Maybe<TestersSubscriptionWhereInput[] | TestersSubscriptionWhereInput>;
+  NOT?: Maybe<TestersSubscriptionWhereInput[] | TestersSubscriptionWhereInput>;
+}
+
+export interface GroupMemberUpdateManyWithWhereNestedInput {
+  where: GroupMemberScalarWhereInput;
+  data: GroupMemberUpdateManyDataInput;
+}
+
+export interface GroupMemberScalarWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -3456,46 +3616,98 @@ export interface EventTeamWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  event?: Maybe<EventWhereInput>;
-  AND?: Maybe<EventTeamWhereInput[] | EventTeamWhereInput>;
-  OR?: Maybe<EventTeamWhereInput[] | EventTeamWhereInput>;
-  NOT?: Maybe<EventTeamWhereInput[] | EventTeamWhereInput>;
+  firstname?: Maybe<ID_Input>;
+  firstname_not?: Maybe<ID_Input>;
+  firstname_in?: Maybe<ID_Input[] | ID_Input>;
+  firstname_not_in?: Maybe<ID_Input[] | ID_Input>;
+  firstname_lt?: Maybe<ID_Input>;
+  firstname_lte?: Maybe<ID_Input>;
+  firstname_gt?: Maybe<ID_Input>;
+  firstname_gte?: Maybe<ID_Input>;
+  firstname_contains?: Maybe<ID_Input>;
+  firstname_not_contains?: Maybe<ID_Input>;
+  firstname_starts_with?: Maybe<ID_Input>;
+  firstname_not_starts_with?: Maybe<ID_Input>;
+  firstname_ends_with?: Maybe<ID_Input>;
+  firstname_not_ends_with?: Maybe<ID_Input>;
+  lastname?: Maybe<ID_Input>;
+  lastname_not?: Maybe<ID_Input>;
+  lastname_in?: Maybe<ID_Input[] | ID_Input>;
+  lastname_not_in?: Maybe<ID_Input[] | ID_Input>;
+  lastname_lt?: Maybe<ID_Input>;
+  lastname_lte?: Maybe<ID_Input>;
+  lastname_gt?: Maybe<ID_Input>;
+  lastname_gte?: Maybe<ID_Input>;
+  lastname_contains?: Maybe<ID_Input>;
+  lastname_not_contains?: Maybe<ID_Input>;
+  lastname_starts_with?: Maybe<ID_Input>;
+  lastname_not_starts_with?: Maybe<ID_Input>;
+  lastname_ends_with?: Maybe<ID_Input>;
+  lastname_not_ends_with?: Maybe<ID_Input>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
+  team?: Maybe<String>;
+  team_not?: Maybe<String>;
+  team_in?: Maybe<String[] | String>;
+  team_not_in?: Maybe<String[] | String>;
+  team_lt?: Maybe<String>;
+  team_lte?: Maybe<String>;
+  team_gt?: Maybe<String>;
+  team_gte?: Maybe<String>;
+  team_contains?: Maybe<String>;
+  team_not_contains?: Maybe<String>;
+  team_starts_with?: Maybe<String>;
+  team_not_starts_with?: Maybe<String>;
+  team_ends_with?: Maybe<String>;
+  team_not_ends_with?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+  isLead_not?: Maybe<Boolean>;
+  AND?: Maybe<GroupMemberScalarWhereInput[] | GroupMemberScalarWhereInput>;
+  OR?: Maybe<GroupMemberScalarWhereInput[] | GroupMemberScalarWhereInput>;
+  NOT?: Maybe<GroupMemberScalarWhereInput[] | GroupMemberScalarWhereInput>;
+}
+
+export interface GroupMemberUpsertWithWhereUniqueWithoutGroupInput {
+  where: GroupMemberWhereUniqueInput;
+  update: GroupMemberUpdateWithoutGroupDataInput;
+  create: GroupMemberCreateWithoutGroupInput;
+}
+
+export interface GroupMemberUpdateWithoutGroupDataInput {
+  firstname?: Maybe<ID_Input>;
+  lastname?: Maybe<ID_Input>;
+  password?: Maybe<String>;
+  team?: Maybe<String>;
+  isLead?: Maybe<Boolean>;
+}
+
+export interface EventLeadSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<EventLeadWhereInput>;
+  AND?: Maybe<
+    EventLeadSubscriptionWhereInput[] | EventLeadSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    EventLeadSubscriptionWhereInput[] | EventLeadSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    EventLeadSubscriptionWhereInput[] | EventLeadSubscriptionWhereInput
+  >;
 }
 
 export interface OrganizationCreateWithoutStaffInput {
@@ -3514,40 +3726,21 @@ export interface OrganizationCreateWithoutStaffInput {
   department?: Maybe<DepartmentCreateManyInput>;
 }
 
-export interface GroupCreateOneWithoutMemberInput {
-  create?: Maybe<GroupCreateWithoutMemberInput>;
-  connect?: Maybe<GroupWhereUniqueInput>;
+export interface GroupUpsertWithoutMemberInput {
+  update: GroupUpdateWithoutMemberDataInput;
+  create: GroupCreateWithoutMemberInput;
 }
 
-export interface OrganizationUpdateInput {
+export type GroupTeamWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
   name?: Maybe<String>;
-  website?: Maybe<String>;
-  Teams?: Maybe<Int>;
-  leads?: Maybe<Int>;
-  type?: Maybe<String>;
-  description?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  staffs?: Maybe<Int>;
-  staff?: Maybe<StaffUpdateManyWithoutOrganizationInput>;
-  department?: Maybe<DepartmentUpdateManyInput>;
-}
+}>;
 
-export interface StaffUpdateInput {
-  firstname?: Maybe<String>;
-  lastname?: Maybe<String>;
-  organization?: Maybe<OrganizationUpdateOneWithoutStaffInput>;
-  team?: Maybe<String>;
-  isLead?: Maybe<Boolean>;
-  lead?: Maybe<TeamUpdateOneWithoutLeadInput>;
-  role?: Maybe<String>;
-  country?: Maybe<String>;
-  state?: Maybe<String>;
+export type GroupWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<String>;
   email?: Maybe<String>;
-  password?: Maybe<String>;
-}
+}>;
 
 export interface NodeNode {
   id: ID_Output;
@@ -3581,102 +3774,22 @@ export interface TestersPreviousValuesSubscription
   department: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateEvent {
-  count: Int;
-}
-
-export interface AggregateEventPromise
-  extends Promise<AggregateEvent>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateEventSubscription
-  extends Promise<AsyncIterator<AggregateEvent>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface Staff {
-  id: ID_Output;
-  firstname: String;
-  lastname: String;
-  team?: String;
-  isLead?: Boolean;
-  role?: String;
-  country?: String;
-  state?: String;
-  email?: String;
-  password?: String;
-  joinedAt: DateTimeOutput;
-}
-
-export interface StaffPromise extends Promise<Staff>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstname: () => Promise<String>;
-  lastname: () => Promise<String>;
-  organization: <T = OrganizationPromise>() => T;
-  team: () => Promise<String>;
-  isLead: () => Promise<Boolean>;
-  lead: <T = TeamPromise>() => T;
-  role: () => Promise<String>;
-  country: () => Promise<String>;
-  state: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  joinedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface StaffSubscription
-  extends Promise<AsyncIterator<Staff>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  firstname: () => Promise<AsyncIterator<String>>;
-  lastname: () => Promise<AsyncIterator<String>>;
-  organization: <T = OrganizationSubscription>() => T;
-  team: () => Promise<AsyncIterator<String>>;
-  isLead: () => Promise<AsyncIterator<Boolean>>;
-  lead: <T = TeamSubscription>() => T;
-  role: () => Promise<AsyncIterator<String>>;
-  country: () => Promise<AsyncIterator<String>>;
-  state: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  joinedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface StaffNullablePromise
-  extends Promise<Staff | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstname: () => Promise<String>;
-  lastname: () => Promise<String>;
-  organization: <T = OrganizationPromise>() => T;
-  team: () => Promise<String>;
-  isLead: () => Promise<Boolean>;
-  lead: <T = TeamPromise>() => T;
-  role: () => Promise<String>;
-  country: () => Promise<String>;
-  state: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  joinedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface EventEdge {
-  node: Event;
+export interface EventLeadEdge {
+  node: EventLead;
   cursor: String;
 }
 
-export interface EventEdgePromise extends Promise<EventEdge>, Fragmentable {
-  node: <T = EventPromise>() => T;
+export interface EventLeadEdgePromise
+  extends Promise<EventLeadEdge>,
+    Fragmentable {
+  node: <T = EventLeadPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface EventEdgeSubscription
-  extends Promise<AsyncIterator<EventEdge>>,
+export interface EventLeadEdgeSubscription
+  extends Promise<AsyncIterator<EventLeadEdge>>,
     Fragmentable {
-  node: <T = EventSubscription>() => T;
+  node: <T = EventLeadSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
@@ -3804,25 +3917,107 @@ export interface OrganizationNullablePromise
   }) => T;
 }
 
-export interface EventConnection {
+export interface EventLeadConnection {
   pageInfo: PageInfo;
-  edges: EventEdge[];
+  edges: EventLeadEdge[];
 }
 
-export interface EventConnectionPromise
-  extends Promise<EventConnection>,
+export interface EventLeadConnectionPromise
+  extends Promise<EventLeadConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<EventEdge>>() => T;
-  aggregate: <T = AggregateEventPromise>() => T;
+  edges: <T = FragmentableArray<EventLeadEdge>>() => T;
+  aggregate: <T = AggregateEventLeadPromise>() => T;
 }
 
-export interface EventConnectionSubscription
-  extends Promise<AsyncIterator<EventConnection>>,
+export interface EventLeadConnectionSubscription
+  extends Promise<AsyncIterator<EventLeadConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<EventEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateEventSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<EventLeadEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateEventLeadSubscription>() => T;
+}
+
+export interface Staff {
+  id: ID_Output;
+  firstname: String;
+  lastname: String;
+  team?: String;
+  isLead?: Boolean;
+  role?: String;
+  country?: String;
+  state?: String;
+  email?: String;
+  password?: String;
+  joinedAt: DateTimeOutput;
+}
+
+export interface StaffPromise extends Promise<Staff>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  firstname: () => Promise<String>;
+  lastname: () => Promise<String>;
+  organization: <T = OrganizationPromise>() => T;
+  team: () => Promise<String>;
+  isLead: () => Promise<Boolean>;
+  lead: <T = TeamPromise>() => T;
+  role: () => Promise<String>;
+  country: () => Promise<String>;
+  state: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  joinedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface StaffSubscription
+  extends Promise<AsyncIterator<Staff>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  firstname: () => Promise<AsyncIterator<String>>;
+  lastname: () => Promise<AsyncIterator<String>>;
+  organization: <T = OrganizationSubscription>() => T;
+  team: () => Promise<AsyncIterator<String>>;
+  isLead: () => Promise<AsyncIterator<Boolean>>;
+  lead: <T = TeamSubscription>() => T;
+  role: () => Promise<AsyncIterator<String>>;
+  country: () => Promise<AsyncIterator<String>>;
+  state: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  joinedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface StaffNullablePromise
+  extends Promise<Staff | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  firstname: () => Promise<String>;
+  lastname: () => Promise<String>;
+  organization: <T = OrganizationPromise>() => T;
+  team: () => Promise<String>;
+  isLead: () => Promise<Boolean>;
+  lead: <T = TeamPromise>() => T;
+  role: () => Promise<String>;
+  country: () => Promise<String>;
+  state: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  joinedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface AggregateEvent {
+  count: Int;
+}
+
+export interface AggregateEventPromise
+  extends Promise<AggregateEvent>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateEventSubscription
+  extends Promise<AsyncIterator<AggregateEvent>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface AggregateTesters {
@@ -3841,57 +4036,20 @@ export interface AggregateTestersSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface BatchPayload {
-  count: Long;
-}
-
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
-    Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
-}
-
-export interface DepartmentConnection {
-  pageInfo: PageInfo;
-  edges: DepartmentEdge[];
-}
-
-export interface DepartmentConnectionPromise
-  extends Promise<DepartmentConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<DepartmentEdge>>() => T;
-  aggregate: <T = AggregateDepartmentPromise>() => T;
-}
-
-export interface DepartmentConnectionSubscription
-  extends Promise<AsyncIterator<DepartmentConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<DepartmentEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateDepartmentSubscription>() => T;
-}
-
-export interface TestersEdge {
-  node: Testers;
+export interface EventEdge {
+  node: Event;
   cursor: String;
 }
 
-export interface TestersEdgePromise extends Promise<TestersEdge>, Fragmentable {
-  node: <T = TestersPromise>() => T;
+export interface EventEdgePromise extends Promise<EventEdge>, Fragmentable {
+  node: <T = EventPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface TestersEdgeSubscription
-  extends Promise<AsyncIterator<TestersEdge>>,
+export interface EventEdgeSubscription
+  extends Promise<AsyncIterator<EventEdge>>,
     Fragmentable {
-  node: <T = TestersSubscription>() => T;
+  node: <T = EventSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
@@ -3914,6 +4072,46 @@ export interface TestersConnectionSubscription
   pageInfo: <T = PageInfoSubscription>() => T;
   edges: <T = Promise<AsyncIterator<TestersEdgeSubscription>>>() => T;
   aggregate: <T = AggregateTestersSubscription>() => T;
+}
+
+export interface TestersEdge {
+  node: Testers;
+  cursor: String;
+}
+
+export interface TestersEdgePromise extends Promise<TestersEdge>, Fragmentable {
+  node: <T = TestersPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface TestersEdgeSubscription
+  extends Promise<AsyncIterator<TestersEdge>>,
+    Fragmentable {
+  node: <T = TestersSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface Department {
@@ -3975,6 +4173,42 @@ export interface DepartmentNullablePromise
   createdAt: () => Promise<DateTimeOutput>;
 }
 
+export interface Testers {
+  id: ID_Output;
+  firstname?: String;
+  lastname?: String;
+  email?: String;
+  department?: String;
+}
+
+export interface TestersPromise extends Promise<Testers>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  firstname: () => Promise<String>;
+  lastname: () => Promise<String>;
+  email: () => Promise<String>;
+  department: () => Promise<String>;
+}
+
+export interface TestersSubscription
+  extends Promise<AsyncIterator<Testers>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  firstname: () => Promise<AsyncIterator<String>>;
+  lastname: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  department: () => Promise<AsyncIterator<String>>;
+}
+
+export interface TestersNullablePromise
+  extends Promise<Testers | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  firstname: () => Promise<String>;
+  lastname: () => Promise<String>;
+  email: () => Promise<String>;
+  department: () => Promise<String>;
+}
+
 export interface AggregateTeam {
   count: Int;
 }
@@ -3989,37 +4223,6 @@ export interface AggregateTeamSubscription
   extends Promise<AsyncIterator<AggregateTeam>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface TeamPreviousValues {
-  id: ID_Output;
-  name: String;
-  members?: Int;
-  description?: String;
-  active?: Boolean;
-  createdAt: DateTimeOutput;
-}
-
-export interface TeamPreviousValuesPromise
-  extends Promise<TeamPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  members: () => Promise<Int>;
-  description: () => Promise<String>;
-  active: () => Promise<Boolean>;
-  createdAt: () => Promise<DateTimeOutput>;
-}
-
-export interface TeamPreviousValuesSubscription
-  extends Promise<AsyncIterator<TeamPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  members: () => Promise<AsyncIterator<Int>>;
-  description: () => Promise<AsyncIterator<String>>;
-  active: () => Promise<AsyncIterator<Boolean>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface TeamConnection {
@@ -4126,39 +4329,25 @@ export interface AggregateOrganizationSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface EventTeam {
-  id: ID_Output;
-  name: String;
-  description: String;
-  createdAt: DateTimeOutput;
+export interface EventConnection {
+  pageInfo: PageInfo;
+  edges: EventEdge[];
 }
 
-export interface EventTeamPromise extends Promise<EventTeam>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  description: () => Promise<String>;
-  createdAt: () => Promise<DateTimeOutput>;
-  event: <T = EventPromise>() => T;
-}
-
-export interface EventTeamSubscription
-  extends Promise<AsyncIterator<EventTeam>>,
+export interface EventConnectionPromise
+  extends Promise<EventConnection>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  description: () => Promise<AsyncIterator<String>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  event: <T = EventSubscription>() => T;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<EventEdge>>() => T;
+  aggregate: <T = AggregateEventPromise>() => T;
 }
 
-export interface EventTeamNullablePromise
-  extends Promise<EventTeam | null>,
+export interface EventConnectionSubscription
+  extends Promise<AsyncIterator<EventConnection>>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  description: () => Promise<String>;
-  createdAt: () => Promise<DateTimeOutput>;
-  event: <T = EventPromise>() => T;
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<EventEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateEventSubscription>() => T;
 }
 
 export interface OrganizationConnection {
@@ -4207,18 +4396,18 @@ export interface EventSubscriptionPayloadSubscription
   previousValues: <T = EventPreviousValuesSubscription>() => T;
 }
 
-export interface AggregateGroupMember {
+export interface AggregateGroupTeam {
   count: Int;
 }
 
-export interface AggregateGroupMemberPromise
-  extends Promise<AggregateGroupMember>,
+export interface AggregateGroupTeamPromise
+  extends Promise<AggregateGroupTeam>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateGroupMemberSubscription
-  extends Promise<AsyncIterator<AggregateGroupMember>>,
+export interface AggregateGroupTeamSubscription
+  extends Promise<AsyncIterator<AggregateGroupTeam>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -4266,25 +4455,25 @@ export interface EventPreviousValuesSubscription
   teams: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface GroupMemberConnection {
+export interface GroupTeamConnection {
   pageInfo: PageInfo;
-  edges: GroupMemberEdge[];
+  edges: GroupTeamEdge[];
 }
 
-export interface GroupMemberConnectionPromise
-  extends Promise<GroupMemberConnection>,
+export interface GroupTeamConnectionPromise
+  extends Promise<GroupTeamConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<GroupMemberEdge>>() => T;
-  aggregate: <T = AggregateGroupMemberPromise>() => T;
+  edges: <T = FragmentableArray<GroupTeamEdge>>() => T;
+  aggregate: <T = AggregateGroupTeamPromise>() => T;
 }
 
-export interface GroupMemberConnectionSubscription
-  extends Promise<AsyncIterator<GroupMemberConnection>>,
+export interface GroupTeamConnectionSubscription
+  extends Promise<AsyncIterator<GroupTeamConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<GroupMemberEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateGroupMemberSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<GroupTeamEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateGroupTeamSubscription>() => T;
 }
 
 export interface TeamSubscriptionPayload {
@@ -4312,20 +4501,22 @@ export interface TeamSubscriptionPayloadSubscription
   previousValues: <T = TeamPreviousValuesSubscription>() => T;
 }
 
-export interface GroupEdge {
-  node: Group;
+export interface GroupMemberEdge {
+  node: GroupMember;
   cursor: String;
 }
 
-export interface GroupEdgePromise extends Promise<GroupEdge>, Fragmentable {
-  node: <T = GroupPromise>() => T;
+export interface GroupMemberEdgePromise
+  extends Promise<GroupMemberEdge>,
+    Fragmentable {
+  node: <T = GroupMemberPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface GroupEdgeSubscription
-  extends Promise<AsyncIterator<GroupEdge>>,
+export interface GroupMemberEdgeSubscription
+  extends Promise<AsyncIterator<GroupMemberEdge>>,
     Fragmentable {
-  node: <T = GroupSubscription>() => T;
+  node: <T = GroupMemberSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
@@ -4354,43 +4545,20 @@ export interface EventLeadSubscriptionPayloadSubscription
   previousValues: <T = EventLeadPreviousValuesSubscription>() => T;
 }
 
-export interface GroupMember {
-  id: ID_Output;
-  firstname: ID_Output;
-  lastname: ID_Output;
-  password: String;
-  team?: String;
+export interface AggregateGroup {
+  count: Int;
 }
 
-export interface GroupMemberPromise extends Promise<GroupMember>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstname: () => Promise<ID_Output>;
-  lastname: () => Promise<ID_Output>;
-  password: () => Promise<String>;
-  team: () => Promise<String>;
-  group: <T = GroupPromise>() => T;
-}
-
-export interface GroupMemberSubscription
-  extends Promise<AsyncIterator<GroupMember>>,
+export interface AggregateGroupPromise
+  extends Promise<AggregateGroup>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  firstname: () => Promise<AsyncIterator<ID_Output>>;
-  lastname: () => Promise<AsyncIterator<ID_Output>>;
-  password: () => Promise<AsyncIterator<String>>;
-  team: () => Promise<AsyncIterator<String>>;
-  group: <T = GroupSubscription>() => T;
+  count: () => Promise<Int>;
 }
 
-export interface GroupMemberNullablePromise
-  extends Promise<GroupMember | null>,
+export interface AggregateGroupSubscription
+  extends Promise<AsyncIterator<AggregateGroup>>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstname: () => Promise<ID_Output>;
-  lastname: () => Promise<ID_Output>;
-  password: () => Promise<String>;
-  team: () => Promise<String>;
-  group: <T = GroupPromise>() => T;
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface EventLeadPreviousValues {
@@ -4415,20 +4583,255 @@ export interface EventLeadPreviousValuesSubscription
   lastname: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateEventTeam {
-  count: Int;
+export interface GroupConnection {
+  pageInfo: PageInfo;
+  edges: GroupEdge[];
 }
 
-export interface AggregateEventTeamPromise
-  extends Promise<AggregateEventTeam>,
+export interface GroupConnectionPromise
+  extends Promise<GroupConnection>,
     Fragmentable {
-  count: () => Promise<Int>;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<GroupEdge>>() => T;
+  aggregate: <T = AggregateGroupPromise>() => T;
 }
 
-export interface AggregateEventTeamSubscription
-  extends Promise<AsyncIterator<AggregateEventTeam>>,
+export interface GroupConnectionSubscription
+  extends Promise<AsyncIterator<GroupConnection>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<GroupEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateGroupSubscription>() => T;
+}
+
+export interface EventTeam {
+  id: ID_Output;
+  name: String;
+  description: String;
+  createdAt: DateTimeOutput;
+}
+
+export interface EventTeamPromise extends Promise<EventTeam>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  event: <T = EventPromise>() => T;
+}
+
+export interface EventTeamSubscription
+  extends Promise<AsyncIterator<EventTeam>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  event: <T = EventSubscription>() => T;
+}
+
+export interface EventTeamNullablePromise
+  extends Promise<EventTeam | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  event: <T = EventPromise>() => T;
+}
+
+export interface GroupMember {
+  id: ID_Output;
+  firstname: ID_Output;
+  lastname: ID_Output;
+  password: String;
+  team?: String;
+  isLead?: Boolean;
+}
+
+export interface GroupMemberPromise extends Promise<GroupMember>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  firstname: () => Promise<ID_Output>;
+  lastname: () => Promise<ID_Output>;
+  password: () => Promise<String>;
+  team: () => Promise<String>;
+  group: <T = GroupPromise>() => T;
+  isLead: () => Promise<Boolean>;
+}
+
+export interface GroupMemberSubscription
+  extends Promise<AsyncIterator<GroupMember>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  firstname: () => Promise<AsyncIterator<ID_Output>>;
+  lastname: () => Promise<AsyncIterator<ID_Output>>;
+  password: () => Promise<AsyncIterator<String>>;
+  team: () => Promise<AsyncIterator<String>>;
+  group: <T = GroupSubscription>() => T;
+  isLead: () => Promise<AsyncIterator<Boolean>>;
+}
+
+export interface GroupMemberNullablePromise
+  extends Promise<GroupMember | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  firstname: () => Promise<ID_Output>;
+  lastname: () => Promise<ID_Output>;
+  password: () => Promise<String>;
+  team: () => Promise<String>;
+  group: <T = GroupPromise>() => T;
+  isLead: () => Promise<Boolean>;
+}
+
+export interface EventMemberSubscriptionPayload {
+  mutation: MutationType;
+  node: EventMember;
+  updatedFields: String[];
+  previousValues: EventMemberPreviousValues;
+}
+
+export interface EventMemberSubscriptionPayloadPromise
+  extends Promise<EventMemberSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = EventMemberPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = EventMemberPreviousValuesPromise>() => T;
+}
+
+export interface EventMemberSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<EventMemberSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = EventMemberSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = EventMemberPreviousValuesSubscription>() => T;
+}
+
+export interface Group {
+  id: ID_Output;
+  name: String;
+  description?: String;
+  members?: Int;
+  email: String;
+  website?: String;
+  password: String;
+  teams?: Int;
+  leads?: Int;
+  createdAt: DateTimeOutput;
+}
+
+export interface GroupPromise extends Promise<Group>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  members: () => Promise<Int>;
+  member: <T = FragmentableArray<GroupMember>>(args?: {
+    where?: GroupMemberWhereInput;
+    orderBy?: GroupMemberOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  email: () => Promise<String>;
+  website: () => Promise<String>;
+  password: () => Promise<String>;
+  teams: () => Promise<Int>;
+  team: <T = GroupTeamPromise>() => T;
+  leads: () => Promise<Int>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface GroupSubscription
+  extends Promise<AsyncIterator<Group>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  members: () => Promise<AsyncIterator<Int>>;
+  member: <T = Promise<AsyncIterator<GroupMemberSubscription>>>(args?: {
+    where?: GroupMemberWhereInput;
+    orderBy?: GroupMemberOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  email: () => Promise<AsyncIterator<String>>;
+  website: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  teams: () => Promise<AsyncIterator<Int>>;
+  team: <T = GroupTeamSubscription>() => T;
+  leads: () => Promise<AsyncIterator<Int>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface GroupNullablePromise
+  extends Promise<Group | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  members: () => Promise<Int>;
+  member: <T = FragmentableArray<GroupMember>>(args?: {
+    where?: GroupMemberWhereInput;
+    orderBy?: GroupMemberOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  email: () => Promise<String>;
+  website: () => Promise<String>;
+  password: () => Promise<String>;
+  teams: () => Promise<Int>;
+  team: <T = GroupTeamPromise>() => T;
+  leads: () => Promise<Int>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface EventMemberPreviousValues {
+  id: ID_Output;
+  firstname: String;
+  lastname: String;
+}
+
+export interface EventMemberPreviousValuesPromise
+  extends Promise<EventMemberPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  firstname: () => Promise<String>;
+  lastname: () => Promise<String>;
+}
+
+export interface EventMemberPreviousValuesSubscription
+  extends Promise<AsyncIterator<EventMemberPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  firstname: () => Promise<AsyncIterator<String>>;
+  lastname: () => Promise<AsyncIterator<String>>;
+}
+
+export interface EventTeamEdge {
+  node: EventTeam;
+  cursor: String;
+}
+
+export interface EventTeamEdgePromise
+  extends Promise<EventTeamEdge>,
+    Fragmentable {
+  node: <T = EventTeamPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface EventTeamEdgeSubscription
+  extends Promise<AsyncIterator<EventTeamEdge>>,
+    Fragmentable {
+  node: <T = EventTeamSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface EventLead {
@@ -4462,107 +4865,122 @@ export interface EventLeadNullablePromise
   event: <T = EventPromise>() => T;
 }
 
-export interface EventTeamConnection {
-  pageInfo: PageInfo;
-  edges: EventTeamEdge[];
-}
-
-export interface EventTeamConnectionPromise
-  extends Promise<EventTeamConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<EventTeamEdge>>() => T;
-  aggregate: <T = AggregateEventTeamPromise>() => T;
-}
-
-export interface EventTeamConnectionSubscription
-  extends Promise<AsyncIterator<EventTeamConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<EventTeamEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateEventTeamSubscription>() => T;
-}
-
-export interface EventMemberSubscriptionPayload {
-  mutation: MutationType;
-  node: EventMember;
-  updatedFields: String[];
-  previousValues: EventMemberPreviousValues;
-}
-
-export interface EventMemberSubscriptionPayloadPromise
-  extends Promise<EventMemberSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = EventMemberPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = EventMemberPreviousValuesPromise>() => T;
-}
-
-export interface EventMemberSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<EventMemberSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = EventMemberSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = EventMemberPreviousValuesSubscription>() => T;
-}
-
-export interface EventMemberEdge {
-  node: EventMember;
-  cursor: String;
-}
-
-export interface EventMemberEdgePromise
-  extends Promise<EventMemberEdge>,
-    Fragmentable {
-  node: <T = EventMemberPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface EventMemberEdgeSubscription
-  extends Promise<AsyncIterator<EventMemberEdge>>,
-    Fragmentable {
-  node: <T = EventMemberSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface EventMemberPreviousValues {
-  id: ID_Output;
-  firstname: String;
-  lastname: String;
-}
-
-export interface EventMemberPreviousValuesPromise
-  extends Promise<EventMemberPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstname: () => Promise<String>;
-  lastname: () => Promise<String>;
-}
-
-export interface EventMemberPreviousValuesSubscription
-  extends Promise<AsyncIterator<EventMemberPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  firstname: () => Promise<AsyncIterator<String>>;
-  lastname: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregateEventLead {
+export interface AggregateEventMember {
   count: Int;
 }
 
-export interface AggregateEventLeadPromise
-  extends Promise<AggregateEventLead>,
+export interface AggregateEventMemberPromise
+  extends Promise<AggregateEventMember>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateEventLeadSubscription
-  extends Promise<AsyncIterator<AggregateEventLead>>,
+export interface AggregateEventMemberSubscription
+  extends Promise<AsyncIterator<AggregateEventMember>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface EventTeamSubscriptionPayload {
+  mutation: MutationType;
+  node: EventTeam;
+  updatedFields: String[];
+  previousValues: EventTeamPreviousValues;
+}
+
+export interface EventTeamSubscriptionPayloadPromise
+  extends Promise<EventTeamSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = EventTeamPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = EventTeamPreviousValuesPromise>() => T;
+}
+
+export interface EventTeamSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<EventTeamSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = EventTeamSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = EventTeamPreviousValuesSubscription>() => T;
+}
+
+export interface EventMemberConnection {
+  pageInfo: PageInfo;
+  edges: EventMemberEdge[];
+}
+
+export interface EventMemberConnectionPromise
+  extends Promise<EventMemberConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<EventMemberEdge>>() => T;
+  aggregate: <T = AggregateEventMemberPromise>() => T;
+}
+
+export interface EventMemberConnectionSubscription
+  extends Promise<AsyncIterator<EventMemberConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<EventMemberEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateEventMemberSubscription>() => T;
+}
+
+export interface EventTeamPreviousValues {
+  id: ID_Output;
+  name: String;
+  description: String;
+  createdAt: DateTimeOutput;
+}
+
+export interface EventTeamPreviousValuesPromise
+  extends Promise<EventTeamPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface EventTeamPreviousValuesSubscription
+  extends Promise<AsyncIterator<EventTeamPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface TeamPreviousValues {
+  id: ID_Output;
+  name: String;
+  members?: Int;
+  description?: String;
+  active?: Boolean;
+  createdAt: DateTimeOutput;
+}
+
+export interface TeamPreviousValuesPromise
+  extends Promise<TeamPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  members: () => Promise<Int>;
+  description: () => Promise<String>;
+  active: () => Promise<Boolean>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface TeamPreviousValuesSubscription
+  extends Promise<AsyncIterator<TeamPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  members: () => Promise<AsyncIterator<Int>>;
+  description: () => Promise<AsyncIterator<String>>;
+  active: () => Promise<AsyncIterator<Boolean>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface EventMember {
@@ -4596,127 +5014,315 @@ export interface EventMemberNullablePromise
   event: <T = EventPromise>() => T;
 }
 
-export interface EventLeadConnection {
-  pageInfo: PageInfo;
-  edges: EventLeadEdge[];
+export interface TeamEdge {
+  node: Team;
+  cursor: String;
 }
 
-export interface EventLeadConnectionPromise
-  extends Promise<EventLeadConnection>,
+export interface TeamEdgePromise extends Promise<TeamEdge>, Fragmentable {
+  node: <T = TeamPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface TeamEdgeSubscription
+  extends Promise<AsyncIterator<TeamEdge>>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<EventLeadEdge>>() => T;
-  aggregate: <T = AggregateEventLeadPromise>() => T;
+  node: <T = TeamSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface EventLeadConnectionSubscription
-  extends Promise<AsyncIterator<EventLeadConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<EventLeadEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateEventLeadSubscription>() => T;
-}
-
-export interface EventTeamSubscriptionPayload {
+export interface GroupSubscriptionPayload {
   mutation: MutationType;
-  node: EventTeam;
+  node: Group;
   updatedFields: String[];
-  previousValues: EventTeamPreviousValues;
+  previousValues: GroupPreviousValues;
 }
 
-export interface EventTeamSubscriptionPayloadPromise
-  extends Promise<EventTeamSubscriptionPayload>,
+export interface GroupSubscriptionPayloadPromise
+  extends Promise<GroupSubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = EventTeamPromise>() => T;
+  node: <T = GroupPromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = EventTeamPreviousValuesPromise>() => T;
+  previousValues: <T = GroupPreviousValuesPromise>() => T;
 }
 
-export interface EventTeamSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<EventTeamSubscriptionPayload>>,
+export interface GroupSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<GroupSubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = EventTeamSubscription>() => T;
+  node: <T = GroupSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = EventTeamPreviousValuesSubscription>() => T;
+  previousValues: <T = GroupPreviousValuesSubscription>() => T;
 }
 
-export interface Testers {
-  id: ID_Output;
-  firstname?: String;
-  lastname?: String;
-  email?: String;
-  department?: String;
+export interface StaffConnection {
+  pageInfo: PageInfo;
+  edges: StaffEdge[];
 }
 
-export interface TestersPromise extends Promise<Testers>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstname: () => Promise<String>;
-  lastname: () => Promise<String>;
-  email: () => Promise<String>;
-  department: () => Promise<String>;
-}
-
-export interface TestersSubscription
-  extends Promise<AsyncIterator<Testers>>,
+export interface StaffConnectionPromise
+  extends Promise<StaffConnection>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  firstname: () => Promise<AsyncIterator<String>>;
-  lastname: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  department: () => Promise<AsyncIterator<String>>;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<StaffEdge>>() => T;
+  aggregate: <T = AggregateStaffPromise>() => T;
 }
 
-export interface TestersNullablePromise
-  extends Promise<Testers | null>,
+export interface StaffConnectionSubscription
+  extends Promise<AsyncIterator<StaffConnection>>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstname: () => Promise<String>;
-  lastname: () => Promise<String>;
-  email: () => Promise<String>;
-  department: () => Promise<String>;
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<StaffEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateStaffSubscription>() => T;
 }
 
-export interface EventTeamPreviousValues {
+export interface GroupPreviousValues {
   id: ID_Output;
   name: String;
-  description: String;
+  description?: String;
+  members?: Int;
+  email: String;
+  website?: String;
+  password: String;
+  teams?: Int;
+  leads?: Int;
   createdAt: DateTimeOutput;
 }
 
-export interface EventTeamPreviousValuesPromise
-  extends Promise<EventTeamPreviousValues>,
+export interface GroupPreviousValuesPromise
+  extends Promise<GroupPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
   description: () => Promise<String>;
+  members: () => Promise<Int>;
+  email: () => Promise<String>;
+  website: () => Promise<String>;
+  password: () => Promise<String>;
+  teams: () => Promise<Int>;
+  leads: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
 }
 
-export interface EventTeamPreviousValuesSubscription
-  extends Promise<AsyncIterator<EventTeamPreviousValues>>,
+export interface GroupPreviousValuesSubscription
+  extends Promise<AsyncIterator<GroupPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
+  members: () => Promise<AsyncIterator<Int>>;
+  email: () => Promise<AsyncIterator<String>>;
+  website: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  teams: () => Promise<AsyncIterator<Int>>;
+  leads: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface AggregateStaff {
+export interface TestersSubscriptionPayload {
+  mutation: MutationType;
+  node: Testers;
+  updatedFields: String[];
+  previousValues: TestersPreviousValues;
+}
+
+export interface TestersSubscriptionPayloadPromise
+  extends Promise<TestersSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = TestersPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = TestersPreviousValuesPromise>() => T;
+}
+
+export interface TestersSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<TestersSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = TestersSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = TestersPreviousValuesSubscription>() => T;
+}
+
+export interface Team {
+  id: ID_Output;
+  name: String;
+  members?: Int;
+  description?: String;
+  active?: Boolean;
+  createdAt: DateTimeOutput;
+}
+
+export interface TeamPromise extends Promise<Team>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  members: () => Promise<Int>;
+  description: () => Promise<String>;
+  department: <T = DepartmentPromise>() => T;
+  active: () => Promise<Boolean>;
+  lead: <T = FragmentableArray<Staff>>(args?: {
+    where?: StaffWhereInput;
+    orderBy?: StaffOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface TeamSubscription
+  extends Promise<AsyncIterator<Team>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  members: () => Promise<AsyncIterator<Int>>;
+  description: () => Promise<AsyncIterator<String>>;
+  department: <T = DepartmentSubscription>() => T;
+  active: () => Promise<AsyncIterator<Boolean>>;
+  lead: <T = Promise<AsyncIterator<StaffSubscription>>>(args?: {
+    where?: StaffWhereInput;
+    orderBy?: StaffOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface TeamNullablePromise
+  extends Promise<Team | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  members: () => Promise<Int>;
+  description: () => Promise<String>;
+  department: <T = DepartmentPromise>() => T;
+  active: () => Promise<Boolean>;
+  lead: <T = FragmentableArray<Staff>>(args?: {
+    where?: StaffWhereInput;
+    orderBy?: StaffOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface AggregateGroupMember {
   count: Int;
 }
 
-export interface AggregateStaffPromise
-  extends Promise<AggregateStaff>,
+export interface AggregateGroupMemberPromise
+  extends Promise<AggregateGroupMember>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateStaffSubscription
-  extends Promise<AsyncIterator<AggregateStaff>>,
+export interface AggregateGroupMemberSubscription
+  extends Promise<AsyncIterator<AggregateGroupMember>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface GroupMemberSubscriptionPayload {
+  mutation: MutationType;
+  node: GroupMember;
+  updatedFields: String[];
+  previousValues: GroupMemberPreviousValues;
+}
+
+export interface GroupMemberSubscriptionPayloadPromise
+  extends Promise<GroupMemberSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = GroupMemberPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = GroupMemberPreviousValuesPromise>() => T;
+}
+
+export interface GroupMemberSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<GroupMemberSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = GroupMemberSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = GroupMemberPreviousValuesSubscription>() => T;
+}
+
+export interface GroupEdge {
+  node: Group;
+  cursor: String;
+}
+
+export interface GroupEdgePromise extends Promise<GroupEdge>, Fragmentable {
+  node: <T = GroupPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface GroupEdgeSubscription
+  extends Promise<AsyncIterator<GroupEdge>>,
+    Fragmentable {
+  node: <T = GroupSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface GroupMemberPreviousValues {
+  id: ID_Output;
+  firstname: ID_Output;
+  lastname: ID_Output;
+  password: String;
+  team?: String;
+  isLead?: Boolean;
+}
+
+export interface GroupMemberPreviousValuesPromise
+  extends Promise<GroupMemberPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  firstname: () => Promise<ID_Output>;
+  lastname: () => Promise<ID_Output>;
+  password: () => Promise<String>;
+  team: () => Promise<String>;
+  isLead: () => Promise<Boolean>;
+}
+
+export interface GroupMemberPreviousValuesSubscription
+  extends Promise<AsyncIterator<GroupMemberPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  firstname: () => Promise<AsyncIterator<ID_Output>>;
+  lastname: () => Promise<AsyncIterator<ID_Output>>;
+  password: () => Promise<AsyncIterator<String>>;
+  team: () => Promise<AsyncIterator<String>>;
+  isLead: () => Promise<AsyncIterator<Boolean>>;
+}
+
+export interface DepartmentConnection {
+  pageInfo: PageInfo;
+  edges: DepartmentEdge[];
+}
+
+export interface DepartmentConnectionPromise
+  extends Promise<DepartmentConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<DepartmentEdge>>() => T;
+  aggregate: <T = AggregateDepartmentPromise>() => T;
+}
+
+export interface DepartmentConnectionSubscription
+  extends Promise<AsyncIterator<DepartmentConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<DepartmentEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateDepartmentSubscription>() => T;
 }
 
 export interface Event {
@@ -4856,131 +5462,116 @@ export interface EventNullablePromise
   }) => T;
 }
 
-export interface OrganizationEdge {
-  node: Organization;
-  cursor: String;
+export interface EventTeamConnection {
+  pageInfo: PageInfo;
+  edges: EventTeamEdge[];
 }
 
-export interface OrganizationEdgePromise
-  extends Promise<OrganizationEdge>,
+export interface EventTeamConnectionPromise
+  extends Promise<EventTeamConnection>,
     Fragmentable {
-  node: <T = OrganizationPromise>() => T;
-  cursor: () => Promise<String>;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<EventTeamEdge>>() => T;
+  aggregate: <T = AggregateEventTeamPromise>() => T;
 }
 
-export interface OrganizationEdgeSubscription
-  extends Promise<AsyncIterator<OrganizationEdge>>,
+export interface EventTeamConnectionSubscription
+  extends Promise<AsyncIterator<EventTeamConnection>>,
     Fragmentable {
-  node: <T = OrganizationSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<EventTeamEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateEventTeamSubscription>() => T;
 }
 
-export interface GroupSubscriptionPayload {
+export interface GroupTeamSubscriptionPayload {
   mutation: MutationType;
-  node: Group;
+  node: GroupTeam;
   updatedFields: String[];
-  previousValues: GroupPreviousValues;
+  previousValues: GroupTeamPreviousValues;
 }
 
-export interface GroupSubscriptionPayloadPromise
-  extends Promise<GroupSubscriptionPayload>,
+export interface GroupTeamSubscriptionPayloadPromise
+  extends Promise<GroupTeamSubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = GroupPromise>() => T;
+  node: <T = GroupTeamPromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = GroupPreviousValuesPromise>() => T;
+  previousValues: <T = GroupTeamPreviousValuesPromise>() => T;
 }
 
-export interface GroupSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<GroupSubscriptionPayload>>,
+export interface GroupTeamSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<GroupTeamSubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = GroupSubscription>() => T;
+  node: <T = GroupTeamSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = GroupPreviousValuesSubscription>() => T;
+  previousValues: <T = GroupTeamPreviousValuesSubscription>() => T;
 }
 
-export interface GroupMemberEdge {
-  node: GroupMember;
-  cursor: String;
+export interface AggregateEventLead {
+  count: Int;
 }
 
-export interface GroupMemberEdgePromise
-  extends Promise<GroupMemberEdge>,
+export interface AggregateEventLeadPromise
+  extends Promise<AggregateEventLead>,
     Fragmentable {
-  node: <T = GroupMemberPromise>() => T;
-  cursor: () => Promise<String>;
+  count: () => Promise<Int>;
 }
 
-export interface GroupMemberEdgeSubscription
-  extends Promise<AsyncIterator<GroupMemberEdge>>,
+export interface AggregateEventLeadSubscription
+  extends Promise<AsyncIterator<AggregateEventLead>>,
     Fragmentable {
-  node: <T = GroupMemberSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface GroupPreviousValues {
+export interface GroupTeamPreviousValues {
   id: ID_Output;
   name: String;
-  description?: String;
   members?: Int;
-  email: String;
-  website?: String;
-  password: String;
-  teams?: Int;
-  leads?: Int;
+  description?: String;
+  active?: Boolean;
+  lead?: String;
   createdAt: DateTimeOutput;
 }
 
-export interface GroupPreviousValuesPromise
-  extends Promise<GroupPreviousValues>,
+export interface GroupTeamPreviousValuesPromise
+  extends Promise<GroupTeamPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
-  description: () => Promise<String>;
   members: () => Promise<Int>;
-  email: () => Promise<String>;
-  website: () => Promise<String>;
-  password: () => Promise<String>;
-  teams: () => Promise<Int>;
-  leads: () => Promise<Int>;
+  description: () => Promise<String>;
+  active: () => Promise<Boolean>;
+  lead: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
 }
 
-export interface GroupPreviousValuesSubscription
-  extends Promise<AsyncIterator<GroupPreviousValues>>,
+export interface GroupTeamPreviousValuesSubscription
+  extends Promise<AsyncIterator<GroupTeamPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
-  description: () => Promise<AsyncIterator<String>>;
   members: () => Promise<AsyncIterator<Int>>;
-  email: () => Promise<AsyncIterator<String>>;
-  website: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  teams: () => Promise<AsyncIterator<Int>>;
-  leads: () => Promise<AsyncIterator<Int>>;
+  description: () => Promise<AsyncIterator<String>>;
+  active: () => Promise<AsyncIterator<Boolean>>;
+  lead: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface GroupConnection {
-  pageInfo: PageInfo;
-  edges: GroupEdge[];
+export interface AggregateStaff {
+  count: Int;
 }
 
-export interface GroupConnectionPromise
-  extends Promise<GroupConnection>,
+export interface AggregateStaffPromise
+  extends Promise<AggregateStaff>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<GroupEdge>>() => T;
-  aggregate: <T = AggregateGroupPromise>() => T;
+  count: () => Promise<Int>;
 }
 
-export interface GroupConnectionSubscription
-  extends Promise<AsyncIterator<GroupConnection>>,
+export interface AggregateStaffSubscription
+  extends Promise<AsyncIterator<AggregateStaff>>,
     Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<GroupEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateGroupSubscription>() => T;
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface AggregateDepartment {
@@ -4999,207 +5590,23 @@ export interface AggregateDepartmentSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface EventTeamEdge {
-  node: EventTeam;
+export interface GroupTeamEdge {
+  node: GroupTeam;
   cursor: String;
 }
 
-export interface EventTeamEdgePromise
-  extends Promise<EventTeamEdge>,
+export interface GroupTeamEdgePromise
+  extends Promise<GroupTeamEdge>,
     Fragmentable {
-  node: <T = EventTeamPromise>() => T;
+  node: <T = GroupTeamPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface EventTeamEdgeSubscription
-  extends Promise<AsyncIterator<EventTeamEdge>>,
+export interface GroupTeamEdgeSubscription
+  extends Promise<AsyncIterator<GroupTeamEdge>>,
     Fragmentable {
-  node: <T = EventTeamSubscription>() => T;
+  node: <T = GroupTeamSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface GroupMemberSubscriptionPayload {
-  mutation: MutationType;
-  node: GroupMember;
-  updatedFields: String[];
-  previousValues: GroupMemberPreviousValues;
-}
-
-export interface GroupMemberSubscriptionPayloadPromise
-  extends Promise<GroupMemberSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = GroupMemberPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = GroupMemberPreviousValuesPromise>() => T;
-}
-
-export interface GroupMemberSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<GroupMemberSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = GroupMemberSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = GroupMemberPreviousValuesSubscription>() => T;
-}
-
-export interface EventMemberConnection {
-  pageInfo: PageInfo;
-  edges: EventMemberEdge[];
-}
-
-export interface EventMemberConnectionPromise
-  extends Promise<EventMemberConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<EventMemberEdge>>() => T;
-  aggregate: <T = AggregateEventMemberPromise>() => T;
-}
-
-export interface EventMemberConnectionSubscription
-  extends Promise<AsyncIterator<EventMemberConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<EventMemberEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateEventMemberSubscription>() => T;
-}
-
-export interface GroupMemberPreviousValues {
-  id: ID_Output;
-  firstname: ID_Output;
-  lastname: ID_Output;
-  password: String;
-  team?: String;
-}
-
-export interface GroupMemberPreviousValuesPromise
-  extends Promise<GroupMemberPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstname: () => Promise<ID_Output>;
-  lastname: () => Promise<ID_Output>;
-  password: () => Promise<String>;
-  team: () => Promise<String>;
-}
-
-export interface GroupMemberPreviousValuesSubscription
-  extends Promise<AsyncIterator<GroupMemberPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  firstname: () => Promise<AsyncIterator<ID_Output>>;
-  lastname: () => Promise<AsyncIterator<ID_Output>>;
-  password: () => Promise<AsyncIterator<String>>;
-  team: () => Promise<AsyncIterator<String>>;
-}
-
-export interface Team {
-  id: ID_Output;
-  name: String;
-  members?: Int;
-  description?: String;
-  active?: Boolean;
-  createdAt: DateTimeOutput;
-}
-
-export interface TeamPromise extends Promise<Team>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  members: () => Promise<Int>;
-  description: () => Promise<String>;
-  department: <T = DepartmentPromise>() => T;
-  active: () => Promise<Boolean>;
-  lead: <T = FragmentableArray<Staff>>(args?: {
-    where?: StaffWhereInput;
-    orderBy?: StaffOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  createdAt: () => Promise<DateTimeOutput>;
-}
-
-export interface TeamSubscription
-  extends Promise<AsyncIterator<Team>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  members: () => Promise<AsyncIterator<Int>>;
-  description: () => Promise<AsyncIterator<String>>;
-  department: <T = DepartmentSubscription>() => T;
-  active: () => Promise<AsyncIterator<Boolean>>;
-  lead: <T = Promise<AsyncIterator<StaffSubscription>>>(args?: {
-    where?: StaffWhereInput;
-    orderBy?: StaffOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface TeamNullablePromise
-  extends Promise<Team | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  members: () => Promise<Int>;
-  description: () => Promise<String>;
-  department: <T = DepartmentPromise>() => T;
-  active: () => Promise<Boolean>;
-  lead: <T = FragmentableArray<Staff>>(args?: {
-    where?: StaffWhereInput;
-    orderBy?: StaffOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  createdAt: () => Promise<DateTimeOutput>;
-}
-
-export interface DepartmentEdge {
-  node: Department;
-  cursor: String;
-}
-
-export interface DepartmentEdgePromise
-  extends Promise<DepartmentEdge>,
-    Fragmentable {
-  node: <T = DepartmentPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface DepartmentEdgeSubscription
-  extends Promise<AsyncIterator<DepartmentEdge>>,
-    Fragmentable {
-  node: <T = DepartmentSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface StaffConnection {
-  pageInfo: PageInfo;
-  edges: StaffEdge[];
-}
-
-export interface StaffConnectionPromise
-  extends Promise<StaffConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<StaffEdge>>() => T;
-  aggregate: <T = AggregateStaffPromise>() => T;
-}
-
-export interface StaffConnectionSubscription
-  extends Promise<AsyncIterator<StaffConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<StaffEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateStaffSubscription>() => T;
 }
 
 export interface OrganizationSubscriptionPayload {
@@ -5227,36 +5634,67 @@ export interface OrganizationSubscriptionPayloadSubscription
   previousValues: <T = OrganizationPreviousValuesSubscription>() => T;
 }
 
-export interface AggregateGroup {
-  count: Int;
+export interface GroupTeam {
+  id: ID_Output;
+  name: String;
+  members?: Int;
+  description?: String;
+  active?: Boolean;
+  lead?: String;
+  createdAt: DateTimeOutput;
 }
 
-export interface AggregateGroupPromise
-  extends Promise<AggregateGroup>,
+export interface GroupTeamPromise extends Promise<GroupTeam>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  members: () => Promise<Int>;
+  description: () => Promise<String>;
+  active: () => Promise<Boolean>;
+  lead: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface GroupTeamSubscription
+  extends Promise<AsyncIterator<GroupTeam>>,
     Fragmentable {
-  count: () => Promise<Int>;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  members: () => Promise<AsyncIterator<Int>>;
+  description: () => Promise<AsyncIterator<String>>;
+  active: () => Promise<AsyncIterator<Boolean>>;
+  lead: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface AggregateGroupSubscription
-  extends Promise<AsyncIterator<AggregateGroup>>,
+export interface GroupTeamNullablePromise
+  extends Promise<GroupTeam | null>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  members: () => Promise<Int>;
+  description: () => Promise<String>;
+  active: () => Promise<Boolean>;
+  lead: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
 }
 
-export interface AggregateEventMember {
-  count: Int;
+export interface EventMemberEdge {
+  node: EventMember;
+  cursor: String;
 }
 
-export interface AggregateEventMemberPromise
-  extends Promise<AggregateEventMember>,
+export interface EventMemberEdgePromise
+  extends Promise<EventMemberEdge>,
     Fragmentable {
-  count: () => Promise<Int>;
+  node: <T = EventMemberPromise>() => T;
+  cursor: () => Promise<String>;
 }
 
-export interface AggregateEventMemberSubscription
-  extends Promise<AsyncIterator<AggregateEventMember>>,
+export interface EventMemberEdgeSubscription
+  extends Promise<AsyncIterator<EventMemberEdge>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  node: <T = EventMemberSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface StaffPreviousValues {
@@ -5330,27 +5768,23 @@ export interface StaffSubscriptionPayloadSubscription
   previousValues: <T = StaffPreviousValuesSubscription>() => T;
 }
 
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
+export interface DepartmentEdge {
+  node: Department;
+  cursor: String;
 }
 
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
+export interface DepartmentEdgePromise
+  extends Promise<DepartmentEdge>,
     Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
+  node: <T = DepartmentPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface DepartmentEdgeSubscription
+  extends Promise<AsyncIterator<DepartmentEdge>>,
+    Fragmentable {
+  node: <T = DepartmentSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface OrganizationPreviousValues {
@@ -5405,152 +5839,89 @@ export interface OrganizationPreviousValuesSubscription
   staffs: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface EventLeadEdge {
-  node: EventLead;
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface AggregateEventTeam {
+  count: Int;
+}
+
+export interface AggregateEventTeamPromise
+  extends Promise<AggregateEventTeam>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateEventTeamSubscription
+  extends Promise<AsyncIterator<AggregateEventTeam>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface GroupMemberConnection {
+  pageInfo: PageInfo;
+  edges: GroupMemberEdge[];
+}
+
+export interface GroupMemberConnectionPromise
+  extends Promise<GroupMemberConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<GroupMemberEdge>>() => T;
+  aggregate: <T = AggregateGroupMemberPromise>() => T;
+}
+
+export interface GroupMemberConnectionSubscription
+  extends Promise<AsyncIterator<GroupMemberConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<GroupMemberEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateGroupMemberSubscription>() => T;
+}
+
+export interface OrganizationEdge {
+  node: Organization;
   cursor: String;
 }
 
-export interface EventLeadEdgePromise
-  extends Promise<EventLeadEdge>,
+export interface OrganizationEdgePromise
+  extends Promise<OrganizationEdge>,
     Fragmentable {
-  node: <T = EventLeadPromise>() => T;
+  node: <T = OrganizationPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface EventLeadEdgeSubscription
-  extends Promise<AsyncIterator<EventLeadEdge>>,
+export interface OrganizationEdgeSubscription
+  extends Promise<AsyncIterator<OrganizationEdge>>,
     Fragmentable {
-  node: <T = EventLeadSubscription>() => T;
+  node: <T = OrganizationSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface Group {
-  id: ID_Output;
-  name: String;
-  description?: String;
-  members?: Int;
-  email: String;
-  website?: String;
-  password: String;
-  teams?: Int;
-  leads?: Int;
-  createdAt: DateTimeOutput;
-}
+/*
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+*/
+export type String = string;
 
-export interface GroupPromise extends Promise<Group>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  description: () => Promise<String>;
-  members: () => Promise<Int>;
-  member: <T = FragmentableArray<GroupMember>>(args?: {
-    where?: GroupMemberWhereInput;
-    orderBy?: GroupMemberOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  email: () => Promise<String>;
-  website: () => Promise<String>;
-  password: () => Promise<String>;
-  teams: () => Promise<Int>;
-  leads: () => Promise<Int>;
-  team: <T = TeamPromise>() => T;
-  createdAt: () => Promise<DateTimeOutput>;
-}
+export type Long = string;
 
-export interface GroupSubscription
-  extends Promise<AsyncIterator<Group>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  description: () => Promise<AsyncIterator<String>>;
-  members: () => Promise<AsyncIterator<Int>>;
-  member: <T = Promise<AsyncIterator<GroupMemberSubscription>>>(args?: {
-    where?: GroupMemberWhereInput;
-    orderBy?: GroupMemberOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  email: () => Promise<AsyncIterator<String>>;
-  website: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  teams: () => Promise<AsyncIterator<Int>>;
-  leads: () => Promise<AsyncIterator<Int>>;
-  team: <T = TeamSubscription>() => T;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface GroupNullablePromise
-  extends Promise<Group | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  description: () => Promise<String>;
-  members: () => Promise<Int>;
-  member: <T = FragmentableArray<GroupMember>>(args?: {
-    where?: GroupMemberWhereInput;
-    orderBy?: GroupMemberOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  email: () => Promise<String>;
-  website: () => Promise<String>;
-  password: () => Promise<String>;
-  teams: () => Promise<Int>;
-  leads: () => Promise<Int>;
-  team: <T = TeamPromise>() => T;
-  createdAt: () => Promise<DateTimeOutput>;
-}
-
-export interface TestersSubscriptionPayload {
-  mutation: MutationType;
-  node: Testers;
-  updatedFields: String[];
-  previousValues: TestersPreviousValues;
-}
-
-export interface TestersSubscriptionPayloadPromise
-  extends Promise<TestersSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = TestersPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = TestersPreviousValuesPromise>() => T;
-}
-
-export interface TestersSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<TestersSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = TestersSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = TestersPreviousValuesSubscription>() => T;
-}
-
-export interface TeamEdge {
-  node: Team;
-  cursor: String;
-}
-
-export interface TeamEdgePromise extends Promise<TeamEdge>, Fragmentable {
-  node: <T = TeamPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface TeamEdgeSubscription
-  extends Promise<AsyncIterator<TeamEdge>>,
-    Fragmentable {
-  node: <T = TeamSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
+/*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+*/
+export type Int = number;
 
 /*
 DateTime scalar input type, allowing Date
@@ -5562,23 +5933,11 @@ DateTime scalar output type, which is always a string
 */
 export type DateTimeOutput = string;
 
-export type Long = string;
-
-/*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
-*/
-export type Int = number;
-
 /*
 The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
 */
 export type ID_Input = string | number;
 export type ID_Output = string;
-
-/*
-The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
-*/
-export type String = string;
 
 /*
 The `Boolean` scalar type represents `true` or `false`.
@@ -5612,6 +5971,10 @@ export const models: Model[] = [
   },
   {
     name: "Group",
+    embedded: false
+  },
+  {
+    name: "GroupTeam",
     embedded: false
   },
   {

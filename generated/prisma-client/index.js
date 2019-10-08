@@ -29,6 +29,10 @@ var models = [
     embedded: false
   },
   {
+    name: "GroupTeam",
+    embedded: false
+  },
+  {
     name: "GroupMember",
     embedded: false
   },

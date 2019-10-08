@@ -20,8 +20,15 @@ type Mutation {
   createOrganization(data: OrganizationCreateInput!): Organization!
   createStaff(data: StaffCreateInput!): Staff!
   createTeam(data: TeamCreateInput!): Team!
+
   createGroup(data: GroupCreateInput!): Group!
+  createGroupTeam(data: GroupCreateInput!): GroupTeam!
+  createGroupMember(data: GroupCreateInput!): GroupMember!
+
   createEvent(data: EventCreateInput!): Event!
+  createEventTeam(data: EventCreateInput!): EventTeam!
+  createEventMember(data: EventCreateInput!): EventMember!
+
   # updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   # deleteUser(where: UserWhereUniqueInput!): User
   upsertUser(where: UserWhereUniqueInput, create: TeamCreateInput!, update: UserUpdateInput!): User!
@@ -116,6 +123,7 @@ type User implements Node {
     id: ID!
     firstname: String!
     lastname: String
+    password:  Boolean
     email: String
     role: String
     joinedAt: Int
@@ -145,6 +153,24 @@ type User implements Node {
     teams: Int
  }
 
+  type GroupMember implements Node {
+        id: ID!
+      firstname: String!
+      lastname: String!
+      password: String!
+      team: String
+  }
+
+ type GroupTeam implements Node {
+      id: ID!
+       name: String 
+      members: Int  
+      description: String  
+      active: Boolean 
+      lead: String 
+      createdAt: Int 
+  }
+
   type Event implements Node  {
     id: ID!
     name:  String!
@@ -156,6 +182,21 @@ type User implements Node {
     leads: Int
     teams: Int 
 }
+
+  type EventMember implements Node  {
+    id: ID!
+    firstname: String!
+    lastname: String!
+    password: String!
+    team: String
+}
+
+  type EventTeam implements Node  {
+    id: ID!
+    name: String 
+    description: String  
+    createdAt: Int 
+  }
 
 """A connection to a list of items."""
 type UserConnection {
@@ -183,7 +224,8 @@ input OrganizationCreateInput {
   }
 
 input StaffCreateInput {
-  name: String
+  firstname: String
+  lastname: String
   role: String
   isLead:  Boolean
   joinedAt: Int

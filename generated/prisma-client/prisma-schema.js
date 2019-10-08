@@ -31,6 +31,10 @@ type AggregateGroupMember {
   count: Int!
 }
 
+type AggregateGroupTeam {
+  count: Int!
+}
+
 type AggregateOrganization {
   count: Int!
 }
@@ -1394,8 +1398,8 @@ type Group {
   website: String
   password: String!
   teams: Int
+  team: GroupTeam
   leads: Int
-  team: Team
   createdAt: DateTime!
 }
 
@@ -1415,8 +1419,8 @@ input GroupCreateInput {
   website: String
   password: String!
   teams: Int
+  team: GroupTeamCreateOneInput
   leads: Int
-  team: TeamCreateOneInput
 }
 
 input GroupCreateOneWithoutMemberInput {
@@ -1433,8 +1437,8 @@ input GroupCreateWithoutMemberInput {
   website: String
   password: String!
   teams: Int
+  team: GroupTeamCreateOneInput
   leads: Int
-  team: TeamCreateOneInput
 }
 
 type GroupEdge {
@@ -1449,6 +1453,7 @@ type GroupMember {
   password: String!
   team: String
   group: Group
+  isLead: Boolean
 }
 
 type GroupMemberConnection {
@@ -1464,6 +1469,7 @@ input GroupMemberCreateInput {
   password: String!
   team: String
   group: GroupCreateOneWithoutMemberInput
+  isLead: Boolean
 }
 
 input GroupMemberCreateManyWithoutGroupInput {
@@ -1477,6 +1483,7 @@ input GroupMemberCreateWithoutGroupInput {
   lastname: ID!
   password: String!
   team: String
+  isLead: Boolean
 }
 
 type GroupMemberEdge {
@@ -1495,6 +1502,8 @@ enum GroupMemberOrderByInput {
   password_DESC
   team_ASC
   team_DESC
+  isLead_ASC
+  isLead_DESC
 }
 
 type GroupMemberPreviousValues {
@@ -1503,6 +1512,7 @@ type GroupMemberPreviousValues {
   lastname: ID!
   password: String!
   team: String
+  isLead: Boolean
 }
 
 input GroupMemberScalarWhereInput {
@@ -1576,6 +1586,8 @@ input GroupMemberScalarWhereInput {
   team_not_starts_with: String
   team_ends_with: String
   team_not_ends_with: String
+  isLead: Boolean
+  isLead_not: Boolean
   AND: [GroupMemberScalarWhereInput!]
   OR: [GroupMemberScalarWhereInput!]
   NOT: [GroupMemberScalarWhereInput!]
@@ -1605,6 +1617,7 @@ input GroupMemberUpdateInput {
   password: String
   team: String
   group: GroupUpdateOneWithoutMemberInput
+  isLead: Boolean
 }
 
 input GroupMemberUpdateManyDataInput {
@@ -1612,6 +1625,7 @@ input GroupMemberUpdateManyDataInput {
   lastname: ID
   password: String
   team: String
+  isLead: Boolean
 }
 
 input GroupMemberUpdateManyMutationInput {
@@ -1619,6 +1633,7 @@ input GroupMemberUpdateManyMutationInput {
   lastname: ID
   password: String
   team: String
+  isLead: Boolean
 }
 
 input GroupMemberUpdateManyWithoutGroupInput {
@@ -1643,6 +1658,7 @@ input GroupMemberUpdateWithoutGroupDataInput {
   lastname: ID
   password: String
   team: String
+  isLead: Boolean
 }
 
 input GroupMemberUpdateWithWhereUniqueWithoutGroupInput {
@@ -1728,6 +1744,8 @@ input GroupMemberWhereInput {
   team_ends_with: String
   team_not_ends_with: String
   group: GroupWhereInput
+  isLead: Boolean
+  isLead_not: Boolean
   AND: [GroupMemberWhereInput!]
   OR: [GroupMemberWhereInput!]
   NOT: [GroupMemberWhereInput!]
@@ -1792,6 +1810,209 @@ input GroupSubscriptionWhereInput {
   NOT: [GroupSubscriptionWhereInput!]
 }
 
+type GroupTeam {
+  id: ID!
+  name: String!
+  members: Int
+  description: String
+  active: Boolean
+  lead: String
+  createdAt: DateTime!
+}
+
+type GroupTeamConnection {
+  pageInfo: PageInfo!
+  edges: [GroupTeamEdge]!
+  aggregate: AggregateGroupTeam!
+}
+
+input GroupTeamCreateInput {
+  id: ID
+  name: String!
+  members: Int
+  description: String
+  active: Boolean
+  lead: String
+}
+
+input GroupTeamCreateOneInput {
+  create: GroupTeamCreateInput
+  connect: GroupTeamWhereUniqueInput
+}
+
+type GroupTeamEdge {
+  node: GroupTeam!
+  cursor: String!
+}
+
+enum GroupTeamOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  members_ASC
+  members_DESC
+  description_ASC
+  description_DESC
+  active_ASC
+  active_DESC
+  lead_ASC
+  lead_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type GroupTeamPreviousValues {
+  id: ID!
+  name: String!
+  members: Int
+  description: String
+  active: Boolean
+  lead: String
+  createdAt: DateTime!
+}
+
+type GroupTeamSubscriptionPayload {
+  mutation: MutationType!
+  node: GroupTeam
+  updatedFields: [String!]
+  previousValues: GroupTeamPreviousValues
+}
+
+input GroupTeamSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: GroupTeamWhereInput
+  AND: [GroupTeamSubscriptionWhereInput!]
+  OR: [GroupTeamSubscriptionWhereInput!]
+  NOT: [GroupTeamSubscriptionWhereInput!]
+}
+
+input GroupTeamUpdateDataInput {
+  name: String
+  members: Int
+  description: String
+  active: Boolean
+  lead: String
+}
+
+input GroupTeamUpdateInput {
+  name: String
+  members: Int
+  description: String
+  active: Boolean
+  lead: String
+}
+
+input GroupTeamUpdateManyMutationInput {
+  name: String
+  members: Int
+  description: String
+  active: Boolean
+  lead: String
+}
+
+input GroupTeamUpdateOneInput {
+  create: GroupTeamCreateInput
+  update: GroupTeamUpdateDataInput
+  upsert: GroupTeamUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: GroupTeamWhereUniqueInput
+}
+
+input GroupTeamUpsertNestedInput {
+  update: GroupTeamUpdateDataInput!
+  create: GroupTeamCreateInput!
+}
+
+input GroupTeamWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  members: Int
+  members_not: Int
+  members_in: [Int!]
+  members_not_in: [Int!]
+  members_lt: Int
+  members_lte: Int
+  members_gt: Int
+  members_gte: Int
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  active: Boolean
+  active_not: Boolean
+  lead: String
+  lead_not: String
+  lead_in: [String!]
+  lead_not_in: [String!]
+  lead_lt: String
+  lead_lte: String
+  lead_gt: String
+  lead_gte: String
+  lead_contains: String
+  lead_not_contains: String
+  lead_starts_with: String
+  lead_not_starts_with: String
+  lead_ends_with: String
+  lead_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [GroupTeamWhereInput!]
+  OR: [GroupTeamWhereInput!]
+  NOT: [GroupTeamWhereInput!]
+}
+
+input GroupTeamWhereUniqueInput {
+  id: ID
+  name: String
+}
+
 input GroupUpdateInput {
   name: String
   description: String
@@ -1801,8 +2022,8 @@ input GroupUpdateInput {
   website: String
   password: String
   teams: Int
+  team: GroupTeamUpdateOneInput
   leads: Int
-  team: TeamUpdateOneInput
 }
 
 input GroupUpdateManyMutationInput {
@@ -1833,8 +2054,8 @@ input GroupUpdateWithoutMemberDataInput {
   website: String
   password: String
   teams: Int
+  team: GroupTeamUpdateOneInput
   leads: Int
-  team: TeamUpdateOneInput
 }
 
 input GroupUpsertWithoutMemberInput {
@@ -1946,6 +2167,7 @@ input GroupWhereInput {
   teams_lte: Int
   teams_gt: Int
   teams_gte: Int
+  team: GroupTeamWhereInput
   leads: Int
   leads_not: Int
   leads_in: [Int!]
@@ -1954,7 +2176,6 @@ input GroupWhereInput {
   leads_lte: Int
   leads_gt: Int
   leads_gte: Int
-  team: TeamWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -2019,6 +2240,12 @@ type Mutation {
   upsertGroupMember(where: GroupMemberWhereUniqueInput!, create: GroupMemberCreateInput!, update: GroupMemberUpdateInput!): GroupMember!
   deleteGroupMember(where: GroupMemberWhereUniqueInput!): GroupMember
   deleteManyGroupMembers(where: GroupMemberWhereInput): BatchPayload!
+  createGroupTeam(data: GroupTeamCreateInput!): GroupTeam!
+  updateGroupTeam(data: GroupTeamUpdateInput!, where: GroupTeamWhereUniqueInput!): GroupTeam
+  updateManyGroupTeams(data: GroupTeamUpdateManyMutationInput!, where: GroupTeamWhereInput): BatchPayload!
+  upsertGroupTeam(where: GroupTeamWhereUniqueInput!, create: GroupTeamCreateInput!, update: GroupTeamUpdateInput!): GroupTeam!
+  deleteGroupTeam(where: GroupTeamWhereUniqueInput!): GroupTeam
+  deleteManyGroupTeams(where: GroupTeamWhereInput): BatchPayload!
   createOrganization(data: OrganizationCreateInput!): Organization!
   updateOrganization(data: OrganizationUpdateInput!, where: OrganizationWhereUniqueInput!): Organization
   updateManyOrganizations(data: OrganizationUpdateManyMutationInput!, where: OrganizationWhereInput): BatchPayload!
@@ -2449,6 +2676,9 @@ type Query {
   groupMember(where: GroupMemberWhereUniqueInput!): GroupMember
   groupMembers(where: GroupMemberWhereInput, orderBy: GroupMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GroupMember]!
   groupMembersConnection(where: GroupMemberWhereInput, orderBy: GroupMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupMemberConnection!
+  groupTeam(where: GroupTeamWhereUniqueInput!): GroupTeam
+  groupTeams(where: GroupTeamWhereInput, orderBy: GroupTeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GroupTeam]!
+  groupTeamsConnection(where: GroupTeamWhereInput, orderBy: GroupTeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupTeamConnection!
   organization(where: OrganizationWhereUniqueInput!): Organization
   organizations(where: OrganizationWhereInput, orderBy: OrganizationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Organization]!
   organizationsConnection(where: OrganizationWhereInput, orderBy: OrganizationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OrganizationConnection!
@@ -3016,6 +3246,7 @@ type Subscription {
   eventTeam(where: EventTeamSubscriptionWhereInput): EventTeamSubscriptionPayload
   group(where: GroupSubscriptionWhereInput): GroupSubscriptionPayload
   groupMember(where: GroupMemberSubscriptionWhereInput): GroupMemberSubscriptionPayload
+  groupTeam(where: GroupTeamSubscriptionWhereInput): GroupTeamSubscriptionPayload
   organization(where: OrganizationSubscriptionWhereInput): OrganizationSubscriptionPayload
   staff(where: StaffSubscriptionWhereInput): StaffSubscriptionPayload
   team(where: TeamSubscriptionWhereInput): TeamSubscriptionPayload
@@ -3052,11 +3283,6 @@ input TeamCreateInput {
 input TeamCreateManyWithoutDepartmentInput {
   create: [TeamCreateWithoutDepartmentInput!]
   connect: [TeamWhereUniqueInput!]
-}
-
-input TeamCreateOneInput {
-  create: TeamCreateInput
-  connect: TeamWhereUniqueInput
 }
 
 input TeamCreateOneWithoutLeadInput {
@@ -3195,15 +3421,6 @@ input TeamSubscriptionWhereInput {
   NOT: [TeamSubscriptionWhereInput!]
 }
 
-input TeamUpdateDataInput {
-  name: String
-  members: Int
-  description: String
-  department: DepartmentUpdateOneWithoutTeamsInput
-  active: Boolean
-  lead: StaffUpdateManyWithoutLeadInput
-}
-
 input TeamUpdateInput {
   name: String
   members: Int
@@ -3244,15 +3461,6 @@ input TeamUpdateManyWithWhereNestedInput {
   data: TeamUpdateManyDataInput!
 }
 
-input TeamUpdateOneInput {
-  create: TeamCreateInput
-  update: TeamUpdateDataInput
-  upsert: TeamUpsertNestedInput
-  delete: Boolean
-  disconnect: Boolean
-  connect: TeamWhereUniqueInput
-}
-
 input TeamUpdateOneWithoutLeadInput {
   create: TeamCreateWithoutLeadInput
   update: TeamUpdateWithoutLeadDataInput
@@ -3281,11 +3489,6 @@ input TeamUpdateWithoutLeadDataInput {
 input TeamUpdateWithWhereUniqueWithoutDepartmentInput {
   where: TeamWhereUniqueInput!
   data: TeamUpdateWithoutDepartmentDataInput!
-}
-
-input TeamUpsertNestedInput {
-  update: TeamUpdateDataInput!
-  create: TeamCreateInput!
 }
 
 input TeamUpsertWithoutLeadInput {

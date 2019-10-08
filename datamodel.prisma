@@ -55,10 +55,20 @@ type Group {
   website: String  
   password : String!    
   teams : Int 
+  team : GroupTeam @relation( name : "GroupTeam"   , onDelete: CASCADE  ) 
   leads : Int 
-  team : Team @relation( name : "GroupTeam"   , onDelete: CASCADE  ) 
   createdAt: DateTime! @createdAt
 }
+
+  type GroupTeam {
+    id: ID! @id
+    name : String! @unique
+    members : Int  
+    description: String  
+    active : Boolean 
+    lead : String
+    createdAt: DateTime! @createdAt
+  }
 
 type GroupMember {
   id : ID! @id
@@ -67,8 +77,8 @@ type GroupMember {
   password : String!
   team : String
   group : Group @relation( name : "GroupMember"  )  
+  isLead : Boolean
 }
-
 
 type Organization { 
    id: ID! @id

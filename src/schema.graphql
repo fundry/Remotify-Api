@@ -1,8 +1,11 @@
+# import Organization from "../prisma/prisma.graphql"
 # import Team from "../prisma/prisma.graphql"
 # import Staff from "../prisma/prisma.graphql"
-# import Organization from "../prisma/prisma.graphql"
 # import Group from "../prisma/prisma.graphql"
+# import GroupMember from "../prisma/prisma.graphql"
+# import GroupTeam from "../prisma/prisma.graphql"
 # import Event from "../prisma/prisma.graphql"
+# import EventMember from "../prisma/prisma.graphql"
 
 
 type Query {
@@ -12,8 +15,14 @@ type Query {
     staff(where: StaffWhereUniqueInput): Staff 
     team(where: TeamWhereUniqueInput): Team 
     organization(where: OrganizationWhereUniqueInput): Organization
+    
     group(where: GroupWhereUniqueInput): Group
+    groupmember(where: GroupWhereUniqueInput): GroupMember
+    groupteam(where: GroupWhereUniqueInput): GroupTeam
+   
     event(where: EventWhereUniqueInput): Event
+    eventmember(where: EventWhereUniqueInput): EventMember
+    eventteam(where: EventWhereUniqueInput): EventTeam
  
   # multiple mutations
     allOrganizations: [Organization!]
@@ -41,6 +50,20 @@ type Mutation {
       members: Int  
     ): Event
 
+    createEventMember( where: UniqueInput
+      firstname: String!
+      lastname: String!
+      password: String!
+      team: String
+    ): EventMember
+
+    createEventTeam( where: UniqueInput
+      name: String 
+      description: String  
+      createdAt: Int 
+    ): EventTeam
+
+    #  =======================>>
 
     # Group Mutations ===========>
     createGroup( where: UniqueInput
@@ -55,6 +78,24 @@ type Mutation {
       teams: Int  
     ): Group
 
+    createGroupMember( where: UniqueInput
+      firstname: String!
+      lastname: String!
+      password: String!
+      team: String
+    ): GroupMember
+
+    createGroupTeam( where: UniqueInput
+      name: String 
+      members: Int  
+      description: String  
+      active: Boolean 
+      lead: String 
+      createdAt: Int 
+    ): GroupTeam
+
+#  ========>
+
 
   # organization Mutations
     createOrganization(  where: UniqueInput 
@@ -64,7 +105,7 @@ type Mutation {
         staffs: Int
         type: String
          email: String
-      website: String  
+        website: String  
          country: String
          state: String
          password: String
@@ -80,6 +121,7 @@ type Mutation {
       lastname: String
       role: String
       email: String
+      password: String! 
       country: String
       state: String
       joinedAt: Int
