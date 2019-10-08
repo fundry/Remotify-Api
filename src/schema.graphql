@@ -7,7 +7,6 @@
 # import Event from "../prisma/prisma.graphql"
 # import EventMember from "../prisma/prisma.graphql"
 
-
 type Query {
     info: String 
 
@@ -24,7 +23,7 @@ type Query {
     eventmember(where: EventWhereUniqueInput): EventMember
     eventteam(where: EventWhereUniqueInput): EventTeam
  
-  # multiple mutations
+  # multiple queries
     allOrganizations: [Organization!]
     allStaff: [Staff!]
     allTeam: [Team!]
@@ -93,6 +92,15 @@ type Mutation {
       lead: String 
       createdAt: Int 
     ): GroupTeam
+
+    updateGroup(  
+      name: String 
+      members: Int  
+      description: String  
+      active: Boolean 
+      lead: String 
+      createdAt: Int 
+    ): Group
 
 #  ========>
 

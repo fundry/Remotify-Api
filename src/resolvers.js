@@ -152,9 +152,11 @@ const resolver = {
       return context.db.mutation.createGroup({
         data: {
           name: args.name,
+          website: args.website,
           description: args.description,
           email: args.email,
           leads: args.leads,
+          teams: args.teams,
           members: args.members,
           password: hashedPassword,
         },
@@ -178,9 +180,27 @@ const resolver = {
           name: args.name,
           description: args.description,
           email: args.email,
+          website: args.website,
+          teams: args.teams,
           leads: args.leads,
           members: args.members,
           password: hashedPassword,
+        },
+      });
+    },
+
+    updateGroup: async (_, args, context, info) => {
+      // const email = context.where.email;
+      // console.log(context);
+      return context.db.mutation.updateGroup({
+        data: {
+          name: args.name,
+          description: args.description,
+          email: args.email,
+          website: args.website,
+          teams: args.teams,
+          leads: args.leads,
+          members: args.members,
         },
       });
     },

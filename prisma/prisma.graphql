@@ -21,10 +21,15 @@ type Mutation {
   createStaff(data: StaffCreateInput!): Staff!
   createTeam(data: TeamCreateInput!): Team!
 
+
+  # GROUP ============>
   createGroup(data: GroupCreateInput!): Group!
   createGroupTeam(data: GroupCreateInput!): GroupTeam!
   createGroupMember(data: GroupCreateInput!): GroupMember!
 
+  updateGroup(data: GroupUpdateInput!, where: UserWhereUniqueInput!): User
+
+# Event =============>
   createEvent(data: EventCreateInput!): Event!
   createEventTeam(data: EventCreateInput!): EventTeam!
   createEventMember(data: EventCreateInput!): EventMember!
@@ -154,7 +159,7 @@ type User implements Node {
  }
 
   type GroupMember implements Node {
-        id: ID!
+      id: ID!
       firstname: String!
       lastname: String!
       password: String!
@@ -216,6 +221,7 @@ input OrganizationCreateInput {
   email: String
   country: String
   state: String
+  website: String
   password: String
 }
 
@@ -247,6 +253,7 @@ input GroupCreateInput {
   description: String
   email: String
   password: String 
+  website: String 
   createdAt: Int
     leads: Int
     teams: Int 
@@ -258,6 +265,7 @@ input GroupCreateInput {
   description: String
   email: String
   password: String  
+  website: String  
   createdAt: Int
     leads: Int
     teams: Int 
@@ -338,6 +346,17 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
+}
+
+input GroupUpdateInput {
+    name:  String
+    description: String
+    email: String
+    password: String
+    website: String
+    createdAt: Int
+    leads: Int
+    teams: Int
 }
 
 input UserWhereInput {
