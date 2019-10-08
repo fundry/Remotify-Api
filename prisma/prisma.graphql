@@ -21,6 +21,7 @@ type Mutation {
   createStaff(data: StaffCreateInput!): Staff!
   createTeam(data: TeamCreateInput!): Team!
   createGroup(data: GroupCreateInput!): Group!
+  createEvent(data: EventCreateInput!): Event!
   # updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   # deleteUser(where: UserWhereUniqueInput!): User
   upsertUser(where: UserWhereUniqueInput, create: TeamCreateInput!, update: UserUpdateInput!): User!
@@ -105,6 +106,7 @@ type User implements Node {
     createdAt: Int
     type: String
     email: String
+    website: String
     country: String
     state: String
     password: String
@@ -137,6 +139,7 @@ type User implements Node {
     description: String
     email: String
     password: String
+    website: String
     createdAt: Int
     leads: Int
     teams: Int
@@ -147,6 +150,7 @@ type User implements Node {
     name:  String!
     description: String
     email: String 
+    website: String
     password: String
     createdAt: Int
     leads: Int
@@ -204,6 +208,7 @@ input GroupCreateInput {
   createdAt: Int
     leads: Int
     teams: Int 
+    members: Int 
 }
 
  input EventCreateInput {
@@ -214,6 +219,7 @@ input GroupCreateInput {
   createdAt: Int
     leads: Int
     teams: Int 
+    members: Int 
 }
 
 """An edge in a connection."""

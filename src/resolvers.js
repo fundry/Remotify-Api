@@ -153,6 +153,32 @@ const resolver = {
           name: args.name,
           description: args.description,
           email: args.email,
+          leads: args.leads,
+          members: args.members,
+          password: hashedPassword,
+        },
+      });
+    },
+
+    createEvent: async (_, args, context, info) => {
+      const hashedPassword = await bcrypt.hash(args.password, 10);
+
+      // cloud function here
+      const Email = args.email;
+      try {
+        Axios.post('http://localhost:8080/', {
+          email: Email,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+      return context.db.mutation.createEvent({
+        data: {
+          name: args.name,
+          description: args.description,
+          email: args.email,
+          leads: args.leads,
+          members: args.members,
           password: hashedPassword,
         },
       });
@@ -221,6 +247,34 @@ const resolver = {
     loginStaff: async (_, { password, where }, ctx, info) => {
       const email = where.email;
       const user = await ctx.db.query.staff({
+        where: {
+          email: email,
+        },
+      });
+
+      if (!user) {
+        throw new Error('Invalid Login');
+      }
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (!passwordMatch) {
+        throw new Error('Invalid Login');
+      }
+      const token = jwt.sign(
+        {
+          username: email,
+        },
+        process.env.APP_SECRET,
+        {
+          expiresIn: '30d',
+        }
+      );
+      return { token, user };
+    },
+
+    loginEvent: async (_, { password, where }, ctx, info) => {
+      const email = where.email;
+      const user = await ctx.db.query.event({
         where: {
           email: email,
         },

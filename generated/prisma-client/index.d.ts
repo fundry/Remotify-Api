@@ -514,6 +514,8 @@ export type EventOrderByInput =
   | "description_DESC"
   | "email_ASC"
   | "email_DESC"
+  | "website_ASC"
+  | "website_DESC"
   | "password_ASC"
   | "password_DESC"
   | "createdAt_ASC"
@@ -618,6 +620,8 @@ export type OrganizationOrderByInput =
   | "createdAt_DESC"
   | "name_ASC"
   | "name_DESC"
+  | "website_ASC"
+  | "website_DESC"
   | "Teams_ASC"
   | "Teams_DESC"
   | "leads_ASC"
@@ -662,10 +666,14 @@ export type GroupOrderByInput =
   | "members_DESC"
   | "email_ASC"
   | "email_DESC"
+  | "website_ASC"
+  | "website_DESC"
   | "password_ASC"
   | "password_DESC"
   | "teams_ASC"
   | "teams_DESC"
+  | "leads_ASC"
+  | "leads_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC";
 
@@ -1032,6 +1040,20 @@ export interface OrganizationWhereInput {
   name_not_starts_with?: Maybe<String>;
   name_ends_with?: Maybe<String>;
   name_not_ends_with?: Maybe<String>;
+  website?: Maybe<String>;
+  website_not?: Maybe<String>;
+  website_in?: Maybe<String[] | String>;
+  website_not_in?: Maybe<String[] | String>;
+  website_lt?: Maybe<String>;
+  website_lte?: Maybe<String>;
+  website_gt?: Maybe<String>;
+  website_gte?: Maybe<String>;
+  website_contains?: Maybe<String>;
+  website_not_contains?: Maybe<String>;
+  website_starts_with?: Maybe<String>;
+  website_not_starts_with?: Maybe<String>;
+  website_ends_with?: Maybe<String>;
+  website_not_ends_with?: Maybe<String>;
   Teams?: Maybe<Int>;
   Teams_not?: Maybe<Int>;
   Teams_in?: Maybe<Int[] | Int>;
@@ -1663,6 +1685,7 @@ export interface EventCreateInput {
   name: String;
   description?: Maybe<String>;
   email: String;
+  website?: Maybe<String>;
   password: String;
   members?: Maybe<Int>;
   member?: Maybe<EventMemberCreateManyWithoutEventInput>;
@@ -1953,6 +1976,7 @@ export interface EventUpdateInput {
   name?: Maybe<String>;
   description?: Maybe<String>;
   email?: Maybe<String>;
+  website?: Maybe<String>;
   password?: Maybe<String>;
   members?: Maybe<Int>;
   member?: Maybe<EventMemberUpdateManyWithoutEventInput>;
@@ -1965,6 +1989,7 @@ export interface EventUpdateInput {
 export interface OrganizationCreateInput {
   id?: Maybe<ID_Input>;
   name: String;
+  website?: Maybe<String>;
   Teams?: Maybe<Int>;
   leads?: Maybe<Int>;
   type?: Maybe<String>;
@@ -2020,8 +2045,10 @@ export interface GroupUpdateWithoutMemberDataInput {
   description?: Maybe<String>;
   members?: Maybe<Int>;
   email?: Maybe<String>;
+  website?: Maybe<String>;
   password?: Maybe<String>;
   teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
   team?: Maybe<TeamUpdateOneInput>;
 }
 
@@ -2052,8 +2079,10 @@ export interface GroupCreateWithoutMemberInput {
   description?: Maybe<String>;
   members?: Maybe<Int>;
   email: String;
+  website?: Maybe<String>;
   password: String;
   teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
   team?: Maybe<TeamCreateOneInput>;
 }
 
@@ -2124,8 +2153,10 @@ export interface GroupUpdateManyMutationInput {
   description?: Maybe<String>;
   members?: Maybe<Int>;
   email?: Maybe<String>;
+  website?: Maybe<String>;
   password?: Maybe<String>;
   teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
 }
 
 export interface EventMemberUpdateManyDataInput {
@@ -2486,6 +2517,20 @@ export interface EventWhereInput {
   email_not_starts_with?: Maybe<String>;
   email_ends_with?: Maybe<String>;
   email_not_ends_with?: Maybe<String>;
+  website?: Maybe<String>;
+  website_not?: Maybe<String>;
+  website_in?: Maybe<String[] | String>;
+  website_not_in?: Maybe<String[] | String>;
+  website_lt?: Maybe<String>;
+  website_lte?: Maybe<String>;
+  website_gt?: Maybe<String>;
+  website_gte?: Maybe<String>;
+  website_contains?: Maybe<String>;
+  website_not_contains?: Maybe<String>;
+  website_starts_with?: Maybe<String>;
+  website_not_starts_with?: Maybe<String>;
+  website_ends_with?: Maybe<String>;
+  website_not_ends_with?: Maybe<String>;
   password?: Maybe<String>;
   password_not?: Maybe<String>;
   password_in?: Maybe<String[] | String>;
@@ -2588,6 +2633,7 @@ export interface EventUpdateManyMutationInput {
   name?: Maybe<String>;
   description?: Maybe<String>;
   email?: Maybe<String>;
+  website?: Maybe<String>;
   password?: Maybe<String>;
   members?: Maybe<Int>;
   leads?: Maybe<Int>;
@@ -2628,6 +2674,7 @@ export interface EventCreateOneWithoutLeadInput {
 
 export interface OrganizationUpdateManyMutationInput {
   name?: Maybe<String>;
+  website?: Maybe<String>;
   Teams?: Maybe<Int>;
   leads?: Maybe<Int>;
   type?: Maybe<String>;
@@ -2644,6 +2691,7 @@ export interface EventCreateWithoutLeadInput {
   name: String;
   description?: Maybe<String>;
   email: String;
+  website?: Maybe<String>;
   password: String;
   members?: Maybe<Int>;
   member?: Maybe<EventMemberCreateManyWithoutEventInput>;
@@ -2734,6 +2782,20 @@ export interface GroupWhereInput {
   email_not_starts_with?: Maybe<String>;
   email_ends_with?: Maybe<String>;
   email_not_ends_with?: Maybe<String>;
+  website?: Maybe<String>;
+  website_not?: Maybe<String>;
+  website_in?: Maybe<String[] | String>;
+  website_not_in?: Maybe<String[] | String>;
+  website_lt?: Maybe<String>;
+  website_lte?: Maybe<String>;
+  website_gt?: Maybe<String>;
+  website_gte?: Maybe<String>;
+  website_contains?: Maybe<String>;
+  website_not_contains?: Maybe<String>;
+  website_starts_with?: Maybe<String>;
+  website_not_starts_with?: Maybe<String>;
+  website_ends_with?: Maybe<String>;
+  website_not_ends_with?: Maybe<String>;
   password?: Maybe<String>;
   password_not?: Maybe<String>;
   password_in?: Maybe<String[] | String>;
@@ -2756,6 +2818,14 @@ export interface GroupWhereInput {
   teams_lte?: Maybe<Int>;
   teams_gt?: Maybe<Int>;
   teams_gte?: Maybe<Int>;
+  leads?: Maybe<Int>;
+  leads_not?: Maybe<Int>;
+  leads_in?: Maybe<Int[] | Int>;
+  leads_not_in?: Maybe<Int[] | Int>;
+  leads_lt?: Maybe<Int>;
+  leads_lte?: Maybe<Int>;
+  leads_gt?: Maybe<Int>;
+  leads_gte?: Maybe<Int>;
   team?: Maybe<TeamWhereInput>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
@@ -2788,6 +2858,7 @@ export interface EventUpdateWithoutLeadDataInput {
   name?: Maybe<String>;
   description?: Maybe<String>;
   email?: Maybe<String>;
+  website?: Maybe<String>;
   password?: Maybe<String>;
   members?: Maybe<Int>;
   member?: Maybe<EventMemberUpdateManyWithoutEventInput>;
@@ -2856,6 +2927,7 @@ export interface EventCreateWithoutMemberInput {
   name: String;
   description?: Maybe<String>;
   email: String;
+  website?: Maybe<String>;
   password: String;
   members?: Maybe<Int>;
   leads?: Maybe<Int>;
@@ -2909,6 +2981,7 @@ export interface EventUpdateWithoutMemberDataInput {
   name?: Maybe<String>;
   description?: Maybe<String>;
   email?: Maybe<String>;
+  website?: Maybe<String>;
   password?: Maybe<String>;
   members?: Maybe<Int>;
   leads?: Maybe<Int>;
@@ -2955,6 +3028,7 @@ export interface EventMemberUpdateManyMutationInput {
 
 export interface OrganizationUpdateWithoutStaffDataInput {
   name?: Maybe<String>;
+  website?: Maybe<String>;
   Teams?: Maybe<Int>;
   leads?: Maybe<Int>;
   type?: Maybe<String>;
@@ -3012,6 +3086,7 @@ export interface EventCreateWithoutTeamInput {
   name: String;
   description?: Maybe<String>;
   email: String;
+  website?: Maybe<String>;
   password: String;
   members?: Maybe<Int>;
   member?: Maybe<EventMemberCreateManyWithoutEventInput>;
@@ -3065,6 +3140,7 @@ export interface EventUpdateWithoutTeamDataInput {
   name?: Maybe<String>;
   description?: Maybe<String>;
   email?: Maybe<String>;
+  website?: Maybe<String>;
   password?: Maybe<String>;
   members?: Maybe<Int>;
   member?: Maybe<EventMemberUpdateManyWithoutEventInput>;
@@ -3189,8 +3265,10 @@ export interface GroupCreateInput {
   members?: Maybe<Int>;
   member?: Maybe<GroupMemberCreateManyWithoutGroupInput>;
   email: String;
+  website?: Maybe<String>;
   password: String;
   teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
   team?: Maybe<TeamCreateOneInput>;
 }
 
@@ -3298,8 +3376,10 @@ export interface GroupUpdateInput {
   members?: Maybe<Int>;
   member?: Maybe<GroupMemberUpdateManyWithoutGroupInput>;
   email?: Maybe<String>;
+  website?: Maybe<String>;
   password?: Maybe<String>;
   teams?: Maybe<Int>;
+  leads?: Maybe<Int>;
   team?: Maybe<TeamUpdateOneInput>;
 }
 
@@ -3421,6 +3501,7 @@ export interface EventTeamWhereInput {
 export interface OrganizationCreateWithoutStaffInput {
   id?: Maybe<ID_Input>;
   name: String;
+  website?: Maybe<String>;
   Teams?: Maybe<Int>;
   leads?: Maybe<Int>;
   type?: Maybe<String>;
@@ -3440,6 +3521,7 @@ export interface GroupCreateOneWithoutMemberInput {
 
 export interface OrganizationUpdateInput {
   name?: Maybe<String>;
+  website?: Maybe<String>;
   Teams?: Maybe<Int>;
   leads?: Maybe<Int>;
   type?: Maybe<String>;
@@ -3602,6 +3684,7 @@ export interface Organization {
   id: ID_Output;
   createdAt: DateTimeOutput;
   name: String;
+  website?: String;
   Teams?: Int;
   leads?: Int;
   type?: String;
@@ -3619,6 +3702,7 @@ export interface OrganizationPromise
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   name: () => Promise<String>;
+  website: () => Promise<String>;
   Teams: () => Promise<Int>;
   leads: () => Promise<Int>;
   type: () => Promise<String>;
@@ -3654,6 +3738,7 @@ export interface OrganizationSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   name: () => Promise<AsyncIterator<String>>;
+  website: () => Promise<AsyncIterator<String>>;
   Teams: () => Promise<AsyncIterator<Int>>;
   leads: () => Promise<AsyncIterator<Int>>;
   type: () => Promise<AsyncIterator<String>>;
@@ -3689,6 +3774,7 @@ export interface OrganizationNullablePromise
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   name: () => Promise<String>;
+  website: () => Promise<String>;
   Teams: () => Promise<Int>;
   leads: () => Promise<Int>;
   type: () => Promise<String>;
@@ -4142,6 +4228,7 @@ export interface EventPreviousValues {
   name: String;
   description?: String;
   email: String;
+  website?: String;
   password: String;
   createdAt: DateTimeOutput;
   members?: Int;
@@ -4156,6 +4243,7 @@ export interface EventPreviousValuesPromise
   name: () => Promise<String>;
   description: () => Promise<String>;
   email: () => Promise<String>;
+  website: () => Promise<String>;
   password: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
   members: () => Promise<Int>;
@@ -4170,6 +4258,7 @@ export interface EventPreviousValuesSubscription
   name: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
+  website: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   members: () => Promise<AsyncIterator<Int>>;
@@ -4635,6 +4724,7 @@ export interface Event {
   name: String;
   description?: String;
   email: String;
+  website?: String;
   password: String;
   createdAt: DateTimeOutput;
   members?: Int;
@@ -4647,6 +4737,7 @@ export interface EventPromise extends Promise<Event>, Fragmentable {
   name: () => Promise<String>;
   description: () => Promise<String>;
   email: () => Promise<String>;
+  website: () => Promise<String>;
   password: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
   members: () => Promise<Int>;
@@ -4688,6 +4779,7 @@ export interface EventSubscription
   name: () => Promise<AsyncIterator<String>>;
   description: () => Promise<AsyncIterator<String>>;
   email: () => Promise<AsyncIterator<String>>;
+  website: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   members: () => Promise<AsyncIterator<Int>>;
@@ -4729,6 +4821,7 @@ export interface EventNullablePromise
   name: () => Promise<String>;
   description: () => Promise<String>;
   email: () => Promise<String>;
+  website: () => Promise<String>;
   password: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
   members: () => Promise<Int>;
@@ -4832,8 +4925,10 @@ export interface GroupPreviousValues {
   description?: String;
   members?: Int;
   email: String;
+  website?: String;
   password: String;
   teams?: Int;
+  leads?: Int;
   createdAt: DateTimeOutput;
 }
 
@@ -4845,8 +4940,10 @@ export interface GroupPreviousValuesPromise
   description: () => Promise<String>;
   members: () => Promise<Int>;
   email: () => Promise<String>;
+  website: () => Promise<String>;
   password: () => Promise<String>;
   teams: () => Promise<Int>;
+  leads: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
 }
 
@@ -4858,8 +4955,10 @@ export interface GroupPreviousValuesSubscription
   description: () => Promise<AsyncIterator<String>>;
   members: () => Promise<AsyncIterator<Int>>;
   email: () => Promise<AsyncIterator<String>>;
+  website: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
   teams: () => Promise<AsyncIterator<Int>>;
+  leads: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
@@ -5258,6 +5357,7 @@ export interface OrganizationPreviousValues {
   id: ID_Output;
   createdAt: DateTimeOutput;
   name: String;
+  website?: String;
   Teams?: Int;
   leads?: Int;
   type?: String;
@@ -5275,6 +5375,7 @@ export interface OrganizationPreviousValuesPromise
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   name: () => Promise<String>;
+  website: () => Promise<String>;
   Teams: () => Promise<Int>;
   leads: () => Promise<Int>;
   type: () => Promise<String>;
@@ -5292,6 +5393,7 @@ export interface OrganizationPreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   name: () => Promise<AsyncIterator<String>>;
+  website: () => Promise<AsyncIterator<String>>;
   Teams: () => Promise<AsyncIterator<Int>>;
   leads: () => Promise<AsyncIterator<Int>>;
   type: () => Promise<AsyncIterator<String>>;
@@ -5328,8 +5430,10 @@ export interface Group {
   description?: String;
   members?: Int;
   email: String;
+  website?: String;
   password: String;
   teams?: Int;
+  leads?: Int;
   createdAt: DateTimeOutput;
 }
 
@@ -5348,8 +5452,10 @@ export interface GroupPromise extends Promise<Group>, Fragmentable {
     last?: Int;
   }) => T;
   email: () => Promise<String>;
+  website: () => Promise<String>;
   password: () => Promise<String>;
   teams: () => Promise<Int>;
+  leads: () => Promise<Int>;
   team: <T = TeamPromise>() => T;
   createdAt: () => Promise<DateTimeOutput>;
 }
@@ -5371,8 +5477,10 @@ export interface GroupSubscription
     last?: Int;
   }) => T;
   email: () => Promise<AsyncIterator<String>>;
+  website: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
   teams: () => Promise<AsyncIterator<Int>>;
+  leads: () => Promise<AsyncIterator<Int>>;
   team: <T = TeamSubscription>() => T;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -5394,8 +5502,10 @@ export interface GroupNullablePromise
     last?: Int;
   }) => T;
   email: () => Promise<String>;
+  website: () => Promise<String>;
   password: () => Promise<String>;
   teams: () => Promise<Int>;
+  leads: () => Promise<Int>;
   team: <T = TeamPromise>() => T;
   createdAt: () => Promise<DateTimeOutput>;
 }

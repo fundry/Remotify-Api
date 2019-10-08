@@ -11,6 +11,7 @@ type Event {
   name: String! @unique
   description: String
   email: String! @unique
+  website: String  
   password : String!    
   createdAt: DateTime! @createdAt
   members: Int 
@@ -51,8 +52,10 @@ type Group {
   members: Int 
   member: [GroupMember] @relation( name : "GroupMember"   , onDelete: CASCADE  )
   email: String! @unique
+  website: String  
   password : String!    
   teams : Int 
+  leads : Int 
   team : Team @relation( name : "GroupTeam"   , onDelete: CASCADE  ) 
   createdAt: DateTime! @createdAt
 }
@@ -71,6 +74,7 @@ type Organization {
    id: ID! @id
   createdAt: DateTime! @createdAt
   name : String! @unique
+  website : String  
   Teams  : Int
   leads : Int  
   type: String

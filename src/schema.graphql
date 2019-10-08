@@ -34,6 +34,7 @@ type Mutation {
       email: String 
       createdAt: Int
       members: Int
+      website: String  
       password: String!  
       leads: Int  
       teams: Int  
@@ -47,6 +48,7 @@ type Mutation {
       description: String 
       email: String 
       password: String!  
+      website: String  
       createdAt: Int
       members: Int  
       leads: Int  
@@ -62,6 +64,7 @@ type Mutation {
         staffs: Int
         type: String
          email: String
+      website: String  
          country: String
          state: String
          password: String
@@ -116,6 +119,17 @@ type Mutation {
     password: String!
   ) :  AuthPayload
 
+   loginEvent (
+    where: UniqueInput!
+    name: String!
+    password: String!
+  ) :  AuthPayload 
+
+   loginEventMember(
+    where: UniqueInput!
+    name: String!
+    password: String!
+  ) :  AuthPayload
 
 # cloud functions resolvers here 
     sendEmail(

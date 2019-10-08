@@ -313,6 +313,7 @@ type Event {
   name: String!
   description: String
   email: String!
+  website: String
   password: String!
   createdAt: DateTime!
   members: Int
@@ -334,6 +335,7 @@ input EventCreateInput {
   name: String!
   description: String
   email: String!
+  website: String
   password: String!
   members: Int
   member: EventMemberCreateManyWithoutEventInput
@@ -363,6 +365,7 @@ input EventCreateWithoutLeadInput {
   name: String!
   description: String
   email: String!
+  website: String
   password: String!
   members: Int
   member: EventMemberCreateManyWithoutEventInput
@@ -376,6 +379,7 @@ input EventCreateWithoutMemberInput {
   name: String!
   description: String
   email: String!
+  website: String
   password: String!
   members: Int
   leads: Int
@@ -389,6 +393,7 @@ input EventCreateWithoutTeamInput {
   name: String!
   description: String
   email: String!
+  website: String
   password: String!
   members: Int
   member: EventMemberCreateManyWithoutEventInput
@@ -851,6 +856,8 @@ enum EventOrderByInput {
   description_DESC
   email_ASC
   email_DESC
+  website_ASC
+  website_DESC
   password_ASC
   password_DESC
   createdAt_ASC
@@ -868,6 +875,7 @@ type EventPreviousValues {
   name: String!
   description: String
   email: String!
+  website: String
   password: String!
   createdAt: DateTime!
   members: Int
@@ -1137,6 +1145,7 @@ input EventUpdateInput {
   name: String
   description: String
   email: String
+  website: String
   password: String
   members: Int
   member: EventMemberUpdateManyWithoutEventInput
@@ -1150,6 +1159,7 @@ input EventUpdateManyMutationInput {
   name: String
   description: String
   email: String
+  website: String
   password: String
   members: Int
   leads: Int
@@ -1187,6 +1197,7 @@ input EventUpdateWithoutLeadDataInput {
   name: String
   description: String
   email: String
+  website: String
   password: String
   members: Int
   member: EventMemberUpdateManyWithoutEventInput
@@ -1199,6 +1210,7 @@ input EventUpdateWithoutMemberDataInput {
   name: String
   description: String
   email: String
+  website: String
   password: String
   members: Int
   leads: Int
@@ -1211,6 +1223,7 @@ input EventUpdateWithoutTeamDataInput {
   name: String
   description: String
   email: String
+  website: String
   password: String
   members: Int
   member: EventMemberUpdateManyWithoutEventInput
@@ -1291,6 +1304,20 @@ input EventWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
+  website: String
+  website_not: String
+  website_in: [String!]
+  website_not_in: [String!]
+  website_lt: String
+  website_lte: String
+  website_gt: String
+  website_gte: String
+  website_contains: String
+  website_not_contains: String
+  website_starts_with: String
+  website_not_starts_with: String
+  website_ends_with: String
+  website_not_ends_with: String
   password: String
   password_not: String
   password_in: [String!]
@@ -1364,8 +1391,10 @@ type Group {
   members: Int
   member(where: GroupMemberWhereInput, orderBy: GroupMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GroupMember!]
   email: String!
+  website: String
   password: String!
   teams: Int
+  leads: Int
   team: Team
   createdAt: DateTime!
 }
@@ -1383,8 +1412,10 @@ input GroupCreateInput {
   members: Int
   member: GroupMemberCreateManyWithoutGroupInput
   email: String!
+  website: String
   password: String!
   teams: Int
+  leads: Int
   team: TeamCreateOneInput
 }
 
@@ -1399,8 +1430,10 @@ input GroupCreateWithoutMemberInput {
   description: String
   members: Int
   email: String!
+  website: String
   password: String!
   teams: Int
+  leads: Int
   team: TeamCreateOneInput
 }
 
@@ -1716,10 +1749,14 @@ enum GroupOrderByInput {
   members_DESC
   email_ASC
   email_DESC
+  website_ASC
+  website_DESC
   password_ASC
   password_DESC
   teams_ASC
   teams_DESC
+  leads_ASC
+  leads_DESC
   createdAt_ASC
   createdAt_DESC
 }
@@ -1730,8 +1767,10 @@ type GroupPreviousValues {
   description: String
   members: Int
   email: String!
+  website: String
   password: String!
   teams: Int
+  leads: Int
   createdAt: DateTime!
 }
 
@@ -1759,8 +1798,10 @@ input GroupUpdateInput {
   members: Int
   member: GroupMemberUpdateManyWithoutGroupInput
   email: String
+  website: String
   password: String
   teams: Int
+  leads: Int
   team: TeamUpdateOneInput
 }
 
@@ -1769,8 +1810,10 @@ input GroupUpdateManyMutationInput {
   description: String
   members: Int
   email: String
+  website: String
   password: String
   teams: Int
+  leads: Int
 }
 
 input GroupUpdateOneWithoutMemberInput {
@@ -1787,8 +1830,10 @@ input GroupUpdateWithoutMemberDataInput {
   description: String
   members: Int
   email: String
+  website: String
   password: String
   teams: Int
+  leads: Int
   team: TeamUpdateOneInput
 }
 
@@ -1865,6 +1910,20 @@ input GroupWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
+  website: String
+  website_not: String
+  website_in: [String!]
+  website_not_in: [String!]
+  website_lt: String
+  website_lte: String
+  website_gt: String
+  website_gte: String
+  website_contains: String
+  website_not_contains: String
+  website_starts_with: String
+  website_not_starts_with: String
+  website_ends_with: String
+  website_not_ends_with: String
   password: String
   password_not: String
   password_in: [String!]
@@ -1887,6 +1946,14 @@ input GroupWhereInput {
   teams_lte: Int
   teams_gt: Int
   teams_gte: Int
+  leads: Int
+  leads_not: Int
+  leads_in: [Int!]
+  leads_not_in: [Int!]
+  leads_lt: Int
+  leads_lte: Int
+  leads_gt: Int
+  leads_gte: Int
   team: TeamWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
@@ -1992,6 +2059,7 @@ type Organization {
   id: ID!
   createdAt: DateTime!
   name: String!
+  website: String
   Teams: Int
   leads: Int
   type: String
@@ -2014,6 +2082,7 @@ type OrganizationConnection {
 input OrganizationCreateInput {
   id: ID
   name: String!
+  website: String
   Teams: Int
   leads: Int
   type: String
@@ -2035,6 +2104,7 @@ input OrganizationCreateOneWithoutStaffInput {
 input OrganizationCreateWithoutStaffInput {
   id: ID
   name: String!
+  website: String
   Teams: Int
   leads: Int
   type: String
@@ -2059,6 +2129,8 @@ enum OrganizationOrderByInput {
   createdAt_DESC
   name_ASC
   name_DESC
+  website_ASC
+  website_DESC
   Teams_ASC
   Teams_DESC
   leads_ASC
@@ -2083,6 +2155,7 @@ type OrganizationPreviousValues {
   id: ID!
   createdAt: DateTime!
   name: String!
+  website: String
   Teams: Int
   leads: Int
   type: String
@@ -2114,6 +2187,7 @@ input OrganizationSubscriptionWhereInput {
 
 input OrganizationUpdateInput {
   name: String
+  website: String
   Teams: Int
   leads: Int
   type: String
@@ -2129,6 +2203,7 @@ input OrganizationUpdateInput {
 
 input OrganizationUpdateManyMutationInput {
   name: String
+  website: String
   Teams: Int
   leads: Int
   type: String
@@ -2151,6 +2226,7 @@ input OrganizationUpdateOneWithoutStaffInput {
 
 input OrganizationUpdateWithoutStaffDataInput {
   name: String
+  website: String
   Teams: Int
   leads: Int
   type: String
@@ -2205,6 +2281,20 @@ input OrganizationWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  website: String
+  website_not: String
+  website_in: [String!]
+  website_not_in: [String!]
+  website_lt: String
+  website_lte: String
+  website_gt: String
+  website_gte: String
+  website_contains: String
+  website_not_contains: String
+  website_starts_with: String
+  website_not_starts_with: String
+  website_ends_with: String
+  website_not_ends_with: String
   Teams: Int
   Teams_not: Int
   Teams_in: [Int!]
