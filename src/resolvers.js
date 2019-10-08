@@ -51,7 +51,18 @@ const resolver = {
       const id = ctx.where.id;
       return prisma.db.query.group({
         where: {
-          id,
+          email,
+        },
+        info,
+      });
+    },
+
+    event: (_, ctx, prisma, info) => {
+      const email = ctx.where.email;
+      const id = ctx.where.id;
+      return prisma.db.query.event({
+        where: {
+          email,
         },
         info,
       });
@@ -86,34 +97,6 @@ const resolver = {
           password: hashedPassword,
         },
       });
-    },
-
-    loginOrganization: async (_, { password, where }, ctx, info) => {
-      const email = where.email;
-      const user = await ctx.db.query.organization({
-        where: {
-          email: email,
-        },
-      });
-
-      if (!user) {
-        throw new Error('Invalid Login');
-      }
-      const passwordMatch = await bcrypt.compare(password, user.password);
-
-      if (!passwordMatch) {
-        throw new Error('Invalid Login');
-      }
-      const token = jwt.sign(
-        {
-          username: email,
-        },
-        process.env.APP_SECRET,
-        {
-          expiresIn: '30d',
-        }
-      );
-      return { token, user };
     },
 
     createStaff: async (_, args, context, info) => {
@@ -173,6 +156,94 @@ const resolver = {
           password: hashedPassword,
         },
       });
+    },
+
+    //
+    //  AUTH RESOLVERS ========>
+    //
+
+    loginOrganization: async (_, { password, where }, ctx, info) => {
+      const email = where.email;
+      const user = await ctx.db.query.organization({
+        where: {
+          email: email,
+        },
+      });
+
+      if (!user) {
+        throw new Error('Invalid Login');
+      }
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (!passwordMatch) {
+        throw new Error('Invalid Login');
+      }
+      const token = jwt.sign(
+        {
+          username: email,
+        },
+        process.env.APP_SECRET,
+        {
+          expiresIn: '30d',
+        }
+      );
+      return { token, user };
+    },
+
+    loginGroup: async (_, { password, where }, ctx, info) => {
+      const email = where.email;
+      const user = await ctx.db.query.group({
+        where: {
+          email: email,
+        },
+      });
+
+      if (!user) {
+        throw new Error('Invalid Login');
+      }
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (!passwordMatch) {
+        throw new Error('Invalid Login');
+      }
+      const token = jwt.sign(
+        {
+          username: email,
+        },
+        process.env.APP_SECRET,
+        {
+          expiresIn: '30d',
+        }
+      );
+      return { token, user };
+    },
+
+    loginStaff: async (_, { password, where }, ctx, info) => {
+      const email = where.email;
+      const user = await ctx.db.query.staff({
+        where: {
+          email: email,
+        },
+      });
+
+      if (!user) {
+        throw new Error('Invalid Login');
+      }
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (!passwordMatch) {
+        throw new Error('Invalid Login');
+      }
+      const token = jwt.sign(
+        {
+          username: email,
+        },
+        process.env.APP_SECRET,
+        {
+          expiresIn: '30d',
+        }
+      );
+      return { token, user };
     },
 
     // Cloud Functions resolvers here ============>>>>

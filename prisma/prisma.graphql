@@ -78,7 +78,10 @@ type Query {
   group(where: GroupWhereUniqueInput!): Group!
   upsertGroup(where:GroupWhereUniqueInput!, create: GroupCreateInput! ): Group!
 
-  node(
+  event(where: EventWhereUniqueInput!): Event!
+  upsertEvent(where: EventWhereUniqueInput!, create: EventCreateInput! ): Event!
+ 
+ node(
     id: ID!                                          
   ): Node
 }
@@ -133,7 +136,22 @@ type User implements Node {
     name:  String!
     description: String
     email: String
-  }
+    password: String
+    createdAt: Int
+    leads: Int
+    teams: Int
+ }
+
+  type Event implements Node  {
+    id: ID!
+    name:  String!
+    description: String
+    email: String 
+    password: String
+    createdAt: Int
+    leads: Int
+    teams: Int 
+}
 
 """A connection to a list of items."""
 type UserConnection {
@@ -182,10 +200,22 @@ input GroupCreateInput {
   name: String
   description: String
   email: String
-  password: String
+  password: String 
+  createdAt: Int
+    leads: Int
+    teams: Int 
 }
 
- 
+ input EventCreateInput {
+  name: String
+  description: String
+  email: String
+  password: String  
+  createdAt: Int
+    leads: Int
+    teams: Int 
+}
+
 """An edge in a connection."""
 type UserEdge {
   """The item at the end of the edge."""
@@ -459,6 +489,11 @@ input OrganizationWhereUniqueInput {
 }
 
 input DepartmentWhereUniqueInput {
+  id : ID
+  email: String
+}
+
+ input EventWhereUniqueInput {
   id : ID
   email: String
 }

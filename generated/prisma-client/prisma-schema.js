@@ -7,6 +7,22 @@ module.exports = {
   count: Int!
 }
 
+type AggregateEvent {
+  count: Int!
+}
+
+type AggregateEventLead {
+  count: Int!
+}
+
+type AggregateEventMember {
+  count: Int!
+}
+
+type AggregateEventTeam {
+  count: Int!
+}
+
 type AggregateGroup {
   count: Int!
 }
@@ -292,6 +308,1055 @@ input DepartmentWhereUniqueInput {
   name: String
 }
 
+type Event {
+  id: ID!
+  name: String!
+  description: String
+  email: String!
+  password: String!
+  createdAt: DateTime!
+  members: Int
+  member(where: EventMemberWhereInput, orderBy: EventMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventMember!]
+  leads: Int
+  lead(where: EventLeadWhereInput, orderBy: EventLeadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventLead!]
+  teams: Int
+  team(where: EventTeamWhereInput, orderBy: EventTeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventTeam!]
+}
+
+type EventConnection {
+  pageInfo: PageInfo!
+  edges: [EventEdge]!
+  aggregate: AggregateEvent!
+}
+
+input EventCreateInput {
+  id: ID
+  name: String!
+  description: String
+  email: String!
+  password: String!
+  members: Int
+  member: EventMemberCreateManyWithoutEventInput
+  leads: Int
+  lead: EventLeadCreateManyWithoutEventInput
+  teams: Int
+  team: EventTeamCreateManyWithoutEventInput
+}
+
+input EventCreateOneWithoutLeadInput {
+  create: EventCreateWithoutLeadInput
+  connect: EventWhereUniqueInput
+}
+
+input EventCreateOneWithoutMemberInput {
+  create: EventCreateWithoutMemberInput
+  connect: EventWhereUniqueInput
+}
+
+input EventCreateOneWithoutTeamInput {
+  create: EventCreateWithoutTeamInput
+  connect: EventWhereUniqueInput
+}
+
+input EventCreateWithoutLeadInput {
+  id: ID
+  name: String!
+  description: String
+  email: String!
+  password: String!
+  members: Int
+  member: EventMemberCreateManyWithoutEventInput
+  leads: Int
+  teams: Int
+  team: EventTeamCreateManyWithoutEventInput
+}
+
+input EventCreateWithoutMemberInput {
+  id: ID
+  name: String!
+  description: String
+  email: String!
+  password: String!
+  members: Int
+  leads: Int
+  lead: EventLeadCreateManyWithoutEventInput
+  teams: Int
+  team: EventTeamCreateManyWithoutEventInput
+}
+
+input EventCreateWithoutTeamInput {
+  id: ID
+  name: String!
+  description: String
+  email: String!
+  password: String!
+  members: Int
+  member: EventMemberCreateManyWithoutEventInput
+  leads: Int
+  lead: EventLeadCreateManyWithoutEventInput
+  teams: Int
+}
+
+type EventEdge {
+  node: Event!
+  cursor: String!
+}
+
+type EventLead {
+  id: ID!
+  firstname: String!
+  lastname: String!
+  event: Event
+}
+
+type EventLeadConnection {
+  pageInfo: PageInfo!
+  edges: [EventLeadEdge]!
+  aggregate: AggregateEventLead!
+}
+
+input EventLeadCreateInput {
+  id: ID
+  firstname: String!
+  lastname: String!
+  event: EventCreateOneWithoutLeadInput
+}
+
+input EventLeadCreateManyWithoutEventInput {
+  create: [EventLeadCreateWithoutEventInput!]
+  connect: [EventLeadWhereUniqueInput!]
+}
+
+input EventLeadCreateWithoutEventInput {
+  id: ID
+  firstname: String!
+  lastname: String!
+}
+
+type EventLeadEdge {
+  node: EventLead!
+  cursor: String!
+}
+
+enum EventLeadOrderByInput {
+  id_ASC
+  id_DESC
+  firstname_ASC
+  firstname_DESC
+  lastname_ASC
+  lastname_DESC
+}
+
+type EventLeadPreviousValues {
+  id: ID!
+  firstname: String!
+  lastname: String!
+}
+
+input EventLeadScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  firstname: String
+  firstname_not: String
+  firstname_in: [String!]
+  firstname_not_in: [String!]
+  firstname_lt: String
+  firstname_lte: String
+  firstname_gt: String
+  firstname_gte: String
+  firstname_contains: String
+  firstname_not_contains: String
+  firstname_starts_with: String
+  firstname_not_starts_with: String
+  firstname_ends_with: String
+  firstname_not_ends_with: String
+  lastname: String
+  lastname_not: String
+  lastname_in: [String!]
+  lastname_not_in: [String!]
+  lastname_lt: String
+  lastname_lte: String
+  lastname_gt: String
+  lastname_gte: String
+  lastname_contains: String
+  lastname_not_contains: String
+  lastname_starts_with: String
+  lastname_not_starts_with: String
+  lastname_ends_with: String
+  lastname_not_ends_with: String
+  AND: [EventLeadScalarWhereInput!]
+  OR: [EventLeadScalarWhereInput!]
+  NOT: [EventLeadScalarWhereInput!]
+}
+
+type EventLeadSubscriptionPayload {
+  mutation: MutationType!
+  node: EventLead
+  updatedFields: [String!]
+  previousValues: EventLeadPreviousValues
+}
+
+input EventLeadSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: EventLeadWhereInput
+  AND: [EventLeadSubscriptionWhereInput!]
+  OR: [EventLeadSubscriptionWhereInput!]
+  NOT: [EventLeadSubscriptionWhereInput!]
+}
+
+input EventLeadUpdateInput {
+  firstname: String
+  lastname: String
+  event: EventUpdateOneWithoutLeadInput
+}
+
+input EventLeadUpdateManyDataInput {
+  firstname: String
+  lastname: String
+}
+
+input EventLeadUpdateManyMutationInput {
+  firstname: String
+  lastname: String
+}
+
+input EventLeadUpdateManyWithoutEventInput {
+  create: [EventLeadCreateWithoutEventInput!]
+  delete: [EventLeadWhereUniqueInput!]
+  connect: [EventLeadWhereUniqueInput!]
+  set: [EventLeadWhereUniqueInput!]
+  disconnect: [EventLeadWhereUniqueInput!]
+  update: [EventLeadUpdateWithWhereUniqueWithoutEventInput!]
+  upsert: [EventLeadUpsertWithWhereUniqueWithoutEventInput!]
+  deleteMany: [EventLeadScalarWhereInput!]
+  updateMany: [EventLeadUpdateManyWithWhereNestedInput!]
+}
+
+input EventLeadUpdateManyWithWhereNestedInput {
+  where: EventLeadScalarWhereInput!
+  data: EventLeadUpdateManyDataInput!
+}
+
+input EventLeadUpdateWithoutEventDataInput {
+  firstname: String
+  lastname: String
+}
+
+input EventLeadUpdateWithWhereUniqueWithoutEventInput {
+  where: EventLeadWhereUniqueInput!
+  data: EventLeadUpdateWithoutEventDataInput!
+}
+
+input EventLeadUpsertWithWhereUniqueWithoutEventInput {
+  where: EventLeadWhereUniqueInput!
+  update: EventLeadUpdateWithoutEventDataInput!
+  create: EventLeadCreateWithoutEventInput!
+}
+
+input EventLeadWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  firstname: String
+  firstname_not: String
+  firstname_in: [String!]
+  firstname_not_in: [String!]
+  firstname_lt: String
+  firstname_lte: String
+  firstname_gt: String
+  firstname_gte: String
+  firstname_contains: String
+  firstname_not_contains: String
+  firstname_starts_with: String
+  firstname_not_starts_with: String
+  firstname_ends_with: String
+  firstname_not_ends_with: String
+  lastname: String
+  lastname_not: String
+  lastname_in: [String!]
+  lastname_not_in: [String!]
+  lastname_lt: String
+  lastname_lte: String
+  lastname_gt: String
+  lastname_gte: String
+  lastname_contains: String
+  lastname_not_contains: String
+  lastname_starts_with: String
+  lastname_not_starts_with: String
+  lastname_ends_with: String
+  lastname_not_ends_with: String
+  event: EventWhereInput
+  AND: [EventLeadWhereInput!]
+  OR: [EventLeadWhereInput!]
+  NOT: [EventLeadWhereInput!]
+}
+
+input EventLeadWhereUniqueInput {
+  id: ID
+  lastname: String
+}
+
+type EventMember {
+  id: ID!
+  firstname: String!
+  lastname: String!
+  event: Event
+}
+
+type EventMemberConnection {
+  pageInfo: PageInfo!
+  edges: [EventMemberEdge]!
+  aggregate: AggregateEventMember!
+}
+
+input EventMemberCreateInput {
+  id: ID
+  firstname: String!
+  lastname: String!
+  event: EventCreateOneWithoutMemberInput
+}
+
+input EventMemberCreateManyWithoutEventInput {
+  create: [EventMemberCreateWithoutEventInput!]
+  connect: [EventMemberWhereUniqueInput!]
+}
+
+input EventMemberCreateWithoutEventInput {
+  id: ID
+  firstname: String!
+  lastname: String!
+}
+
+type EventMemberEdge {
+  node: EventMember!
+  cursor: String!
+}
+
+enum EventMemberOrderByInput {
+  id_ASC
+  id_DESC
+  firstname_ASC
+  firstname_DESC
+  lastname_ASC
+  lastname_DESC
+}
+
+type EventMemberPreviousValues {
+  id: ID!
+  firstname: String!
+  lastname: String!
+}
+
+input EventMemberScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  firstname: String
+  firstname_not: String
+  firstname_in: [String!]
+  firstname_not_in: [String!]
+  firstname_lt: String
+  firstname_lte: String
+  firstname_gt: String
+  firstname_gte: String
+  firstname_contains: String
+  firstname_not_contains: String
+  firstname_starts_with: String
+  firstname_not_starts_with: String
+  firstname_ends_with: String
+  firstname_not_ends_with: String
+  lastname: String
+  lastname_not: String
+  lastname_in: [String!]
+  lastname_not_in: [String!]
+  lastname_lt: String
+  lastname_lte: String
+  lastname_gt: String
+  lastname_gte: String
+  lastname_contains: String
+  lastname_not_contains: String
+  lastname_starts_with: String
+  lastname_not_starts_with: String
+  lastname_ends_with: String
+  lastname_not_ends_with: String
+  AND: [EventMemberScalarWhereInput!]
+  OR: [EventMemberScalarWhereInput!]
+  NOT: [EventMemberScalarWhereInput!]
+}
+
+type EventMemberSubscriptionPayload {
+  mutation: MutationType!
+  node: EventMember
+  updatedFields: [String!]
+  previousValues: EventMemberPreviousValues
+}
+
+input EventMemberSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: EventMemberWhereInput
+  AND: [EventMemberSubscriptionWhereInput!]
+  OR: [EventMemberSubscriptionWhereInput!]
+  NOT: [EventMemberSubscriptionWhereInput!]
+}
+
+input EventMemberUpdateInput {
+  firstname: String
+  lastname: String
+  event: EventUpdateOneWithoutMemberInput
+}
+
+input EventMemberUpdateManyDataInput {
+  firstname: String
+  lastname: String
+}
+
+input EventMemberUpdateManyMutationInput {
+  firstname: String
+  lastname: String
+}
+
+input EventMemberUpdateManyWithoutEventInput {
+  create: [EventMemberCreateWithoutEventInput!]
+  delete: [EventMemberWhereUniqueInput!]
+  connect: [EventMemberWhereUniqueInput!]
+  set: [EventMemberWhereUniqueInput!]
+  disconnect: [EventMemberWhereUniqueInput!]
+  update: [EventMemberUpdateWithWhereUniqueWithoutEventInput!]
+  upsert: [EventMemberUpsertWithWhereUniqueWithoutEventInput!]
+  deleteMany: [EventMemberScalarWhereInput!]
+  updateMany: [EventMemberUpdateManyWithWhereNestedInput!]
+}
+
+input EventMemberUpdateManyWithWhereNestedInput {
+  where: EventMemberScalarWhereInput!
+  data: EventMemberUpdateManyDataInput!
+}
+
+input EventMemberUpdateWithoutEventDataInput {
+  firstname: String
+  lastname: String
+}
+
+input EventMemberUpdateWithWhereUniqueWithoutEventInput {
+  where: EventMemberWhereUniqueInput!
+  data: EventMemberUpdateWithoutEventDataInput!
+}
+
+input EventMemberUpsertWithWhereUniqueWithoutEventInput {
+  where: EventMemberWhereUniqueInput!
+  update: EventMemberUpdateWithoutEventDataInput!
+  create: EventMemberCreateWithoutEventInput!
+}
+
+input EventMemberWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  firstname: String
+  firstname_not: String
+  firstname_in: [String!]
+  firstname_not_in: [String!]
+  firstname_lt: String
+  firstname_lte: String
+  firstname_gt: String
+  firstname_gte: String
+  firstname_contains: String
+  firstname_not_contains: String
+  firstname_starts_with: String
+  firstname_not_starts_with: String
+  firstname_ends_with: String
+  firstname_not_ends_with: String
+  lastname: String
+  lastname_not: String
+  lastname_in: [String!]
+  lastname_not_in: [String!]
+  lastname_lt: String
+  lastname_lte: String
+  lastname_gt: String
+  lastname_gte: String
+  lastname_contains: String
+  lastname_not_contains: String
+  lastname_starts_with: String
+  lastname_not_starts_with: String
+  lastname_ends_with: String
+  lastname_not_ends_with: String
+  event: EventWhereInput
+  AND: [EventMemberWhereInput!]
+  OR: [EventMemberWhereInput!]
+  NOT: [EventMemberWhereInput!]
+}
+
+input EventMemberWhereUniqueInput {
+  id: ID
+  lastname: String
+}
+
+enum EventOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  email_ASC
+  email_DESC
+  password_ASC
+  password_DESC
+  createdAt_ASC
+  createdAt_DESC
+  members_ASC
+  members_DESC
+  leads_ASC
+  leads_DESC
+  teams_ASC
+  teams_DESC
+}
+
+type EventPreviousValues {
+  id: ID!
+  name: String!
+  description: String
+  email: String!
+  password: String!
+  createdAt: DateTime!
+  members: Int
+  leads: Int
+  teams: Int
+}
+
+type EventSubscriptionPayload {
+  mutation: MutationType!
+  node: Event
+  updatedFields: [String!]
+  previousValues: EventPreviousValues
+}
+
+input EventSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: EventWhereInput
+  AND: [EventSubscriptionWhereInput!]
+  OR: [EventSubscriptionWhereInput!]
+  NOT: [EventSubscriptionWhereInput!]
+}
+
+type EventTeam {
+  id: ID!
+  name: String!
+  description: String!
+  createdAt: DateTime!
+  event: Event
+}
+
+type EventTeamConnection {
+  pageInfo: PageInfo!
+  edges: [EventTeamEdge]!
+  aggregate: AggregateEventTeam!
+}
+
+input EventTeamCreateInput {
+  id: ID
+  name: String!
+  description: String!
+  event: EventCreateOneWithoutTeamInput
+}
+
+input EventTeamCreateManyWithoutEventInput {
+  create: [EventTeamCreateWithoutEventInput!]
+  connect: [EventTeamWhereUniqueInput!]
+}
+
+input EventTeamCreateWithoutEventInput {
+  id: ID
+  name: String!
+  description: String!
+}
+
+type EventTeamEdge {
+  node: EventTeam!
+  cursor: String!
+}
+
+enum EventTeamOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type EventTeamPreviousValues {
+  id: ID!
+  name: String!
+  description: String!
+  createdAt: DateTime!
+}
+
+input EventTeamScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [EventTeamScalarWhereInput!]
+  OR: [EventTeamScalarWhereInput!]
+  NOT: [EventTeamScalarWhereInput!]
+}
+
+type EventTeamSubscriptionPayload {
+  mutation: MutationType!
+  node: EventTeam
+  updatedFields: [String!]
+  previousValues: EventTeamPreviousValues
+}
+
+input EventTeamSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: EventTeamWhereInput
+  AND: [EventTeamSubscriptionWhereInput!]
+  OR: [EventTeamSubscriptionWhereInput!]
+  NOT: [EventTeamSubscriptionWhereInput!]
+}
+
+input EventTeamUpdateInput {
+  name: String
+  description: String
+  event: EventUpdateOneWithoutTeamInput
+}
+
+input EventTeamUpdateManyDataInput {
+  name: String
+  description: String
+}
+
+input EventTeamUpdateManyMutationInput {
+  name: String
+  description: String
+}
+
+input EventTeamUpdateManyWithoutEventInput {
+  create: [EventTeamCreateWithoutEventInput!]
+  delete: [EventTeamWhereUniqueInput!]
+  connect: [EventTeamWhereUniqueInput!]
+  set: [EventTeamWhereUniqueInput!]
+  disconnect: [EventTeamWhereUniqueInput!]
+  update: [EventTeamUpdateWithWhereUniqueWithoutEventInput!]
+  upsert: [EventTeamUpsertWithWhereUniqueWithoutEventInput!]
+  deleteMany: [EventTeamScalarWhereInput!]
+  updateMany: [EventTeamUpdateManyWithWhereNestedInput!]
+}
+
+input EventTeamUpdateManyWithWhereNestedInput {
+  where: EventTeamScalarWhereInput!
+  data: EventTeamUpdateManyDataInput!
+}
+
+input EventTeamUpdateWithoutEventDataInput {
+  name: String
+  description: String
+}
+
+input EventTeamUpdateWithWhereUniqueWithoutEventInput {
+  where: EventTeamWhereUniqueInput!
+  data: EventTeamUpdateWithoutEventDataInput!
+}
+
+input EventTeamUpsertWithWhereUniqueWithoutEventInput {
+  where: EventTeamWhereUniqueInput!
+  update: EventTeamUpdateWithoutEventDataInput!
+  create: EventTeamCreateWithoutEventInput!
+}
+
+input EventTeamWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  event: EventWhereInput
+  AND: [EventTeamWhereInput!]
+  OR: [EventTeamWhereInput!]
+  NOT: [EventTeamWhereInput!]
+}
+
+input EventTeamWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+input EventUpdateInput {
+  name: String
+  description: String
+  email: String
+  password: String
+  members: Int
+  member: EventMemberUpdateManyWithoutEventInput
+  leads: Int
+  lead: EventLeadUpdateManyWithoutEventInput
+  teams: Int
+  team: EventTeamUpdateManyWithoutEventInput
+}
+
+input EventUpdateManyMutationInput {
+  name: String
+  description: String
+  email: String
+  password: String
+  members: Int
+  leads: Int
+  teams: Int
+}
+
+input EventUpdateOneWithoutLeadInput {
+  create: EventCreateWithoutLeadInput
+  update: EventUpdateWithoutLeadDataInput
+  upsert: EventUpsertWithoutLeadInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: EventWhereUniqueInput
+}
+
+input EventUpdateOneWithoutMemberInput {
+  create: EventCreateWithoutMemberInput
+  update: EventUpdateWithoutMemberDataInput
+  upsert: EventUpsertWithoutMemberInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: EventWhereUniqueInput
+}
+
+input EventUpdateOneWithoutTeamInput {
+  create: EventCreateWithoutTeamInput
+  update: EventUpdateWithoutTeamDataInput
+  upsert: EventUpsertWithoutTeamInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: EventWhereUniqueInput
+}
+
+input EventUpdateWithoutLeadDataInput {
+  name: String
+  description: String
+  email: String
+  password: String
+  members: Int
+  member: EventMemberUpdateManyWithoutEventInput
+  leads: Int
+  teams: Int
+  team: EventTeamUpdateManyWithoutEventInput
+}
+
+input EventUpdateWithoutMemberDataInput {
+  name: String
+  description: String
+  email: String
+  password: String
+  members: Int
+  leads: Int
+  lead: EventLeadUpdateManyWithoutEventInput
+  teams: Int
+  team: EventTeamUpdateManyWithoutEventInput
+}
+
+input EventUpdateWithoutTeamDataInput {
+  name: String
+  description: String
+  email: String
+  password: String
+  members: Int
+  member: EventMemberUpdateManyWithoutEventInput
+  leads: Int
+  lead: EventLeadUpdateManyWithoutEventInput
+  teams: Int
+}
+
+input EventUpsertWithoutLeadInput {
+  update: EventUpdateWithoutLeadDataInput!
+  create: EventCreateWithoutLeadInput!
+}
+
+input EventUpsertWithoutMemberInput {
+  update: EventUpdateWithoutMemberDataInput!
+  create: EventCreateWithoutMemberInput!
+}
+
+input EventUpsertWithoutTeamInput {
+  update: EventUpdateWithoutTeamDataInput!
+  create: EventCreateWithoutTeamInput!
+}
+
+input EventWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  members: Int
+  members_not: Int
+  members_in: [Int!]
+  members_not_in: [Int!]
+  members_lt: Int
+  members_lte: Int
+  members_gt: Int
+  members_gte: Int
+  member_every: EventMemberWhereInput
+  member_some: EventMemberWhereInput
+  member_none: EventMemberWhereInput
+  leads: Int
+  leads_not: Int
+  leads_in: [Int!]
+  leads_not_in: [Int!]
+  leads_lt: Int
+  leads_lte: Int
+  leads_gt: Int
+  leads_gte: Int
+  lead_every: EventLeadWhereInput
+  lead_some: EventLeadWhereInput
+  lead_none: EventLeadWhereInput
+  teams: Int
+  teams_not: Int
+  teams_in: [Int!]
+  teams_not_in: [Int!]
+  teams_lt: Int
+  teams_lte: Int
+  teams_gt: Int
+  teams_gte: Int
+  team_every: EventTeamWhereInput
+  team_some: EventTeamWhereInput
+  team_none: EventTeamWhereInput
+  AND: [EventWhereInput!]
+  OR: [EventWhereInput!]
+  NOT: [EventWhereInput!]
+}
+
+input EventWhereUniqueInput {
+  id: ID
+  name: String
+  email: String
+}
+
 type Group {
   id: ID!
   name: String!
@@ -300,6 +1365,7 @@ type Group {
   member(where: GroupMemberWhereInput, orderBy: GroupMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GroupMember!]
   email: String!
   password: String!
+  teams: Int
   team: Team
   createdAt: DateTime!
 }
@@ -318,6 +1384,7 @@ input GroupCreateInput {
   member: GroupMemberCreateManyWithoutGroupInput
   email: String!
   password: String!
+  teams: Int
   team: TeamCreateOneInput
 }
 
@@ -333,6 +1400,7 @@ input GroupCreateWithoutMemberInput {
   members: Int
   email: String!
   password: String!
+  teams: Int
   team: TeamCreateOneInput
 }
 
@@ -650,6 +1718,8 @@ enum GroupOrderByInput {
   email_DESC
   password_ASC
   password_DESC
+  teams_ASC
+  teams_DESC
   createdAt_ASC
   createdAt_DESC
 }
@@ -661,6 +1731,7 @@ type GroupPreviousValues {
   members: Int
   email: String!
   password: String!
+  teams: Int
   createdAt: DateTime!
 }
 
@@ -689,6 +1760,7 @@ input GroupUpdateInput {
   member: GroupMemberUpdateManyWithoutGroupInput
   email: String
   password: String
+  teams: Int
   team: TeamUpdateOneInput
 }
 
@@ -698,6 +1770,7 @@ input GroupUpdateManyMutationInput {
   members: Int
   email: String
   password: String
+  teams: Int
 }
 
 input GroupUpdateOneWithoutMemberInput {
@@ -715,6 +1788,7 @@ input GroupUpdateWithoutMemberDataInput {
   members: Int
   email: String
   password: String
+  teams: Int
   team: TeamUpdateOneInput
 }
 
@@ -805,6 +1879,14 @@ input GroupWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
+  teams: Int
+  teams_not: Int
+  teams_in: [Int!]
+  teams_not_in: [Int!]
+  teams_lt: Int
+  teams_lte: Int
+  teams_gt: Int
+  teams_gte: Int
   team: TeamWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
@@ -834,6 +1916,30 @@ type Mutation {
   upsertDepartment(where: DepartmentWhereUniqueInput!, create: DepartmentCreateInput!, update: DepartmentUpdateInput!): Department!
   deleteDepartment(where: DepartmentWhereUniqueInput!): Department
   deleteManyDepartments(where: DepartmentWhereInput): BatchPayload!
+  createEvent(data: EventCreateInput!): Event!
+  updateEvent(data: EventUpdateInput!, where: EventWhereUniqueInput!): Event
+  updateManyEvents(data: EventUpdateManyMutationInput!, where: EventWhereInput): BatchPayload!
+  upsertEvent(where: EventWhereUniqueInput!, create: EventCreateInput!, update: EventUpdateInput!): Event!
+  deleteEvent(where: EventWhereUniqueInput!): Event
+  deleteManyEvents(where: EventWhereInput): BatchPayload!
+  createEventLead(data: EventLeadCreateInput!): EventLead!
+  updateEventLead(data: EventLeadUpdateInput!, where: EventLeadWhereUniqueInput!): EventLead
+  updateManyEventLeads(data: EventLeadUpdateManyMutationInput!, where: EventLeadWhereInput): BatchPayload!
+  upsertEventLead(where: EventLeadWhereUniqueInput!, create: EventLeadCreateInput!, update: EventLeadUpdateInput!): EventLead!
+  deleteEventLead(where: EventLeadWhereUniqueInput!): EventLead
+  deleteManyEventLeads(where: EventLeadWhereInput): BatchPayload!
+  createEventMember(data: EventMemberCreateInput!): EventMember!
+  updateEventMember(data: EventMemberUpdateInput!, where: EventMemberWhereUniqueInput!): EventMember
+  updateManyEventMembers(data: EventMemberUpdateManyMutationInput!, where: EventMemberWhereInput): BatchPayload!
+  upsertEventMember(where: EventMemberWhereUniqueInput!, create: EventMemberCreateInput!, update: EventMemberUpdateInput!): EventMember!
+  deleteEventMember(where: EventMemberWhereUniqueInput!): EventMember
+  deleteManyEventMembers(where: EventMemberWhereInput): BatchPayload!
+  createEventTeam(data: EventTeamCreateInput!): EventTeam!
+  updateEventTeam(data: EventTeamUpdateInput!, where: EventTeamWhereUniqueInput!): EventTeam
+  updateManyEventTeams(data: EventTeamUpdateManyMutationInput!, where: EventTeamWhereInput): BatchPayload!
+  upsertEventTeam(where: EventTeamWhereUniqueInput!, create: EventTeamCreateInput!, update: EventTeamUpdateInput!): EventTeam!
+  deleteEventTeam(where: EventTeamWhereUniqueInput!): EventTeam
+  deleteManyEventTeams(where: EventTeamWhereInput): BatchPayload!
   createGroup(data: GroupCreateInput!): Group!
   updateGroup(data: GroupUpdateInput!, where: GroupWhereUniqueInput!): Group
   updateManyGroups(data: GroupUpdateManyMutationInput!, where: GroupWhereInput): BatchPayload!
@@ -1235,6 +2341,18 @@ type Query {
   department(where: DepartmentWhereUniqueInput!): Department
   departments(where: DepartmentWhereInput, orderBy: DepartmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Department]!
   departmentsConnection(where: DepartmentWhereInput, orderBy: DepartmentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DepartmentConnection!
+  event(where: EventWhereUniqueInput!): Event
+  events(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event]!
+  eventsConnection(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventConnection!
+  eventLead(where: EventLeadWhereUniqueInput!): EventLead
+  eventLeads(where: EventLeadWhereInput, orderBy: EventLeadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventLead]!
+  eventLeadsConnection(where: EventLeadWhereInput, orderBy: EventLeadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventLeadConnection!
+  eventMember(where: EventMemberWhereUniqueInput!): EventMember
+  eventMembers(where: EventMemberWhereInput, orderBy: EventMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventMember]!
+  eventMembersConnection(where: EventMemberWhereInput, orderBy: EventMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventMemberConnection!
+  eventTeam(where: EventTeamWhereUniqueInput!): EventTeam
+  eventTeams(where: EventTeamWhereInput, orderBy: EventTeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventTeam]!
+  eventTeamsConnection(where: EventTeamWhereInput, orderBy: EventTeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventTeamConnection!
   group(where: GroupWhereUniqueInput!): Group
   groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group]!
   groupsConnection(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupConnection!
@@ -1802,6 +2920,10 @@ input StaffWhereUniqueInput {
 
 type Subscription {
   department(where: DepartmentSubscriptionWhereInput): DepartmentSubscriptionPayload
+  event(where: EventSubscriptionWhereInput): EventSubscriptionPayload
+  eventLead(where: EventLeadSubscriptionWhereInput): EventLeadSubscriptionPayload
+  eventMember(where: EventMemberSubscriptionWhereInput): EventMemberSubscriptionPayload
+  eventTeam(where: EventTeamSubscriptionWhereInput): EventTeamSubscriptionPayload
   group(where: GroupSubscriptionWhereInput): GroupSubscriptionPayload
   groupMember(where: GroupMemberSubscriptionWhereInput): GroupMemberSubscriptionPayload
   organization(where: OrganizationSubscriptionWhereInput): OrganizationSubscriptionPayload

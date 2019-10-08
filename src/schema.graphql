@@ -2,6 +2,7 @@
 # import Staff from "../prisma/prisma.graphql"
 # import Organization from "../prisma/prisma.graphql"
 # import Group from "../prisma/prisma.graphql"
+# import Event from "../prisma/prisma.graphql"
 
 
 type Query {
@@ -12,24 +13,45 @@ type Query {
     team(where: TeamWhereUniqueInput): Team 
     organization(where: OrganizationWhereUniqueInput): Organization
     group(where: GroupWhereUniqueInput): Group
+    event(where: EventWhereUniqueInput): Event
  
   # multiple mutations
     allOrganizations: [Organization!]
     allStaff: [Staff!]
     allTeam: [Team!]
     allGroup: [Group!]
+    allEvent: [Event!]
     node(id: ID!): Node
 }
 
 type Mutation {
+
+
+ # Event Mutations ===========>
+    createEvent( where: UniqueInput
+      name: String!
+      description: String 
+      email: String 
+      createdAt: Int
+      members: Int
+      password: String!  
+      leads: Int  
+      teams: Int  
+      members: Int  
+    ): Event
+
+
+    # Group Mutations ===========>
     createGroup( where: UniqueInput
-    name: String!
-    description: String 
-    email: String 
-    createdAt: Int
-    members: Int
-    password: String!  
-): Group
+      name: String!
+      description: String 
+      email: String 
+      password: String!  
+      createdAt: Int
+      members: Int  
+      leads: Int  
+      teams: Int  
+    ): Group
 
 
   # organization Mutations
@@ -45,10 +67,10 @@ type Mutation {
          password: String
       ): Organization
 
-  createDepartment(
-      name: String!  
-      createdAt: Int
-  ): Organization    
+    createDepartment(
+        name: String!  
+        createdAt: Int
+    ): Organization    
 
     createStaff(    
       firstname: String!
@@ -66,7 +88,8 @@ type Mutation {
       members: Int
       active: Boolean
       createdAt: Int
-      description: String): Team
+      description: String 
+    ): Team
 
 # authentication ================>
   loginOrganization(

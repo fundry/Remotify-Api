@@ -6,6 +6,44 @@ type Testers {
   department: String
 }
 
+type Event {
+  id: ID! @id
+  name: String! @unique
+  description: String
+  email: String! @unique
+  password : String!    
+  createdAt: DateTime! @createdAt
+  members: Int 
+  member: [EventMember] @relation( name : "EventMember"   , onDelete: CASCADE  )
+  leads: Int 
+  lead: [EventLead]   @relation( name : "EventLead"   , onDelete: CASCADE  )
+  teams: Int
+  team: [EventTeam]   @relation( name : "EventTeam"   , onDelete: CASCADE  )
+}
+
+type EventMember {
+    id: ID! @id
+    firstname: String! 
+   lastname: String! @unique
+   event: Event @relation( name : "EventMember"   ) 
+}
+
+type EventLead {
+    id: ID! @id
+   firstname: String! 
+   lastname: String! @unique
+   event: Event @relation( name : "EventLead"   ) 
+}
+
+type EventTeam {
+    id: ID! @id
+   name: String!   @unique
+   description: String!   
+  createdAt: DateTime! @createdAt
+  event: Event @relation( name : "EventTeam"   ) 
+}
+ 
+
 type Group {
   id: ID! @id
   name: String! @unique
@@ -14,6 +52,7 @@ type Group {
   member: [GroupMember] @relation( name : "GroupMember"   , onDelete: CASCADE  )
   email: String! @unique
   password : String!    
+  teams : Int 
   team : Team @relation( name : "GroupTeam"   , onDelete: CASCADE  ) 
   createdAt: DateTime! @createdAt
 }

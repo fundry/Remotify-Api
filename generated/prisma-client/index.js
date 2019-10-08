@@ -9,6 +9,22 @@ var models = [
     embedded: false
   },
   {
+    name: "Event",
+    embedded: false
+  },
+  {
+    name: "EventMember",
+    embedded: false
+  },
+  {
+    name: "EventLead",
+    embedded: false
+  },
+  {
+    name: "EventTeam",
+    embedded: false
+  },
+  {
     name: "Group",
     embedded: false
   },
