@@ -11,11 +11,19 @@ type AggregateEvent {
   count: Int!
 }
 
+type AggregateEventDiscusionChannel {
+  count: Int!
+}
+
 type AggregateEventLead {
   count: Int!
 }
 
 type AggregateEventMember {
+  count: Int!
+}
+
+type AggregateEventMessage {
   count: Int!
 }
 
@@ -59,8 +67,9 @@ scalar DateTime
 
 type Department {
   id: ID!
-  leads: Int
   name: String!
+  description: String
+  leads: Int
   teams(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Team!]
   createdAt: DateTime!
 }
@@ -73,8 +82,9 @@ type DepartmentConnection {
 
 input DepartmentCreateInput {
   id: ID
-  leads: Int
   name: String!
+  description: String
+  leads: Int
   teams: TeamCreateManyWithoutDepartmentInput
 }
 
@@ -90,8 +100,9 @@ input DepartmentCreateOneWithoutTeamsInput {
 
 input DepartmentCreateWithoutTeamsInput {
   id: ID
-  leads: Int
   name: String!
+  description: String
+  leads: Int
 }
 
 type DepartmentEdge {
@@ -102,18 +113,21 @@ type DepartmentEdge {
 enum DepartmentOrderByInput {
   id_ASC
   id_DESC
-  leads_ASC
-  leads_DESC
   name_ASC
   name_DESC
+  description_ASC
+  description_DESC
+  leads_ASC
+  leads_DESC
   createdAt_ASC
   createdAt_DESC
 }
 
 type DepartmentPreviousValues {
   id: ID!
-  leads: Int
   name: String!
+  description: String
+  leads: Int
   createdAt: DateTime!
 }
 
@@ -132,14 +146,6 @@ input DepartmentScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  leads: Int
-  leads_not: Int
-  leads_in: [Int!]
-  leads_not_in: [Int!]
-  leads_lt: Int
-  leads_lte: Int
-  leads_gt: Int
-  leads_gte: Int
   name: String
   name_not: String
   name_in: [String!]
@@ -154,6 +160,28 @@ input DepartmentScalarWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  leads: Int
+  leads_not: Int
+  leads_in: [Int!]
+  leads_not_in: [Int!]
+  leads_lt: Int
+  leads_lte: Int
+  leads_gt: Int
+  leads_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -186,20 +214,23 @@ input DepartmentSubscriptionWhereInput {
 }
 
 input DepartmentUpdateDataInput {
-  leads: Int
   name: String
+  description: String
+  leads: Int
   teams: TeamUpdateManyWithoutDepartmentInput
 }
 
 input DepartmentUpdateInput {
-  leads: Int
   name: String
+  description: String
+  leads: Int
   teams: TeamUpdateManyWithoutDepartmentInput
 }
 
 input DepartmentUpdateManyDataInput {
-  leads: Int
   name: String
+  description: String
+  leads: Int
 }
 
 input DepartmentUpdateManyInput {
@@ -215,8 +246,9 @@ input DepartmentUpdateManyInput {
 }
 
 input DepartmentUpdateManyMutationInput {
-  leads: Int
   name: String
+  description: String
+  leads: Int
 }
 
 input DepartmentUpdateManyWithWhereNestedInput {
@@ -234,8 +266,9 @@ input DepartmentUpdateOneWithoutTeamsInput {
 }
 
 input DepartmentUpdateWithoutTeamsDataInput {
-  leads: Int
   name: String
+  description: String
+  leads: Int
 }
 
 input DepartmentUpdateWithWhereUniqueNestedInput {
@@ -269,14 +302,6 @@ input DepartmentWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  leads: Int
-  leads_not: Int
-  leads_in: [Int!]
-  leads_not_in: [Int!]
-  leads_lt: Int
-  leads_lte: Int
-  leads_gt: Int
-  leads_gte: Int
   name: String
   name_not: String
   name_in: [String!]
@@ -291,6 +316,28 @@ input DepartmentWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  leads: Int
+  leads_not: Int
+  leads_in: [Int!]
+  leads_not_in: [Int!]
+  leads_lt: Int
+  leads_lte: Int
+  leads_gt: Int
+  leads_gte: Int
   teams_every: TeamWhereInput
   teams_some: TeamWhereInput
   teams_none: TeamWhereInput
@@ -326,6 +373,7 @@ type Event {
   lead(where: EventLeadWhereInput, orderBy: EventLeadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventLead!]
   teams: Int
   team(where: EventTeamWhereInput, orderBy: EventTeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventTeam!]
+  channels: Int
 }
 
 type EventConnection {
@@ -347,6 +395,7 @@ input EventCreateInput {
   lead: EventLeadCreateManyWithoutEventInput
   teams: Int
   team: EventTeamCreateManyWithoutEventInput
+  channels: Int
 }
 
 input EventCreateOneWithoutLeadInput {
@@ -376,6 +425,7 @@ input EventCreateWithoutLeadInput {
   leads: Int
   teams: Int
   team: EventTeamCreateManyWithoutEventInput
+  channels: Int
 }
 
 input EventCreateWithoutMemberInput {
@@ -390,6 +440,7 @@ input EventCreateWithoutMemberInput {
   lead: EventLeadCreateManyWithoutEventInput
   teams: Int
   team: EventTeamCreateManyWithoutEventInput
+  channels: Int
 }
 
 input EventCreateWithoutTeamInput {
@@ -404,6 +455,204 @@ input EventCreateWithoutTeamInput {
   leads: Int
   lead: EventLeadCreateManyWithoutEventInput
   teams: Int
+  channels: Int
+}
+
+type EventDiscusionChannel {
+  id: ID!
+  message(where: EventMessageWhereInput, orderBy: EventMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventMessage!]
+  member(where: EventMemberWhereInput, orderBy: EventMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventMember!]
+  createdAt: DateTime!
+}
+
+type EventDiscusionChannelConnection {
+  pageInfo: PageInfo!
+  edges: [EventDiscusionChannelEdge]!
+  aggregate: AggregateEventDiscusionChannel!
+}
+
+input EventDiscusionChannelCreateInput {
+  id: ID
+  message: EventMessageCreateManyWithoutChannelInput
+  member: EventMemberCreateManyWithoutChannelInput
+}
+
+input EventDiscusionChannelCreateManyWithoutMemberInput {
+  create: [EventDiscusionChannelCreateWithoutMemberInput!]
+  connect: [EventDiscusionChannelWhereUniqueInput!]
+}
+
+input EventDiscusionChannelCreateManyWithoutMessageInput {
+  create: [EventDiscusionChannelCreateWithoutMessageInput!]
+  connect: [EventDiscusionChannelWhereUniqueInput!]
+}
+
+input EventDiscusionChannelCreateWithoutMemberInput {
+  id: ID
+  message: EventMessageCreateManyWithoutChannelInput
+}
+
+input EventDiscusionChannelCreateWithoutMessageInput {
+  id: ID
+  member: EventMemberCreateManyWithoutChannelInput
+}
+
+type EventDiscusionChannelEdge {
+  node: EventDiscusionChannel!
+  cursor: String!
+}
+
+enum EventDiscusionChannelOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type EventDiscusionChannelPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+}
+
+input EventDiscusionChannelScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [EventDiscusionChannelScalarWhereInput!]
+  OR: [EventDiscusionChannelScalarWhereInput!]
+  NOT: [EventDiscusionChannelScalarWhereInput!]
+}
+
+type EventDiscusionChannelSubscriptionPayload {
+  mutation: MutationType!
+  node: EventDiscusionChannel
+  updatedFields: [String!]
+  previousValues: EventDiscusionChannelPreviousValues
+}
+
+input EventDiscusionChannelSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: EventDiscusionChannelWhereInput
+  AND: [EventDiscusionChannelSubscriptionWhereInput!]
+  OR: [EventDiscusionChannelSubscriptionWhereInput!]
+  NOT: [EventDiscusionChannelSubscriptionWhereInput!]
+}
+
+input EventDiscusionChannelUpdateInput {
+  message: EventMessageUpdateManyWithoutChannelInput
+  member: EventMemberUpdateManyWithoutChannelInput
+}
+
+input EventDiscusionChannelUpdateManyWithoutMemberInput {
+  create: [EventDiscusionChannelCreateWithoutMemberInput!]
+  delete: [EventDiscusionChannelWhereUniqueInput!]
+  connect: [EventDiscusionChannelWhereUniqueInput!]
+  set: [EventDiscusionChannelWhereUniqueInput!]
+  disconnect: [EventDiscusionChannelWhereUniqueInput!]
+  update: [EventDiscusionChannelUpdateWithWhereUniqueWithoutMemberInput!]
+  upsert: [EventDiscusionChannelUpsertWithWhereUniqueWithoutMemberInput!]
+  deleteMany: [EventDiscusionChannelScalarWhereInput!]
+}
+
+input EventDiscusionChannelUpdateManyWithoutMessageInput {
+  create: [EventDiscusionChannelCreateWithoutMessageInput!]
+  delete: [EventDiscusionChannelWhereUniqueInput!]
+  connect: [EventDiscusionChannelWhereUniqueInput!]
+  set: [EventDiscusionChannelWhereUniqueInput!]
+  disconnect: [EventDiscusionChannelWhereUniqueInput!]
+  update: [EventDiscusionChannelUpdateWithWhereUniqueWithoutMessageInput!]
+  upsert: [EventDiscusionChannelUpsertWithWhereUniqueWithoutMessageInput!]
+  deleteMany: [EventDiscusionChannelScalarWhereInput!]
+}
+
+input EventDiscusionChannelUpdateWithoutMemberDataInput {
+  message: EventMessageUpdateManyWithoutChannelInput
+}
+
+input EventDiscusionChannelUpdateWithoutMessageDataInput {
+  member: EventMemberUpdateManyWithoutChannelInput
+}
+
+input EventDiscusionChannelUpdateWithWhereUniqueWithoutMemberInput {
+  where: EventDiscusionChannelWhereUniqueInput!
+  data: EventDiscusionChannelUpdateWithoutMemberDataInput!
+}
+
+input EventDiscusionChannelUpdateWithWhereUniqueWithoutMessageInput {
+  where: EventDiscusionChannelWhereUniqueInput!
+  data: EventDiscusionChannelUpdateWithoutMessageDataInput!
+}
+
+input EventDiscusionChannelUpsertWithWhereUniqueWithoutMemberInput {
+  where: EventDiscusionChannelWhereUniqueInput!
+  update: EventDiscusionChannelUpdateWithoutMemberDataInput!
+  create: EventDiscusionChannelCreateWithoutMemberInput!
+}
+
+input EventDiscusionChannelUpsertWithWhereUniqueWithoutMessageInput {
+  where: EventDiscusionChannelWhereUniqueInput!
+  update: EventDiscusionChannelUpdateWithoutMessageDataInput!
+  create: EventDiscusionChannelCreateWithoutMessageInput!
+}
+
+input EventDiscusionChannelWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  message_every: EventMessageWhereInput
+  message_some: EventMessageWhereInput
+  message_none: EventMessageWhereInput
+  member_every: EventMemberWhereInput
+  member_some: EventMemberWhereInput
+  member_none: EventMemberWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [EventDiscusionChannelWhereInput!]
+  OR: [EventDiscusionChannelWhereInput!]
+  NOT: [EventDiscusionChannelWhereInput!]
+}
+
+input EventDiscusionChannelWhereUniqueInput {
+  id: ID
 }
 
 type EventEdge {
@@ -636,6 +885,7 @@ type EventMember {
   firstname: String!
   lastname: String!
   event: Event
+  channel(where: EventDiscusionChannelWhereInput, orderBy: EventDiscusionChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventDiscusionChannel!]
 }
 
 type EventMemberConnection {
@@ -649,6 +899,12 @@ input EventMemberCreateInput {
   firstname: String!
   lastname: String!
   event: EventCreateOneWithoutMemberInput
+  channel: EventDiscusionChannelCreateManyWithoutMemberInput
+}
+
+input EventMemberCreateManyWithoutChannelInput {
+  create: [EventMemberCreateWithoutChannelInput!]
+  connect: [EventMemberWhereUniqueInput!]
 }
 
 input EventMemberCreateManyWithoutEventInput {
@@ -656,10 +912,18 @@ input EventMemberCreateManyWithoutEventInput {
   connect: [EventMemberWhereUniqueInput!]
 }
 
+input EventMemberCreateWithoutChannelInput {
+  id: ID
+  firstname: String!
+  lastname: String!
+  event: EventCreateOneWithoutMemberInput
+}
+
 input EventMemberCreateWithoutEventInput {
   id: ID
   firstname: String!
   lastname: String!
+  channel: EventDiscusionChannelCreateManyWithoutMemberInput
 }
 
 type EventMemberEdge {
@@ -752,6 +1016,7 @@ input EventMemberUpdateInput {
   firstname: String
   lastname: String
   event: EventUpdateOneWithoutMemberInput
+  channel: EventDiscusionChannelUpdateManyWithoutMemberInput
 }
 
 input EventMemberUpdateManyDataInput {
@@ -762,6 +1027,18 @@ input EventMemberUpdateManyDataInput {
 input EventMemberUpdateManyMutationInput {
   firstname: String
   lastname: String
+}
+
+input EventMemberUpdateManyWithoutChannelInput {
+  create: [EventMemberCreateWithoutChannelInput!]
+  delete: [EventMemberWhereUniqueInput!]
+  connect: [EventMemberWhereUniqueInput!]
+  set: [EventMemberWhereUniqueInput!]
+  disconnect: [EventMemberWhereUniqueInput!]
+  update: [EventMemberUpdateWithWhereUniqueWithoutChannelInput!]
+  upsert: [EventMemberUpsertWithWhereUniqueWithoutChannelInput!]
+  deleteMany: [EventMemberScalarWhereInput!]
+  updateMany: [EventMemberUpdateManyWithWhereNestedInput!]
 }
 
 input EventMemberUpdateManyWithoutEventInput {
@@ -781,14 +1058,32 @@ input EventMemberUpdateManyWithWhereNestedInput {
   data: EventMemberUpdateManyDataInput!
 }
 
+input EventMemberUpdateWithoutChannelDataInput {
+  firstname: String
+  lastname: String
+  event: EventUpdateOneWithoutMemberInput
+}
+
 input EventMemberUpdateWithoutEventDataInput {
   firstname: String
   lastname: String
+  channel: EventDiscusionChannelUpdateManyWithoutMemberInput
+}
+
+input EventMemberUpdateWithWhereUniqueWithoutChannelInput {
+  where: EventMemberWhereUniqueInput!
+  data: EventMemberUpdateWithoutChannelDataInput!
 }
 
 input EventMemberUpdateWithWhereUniqueWithoutEventInput {
   where: EventMemberWhereUniqueInput!
   data: EventMemberUpdateWithoutEventDataInput!
+}
+
+input EventMemberUpsertWithWhereUniqueWithoutChannelInput {
+  where: EventMemberWhereUniqueInput!
+  update: EventMemberUpdateWithoutChannelDataInput!
+  create: EventMemberCreateWithoutChannelInput!
 }
 
 input EventMemberUpsertWithWhereUniqueWithoutEventInput {
@@ -841,6 +1136,9 @@ input EventMemberWhereInput {
   lastname_ends_with: String
   lastname_not_ends_with: String
   event: EventWhereInput
+  channel_every: EventDiscusionChannelWhereInput
+  channel_some: EventDiscusionChannelWhereInput
+  channel_none: EventDiscusionChannelWhereInput
   AND: [EventMemberWhereInput!]
   OR: [EventMemberWhereInput!]
   NOT: [EventMemberWhereInput!]
@@ -849,6 +1147,247 @@ input EventMemberWhereInput {
 input EventMemberWhereUniqueInput {
   id: ID
   lastname: String
+}
+
+type EventMessage {
+  id: ID!
+  channel(where: EventDiscusionChannelWhereInput, orderBy: EventDiscusionChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventDiscusionChannel!]
+  content: String
+  sender: String
+  createdAt: DateTime!
+}
+
+type EventMessageConnection {
+  pageInfo: PageInfo!
+  edges: [EventMessageEdge]!
+  aggregate: AggregateEventMessage!
+}
+
+input EventMessageCreateInput {
+  id: ID
+  channel: EventDiscusionChannelCreateManyWithoutMessageInput
+  content: String
+  sender: String
+}
+
+input EventMessageCreateManyWithoutChannelInput {
+  create: [EventMessageCreateWithoutChannelInput!]
+  connect: [EventMessageWhereUniqueInput!]
+}
+
+input EventMessageCreateWithoutChannelInput {
+  id: ID
+  content: String
+  sender: String
+}
+
+type EventMessageEdge {
+  node: EventMessage!
+  cursor: String!
+}
+
+enum EventMessageOrderByInput {
+  id_ASC
+  id_DESC
+  content_ASC
+  content_DESC
+  sender_ASC
+  sender_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type EventMessagePreviousValues {
+  id: ID!
+  content: String
+  sender: String
+  createdAt: DateTime!
+}
+
+input EventMessageScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
+  sender: String
+  sender_not: String
+  sender_in: [String!]
+  sender_not_in: [String!]
+  sender_lt: String
+  sender_lte: String
+  sender_gt: String
+  sender_gte: String
+  sender_contains: String
+  sender_not_contains: String
+  sender_starts_with: String
+  sender_not_starts_with: String
+  sender_ends_with: String
+  sender_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [EventMessageScalarWhereInput!]
+  OR: [EventMessageScalarWhereInput!]
+  NOT: [EventMessageScalarWhereInput!]
+}
+
+type EventMessageSubscriptionPayload {
+  mutation: MutationType!
+  node: EventMessage
+  updatedFields: [String!]
+  previousValues: EventMessagePreviousValues
+}
+
+input EventMessageSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: EventMessageWhereInput
+  AND: [EventMessageSubscriptionWhereInput!]
+  OR: [EventMessageSubscriptionWhereInput!]
+  NOT: [EventMessageSubscriptionWhereInput!]
+}
+
+input EventMessageUpdateInput {
+  channel: EventDiscusionChannelUpdateManyWithoutMessageInput
+  content: String
+  sender: String
+}
+
+input EventMessageUpdateManyDataInput {
+  content: String
+  sender: String
+}
+
+input EventMessageUpdateManyMutationInput {
+  content: String
+  sender: String
+}
+
+input EventMessageUpdateManyWithoutChannelInput {
+  create: [EventMessageCreateWithoutChannelInput!]
+  delete: [EventMessageWhereUniqueInput!]
+  connect: [EventMessageWhereUniqueInput!]
+  set: [EventMessageWhereUniqueInput!]
+  disconnect: [EventMessageWhereUniqueInput!]
+  update: [EventMessageUpdateWithWhereUniqueWithoutChannelInput!]
+  upsert: [EventMessageUpsertWithWhereUniqueWithoutChannelInput!]
+  deleteMany: [EventMessageScalarWhereInput!]
+  updateMany: [EventMessageUpdateManyWithWhereNestedInput!]
+}
+
+input EventMessageUpdateManyWithWhereNestedInput {
+  where: EventMessageScalarWhereInput!
+  data: EventMessageUpdateManyDataInput!
+}
+
+input EventMessageUpdateWithoutChannelDataInput {
+  content: String
+  sender: String
+}
+
+input EventMessageUpdateWithWhereUniqueWithoutChannelInput {
+  where: EventMessageWhereUniqueInput!
+  data: EventMessageUpdateWithoutChannelDataInput!
+}
+
+input EventMessageUpsertWithWhereUniqueWithoutChannelInput {
+  where: EventMessageWhereUniqueInput!
+  update: EventMessageUpdateWithoutChannelDataInput!
+  create: EventMessageCreateWithoutChannelInput!
+}
+
+input EventMessageWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  channel_every: EventDiscusionChannelWhereInput
+  channel_some: EventDiscusionChannelWhereInput
+  channel_none: EventDiscusionChannelWhereInput
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
+  sender: String
+  sender_not: String
+  sender_in: [String!]
+  sender_not_in: [String!]
+  sender_lt: String
+  sender_lte: String
+  sender_gt: String
+  sender_gte: String
+  sender_contains: String
+  sender_not_contains: String
+  sender_starts_with: String
+  sender_not_starts_with: String
+  sender_ends_with: String
+  sender_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [EventMessageWhereInput!]
+  OR: [EventMessageWhereInput!]
+  NOT: [EventMessageWhereInput!]
+}
+
+input EventMessageWhereUniqueInput {
+  id: ID
 }
 
 enum EventOrderByInput {
@@ -872,6 +1411,8 @@ enum EventOrderByInput {
   leads_DESC
   teams_ASC
   teams_DESC
+  channels_ASC
+  channels_DESC
 }
 
 type EventPreviousValues {
@@ -885,6 +1426,7 @@ type EventPreviousValues {
   members: Int
   leads: Int
   teams: Int
+  channels: Int
 }
 
 type EventSubscriptionPayload {
@@ -1157,6 +1699,7 @@ input EventUpdateInput {
   lead: EventLeadUpdateManyWithoutEventInput
   teams: Int
   team: EventTeamUpdateManyWithoutEventInput
+  channels: Int
 }
 
 input EventUpdateManyMutationInput {
@@ -1168,6 +1711,7 @@ input EventUpdateManyMutationInput {
   members: Int
   leads: Int
   teams: Int
+  channels: Int
 }
 
 input EventUpdateOneWithoutLeadInput {
@@ -1208,6 +1752,7 @@ input EventUpdateWithoutLeadDataInput {
   leads: Int
   teams: Int
   team: EventTeamUpdateManyWithoutEventInput
+  channels: Int
 }
 
 input EventUpdateWithoutMemberDataInput {
@@ -1221,6 +1766,7 @@ input EventUpdateWithoutMemberDataInput {
   lead: EventLeadUpdateManyWithoutEventInput
   teams: Int
   team: EventTeamUpdateManyWithoutEventInput
+  channels: Int
 }
 
 input EventUpdateWithoutTeamDataInput {
@@ -1234,6 +1780,7 @@ input EventUpdateWithoutTeamDataInput {
   leads: Int
   lead: EventLeadUpdateManyWithoutEventInput
   teams: Int
+  channels: Int
 }
 
 input EventUpsertWithoutLeadInput {
@@ -1377,6 +1924,14 @@ input EventWhereInput {
   team_every: EventTeamWhereInput
   team_some: EventTeamWhereInput
   team_none: EventTeamWhereInput
+  channels: Int
+  channels_not: Int
+  channels_in: [Int!]
+  channels_not_in: [Int!]
+  channels_lt: Int
+  channels_lte: Int
+  channels_gt: Int
+  channels_gte: Int
   AND: [EventWhereInput!]
   OR: [EventWhereInput!]
   NOT: [EventWhereInput!]
@@ -2210,6 +2765,11 @@ type Mutation {
   upsertEvent(where: EventWhereUniqueInput!, create: EventCreateInput!, update: EventUpdateInput!): Event!
   deleteEvent(where: EventWhereUniqueInput!): Event
   deleteManyEvents(where: EventWhereInput): BatchPayload!
+  createEventDiscusionChannel(data: EventDiscusionChannelCreateInput!): EventDiscusionChannel!
+  updateEventDiscusionChannel(data: EventDiscusionChannelUpdateInput!, where: EventDiscusionChannelWhereUniqueInput!): EventDiscusionChannel
+  upsertEventDiscusionChannel(where: EventDiscusionChannelWhereUniqueInput!, create: EventDiscusionChannelCreateInput!, update: EventDiscusionChannelUpdateInput!): EventDiscusionChannel!
+  deleteEventDiscusionChannel(where: EventDiscusionChannelWhereUniqueInput!): EventDiscusionChannel
+  deleteManyEventDiscusionChannels(where: EventDiscusionChannelWhereInput): BatchPayload!
   createEventLead(data: EventLeadCreateInput!): EventLead!
   updateEventLead(data: EventLeadUpdateInput!, where: EventLeadWhereUniqueInput!): EventLead
   updateManyEventLeads(data: EventLeadUpdateManyMutationInput!, where: EventLeadWhereInput): BatchPayload!
@@ -2222,6 +2782,12 @@ type Mutation {
   upsertEventMember(where: EventMemberWhereUniqueInput!, create: EventMemberCreateInput!, update: EventMemberUpdateInput!): EventMember!
   deleteEventMember(where: EventMemberWhereUniqueInput!): EventMember
   deleteManyEventMembers(where: EventMemberWhereInput): BatchPayload!
+  createEventMessage(data: EventMessageCreateInput!): EventMessage!
+  updateEventMessage(data: EventMessageUpdateInput!, where: EventMessageWhereUniqueInput!): EventMessage
+  updateManyEventMessages(data: EventMessageUpdateManyMutationInput!, where: EventMessageWhereInput): BatchPayload!
+  upsertEventMessage(where: EventMessageWhereUniqueInput!, create: EventMessageCreateInput!, update: EventMessageUpdateInput!): EventMessage!
+  deleteEventMessage(where: EventMessageWhereUniqueInput!): EventMessage
+  deleteManyEventMessages(where: EventMessageWhereInput): BatchPayload!
   createEventTeam(data: EventTeamCreateInput!): EventTeam!
   updateEventTeam(data: EventTeamUpdateInput!, where: EventTeamWhereUniqueInput!): EventTeam
   updateManyEventTeams(data: EventTeamUpdateManyMutationInput!, where: EventTeamWhereInput): BatchPayload!
@@ -2661,12 +3227,18 @@ type Query {
   event(where: EventWhereUniqueInput!): Event
   events(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event]!
   eventsConnection(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventConnection!
+  eventDiscusionChannel(where: EventDiscusionChannelWhereUniqueInput!): EventDiscusionChannel
+  eventDiscusionChannels(where: EventDiscusionChannelWhereInput, orderBy: EventDiscusionChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventDiscusionChannel]!
+  eventDiscusionChannelsConnection(where: EventDiscusionChannelWhereInput, orderBy: EventDiscusionChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventDiscusionChannelConnection!
   eventLead(where: EventLeadWhereUniqueInput!): EventLead
   eventLeads(where: EventLeadWhereInput, orderBy: EventLeadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventLead]!
   eventLeadsConnection(where: EventLeadWhereInput, orderBy: EventLeadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventLeadConnection!
   eventMember(where: EventMemberWhereUniqueInput!): EventMember
   eventMembers(where: EventMemberWhereInput, orderBy: EventMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventMember]!
   eventMembersConnection(where: EventMemberWhereInput, orderBy: EventMemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventMemberConnection!
+  eventMessage(where: EventMessageWhereUniqueInput!): EventMessage
+  eventMessages(where: EventMessageWhereInput, orderBy: EventMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventMessage]!
+  eventMessagesConnection(where: EventMessageWhereInput, orderBy: EventMessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventMessageConnection!
   eventTeam(where: EventTeamWhereUniqueInput!): EventTeam
   eventTeams(where: EventTeamWhereInput, orderBy: EventTeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [EventTeam]!
   eventTeamsConnection(where: EventTeamWhereInput, orderBy: EventTeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventTeamConnection!
@@ -3241,8 +3813,10 @@ input StaffWhereUniqueInput {
 type Subscription {
   department(where: DepartmentSubscriptionWhereInput): DepartmentSubscriptionPayload
   event(where: EventSubscriptionWhereInput): EventSubscriptionPayload
+  eventDiscusionChannel(where: EventDiscusionChannelSubscriptionWhereInput): EventDiscusionChannelSubscriptionPayload
   eventLead(where: EventLeadSubscriptionWhereInput): EventLeadSubscriptionPayload
   eventMember(where: EventMemberSubscriptionWhereInput): EventMemberSubscriptionPayload
+  eventMessage(where: EventMessageSubscriptionWhereInput): EventMessageSubscriptionPayload
   eventTeam(where: EventTeamSubscriptionWhereInput): EventTeamSubscriptionPayload
   group(where: GroupSubscriptionWhereInput): GroupSubscriptionPayload
   groupMember(where: GroupMemberSubscriptionWhereInput): GroupMemberSubscriptionPayload

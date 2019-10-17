@@ -20,6 +20,7 @@ type Mutation {
   createOrganization(data: OrganizationCreateInput!): Organization!
   createStaff(data: StaffCreateInput!): Staff!
   createTeam(data: TeamCreateInput!): Team!
+  createDepartment(data: DepartmentCreateInput!): Department!
 
 
   # GROUP ============>
@@ -27,7 +28,7 @@ type Mutation {
   createGroupTeam(data: GroupCreateInput!): GroupTeam!
   createGroupMember(data: GroupCreateInput!): GroupMember!
 
-  updateGroup(data: GroupUpdateInput!, where: UserWhereUniqueInput!): User
+  updateGroup(data: GroupUpdateInput!, where: GroupWhereUniqueInput!): User
 
 # Event =============>
   createEvent(data: EventCreateInput!): Event!
@@ -82,7 +83,7 @@ type Query {
 
   organization(where: OrganizationWhereUniqueInput!): Organization
   upsertOrganization(where:OrganizationWhereUniqueInput!, create: OrganizationCreateInput! ): Organization!
-  department(where: DepartmentWhereUniqueInput!): Organization!
+  department(where: DepartmentWhereUniqueInput!): Department!
   
 
   staff(where: StaffWhereUniqueInput!): Staff
@@ -135,6 +136,14 @@ type User implements Node {
     isLead:  Boolean
       country: String
       state: String
+  }
+
+type Department  implements Node {
+    id: ID!
+    name: String
+    description: String
+    leads: Int
+    createdAt: Int
   }
 
  type Team implements Node  {
@@ -225,10 +234,6 @@ input OrganizationCreateInput {
   password: String
 }
 
-  input DepartmentCreateInput{
-    name: String
-  }
-
 input StaffCreateInput {
   firstname: String
   lastname: String
@@ -246,6 +251,12 @@ input TeamCreateInput {
     name: String
     members: Int
     active: Boolean
+}
+
+input DepartmentCreateInput {
+    name: String
+    description: String
+    leads: Int
 }
 
 input GroupCreateInput {
@@ -354,7 +365,6 @@ input GroupUpdateInput {
     email: String
     password: String
     website: String
-    createdAt: Int
     leads: Int
     teams: Int
 }
@@ -546,7 +556,6 @@ input StaffWhereUniqueInput {
 }
 
 input GroupWhereUniqueInput {
-  id : ID
   email: String
 }
 

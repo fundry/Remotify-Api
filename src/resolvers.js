@@ -30,6 +30,17 @@ const resolver = {
       const id = ctx.where.id;
       return prisma.db.query.staff({
         where: {
+          email,
+        },
+        info,
+      });
+    },
+
+    department: (_, ctx, prisma, info) => {
+      const email = ctx.where.email;
+      const id = ctx.where.id;
+      return prisma.db.query.department({
+        where: {
           id,
         },
         info,
@@ -37,10 +48,10 @@ const resolver = {
     },
 
     team: (_, ctx, prisma, info) => {
-      const id = ctx.where.id;
+      const email = ctx.where.email;
       return prisma.db.query.team({
         where: {
-          id,
+          email,
         },
         info,
       });
@@ -126,6 +137,16 @@ const resolver = {
       });
     },
 
+    createDepartment: async (_, args, context, info) => {
+      return context.db.mutation.createDepartment({
+        data: {
+          name: args.name,
+          description: args.description,
+          leads: args.leads,
+        },
+      });
+    },
+
     createTeam: (_, args, context, info) => {
       return context.db.mutation.createTeam({
         data: {
@@ -177,30 +198,33 @@ const resolver = {
       }
       return context.db.mutation.createEvent({
         data: {
-          name: args.name,
-          description: args.description,
-          email: args.email,
-          website: args.website,
+          name: args.where.name,
+          description: args.where.description,
+          email: args.where.email,
+          website: args.where.website,
           teams: args.teams,
-          leads: args.leads,
-          members: args.members,
+          leads: args.where.leads,
+          members: args.mwhere.embers,
           password: hashedPassword,
         },
       });
     },
 
     updateGroup: async (_, args, context, info) => {
-      // const email = context.where.email;
-      // console.log(context);
+      const email = args.where.email;
+      console.log(args.where.email);
+
       return context.db.mutation.updateGroup({
+        where: {
+          email,
+        },
         data: {
-          name: args.name,
-          description: args.description,
-          email: args.email,
-          website: args.website,
-          teams: args.teams,
-          leads: args.leads,
-          members: args.members,
+          name: args.where.name,
+          description: args.where.description,
+          email: args.where.email,
+          website: args.where.website,
+          teams: args.where.teams,
+          leads: args.where.leads,
         },
       });
     },

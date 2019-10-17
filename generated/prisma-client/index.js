@@ -25,6 +25,14 @@ var models = [
     embedded: false
   },
   {
+    name: "EventDiscusionChannel",
+    embedded: false
+  },
+  {
+    name: "EventMessage",
+    embedded: false
+  },
+  {
     name: "Group",
     embedded: false
   },

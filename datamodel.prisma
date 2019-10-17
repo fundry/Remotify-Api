@@ -20,13 +20,15 @@ type Event {
   lead: [EventLead]   @relation( name : "EventLead"   , onDelete: CASCADE  )
   teams: Int
   team: [EventTeam]   @relation( name : "EventTeam"   , onDelete: CASCADE  )
+  channels  : Int
 }
 
 type EventMember {
     id: ID! @id
     firstname: String! 
    lastname: String! @unique
-   event: Event @relation( name : "EventMember"   ) 
+   event: Event @relation( name : "EventMember"   )
+   channel :  [EventDiscusionChannel] @relation( name: "MemberChannel" , onDelete : CASCADE)
 }
 
 type EventLead {
@@ -44,6 +46,20 @@ type EventTeam {
   event: Event @relation( name : "EventTeam"   ) 
 }
  
+type EventDiscusionChannel  {
+    id: ID! @id
+    message : [EventMessage] @relation( name: "EventChannelMessage" , onDelete: CASCADE )
+    member : [EventMember] @relation( name: "MemberChannel" , onDelete: CASCADE )  
+    createdAt : DateTime! @createdAt
+}
+
+type EventMessage {
+    id: ID! @id  
+    channel : [EventDiscusionChannel] @relation( name : "EventChannelMessage" )
+    content : String
+    sender : String
+    createdAt : DateTime! @createdAt
+}
 
 type Group {
   id: ID! @id
@@ -100,8 +116,9 @@ type Organization {
  
 type Department {
   id: ID!  @id
-  leads:  Int
   name: String! @unique
+  description: String 
+  leads:  Int
   teams: [Team!]!  @relation( name : "DepartmentTeam"   , onDelete: CASCADE  )  
   createdAt: DateTime! @createdAt
 }

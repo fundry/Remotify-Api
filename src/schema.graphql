@@ -1,6 +1,7 @@
 # import Organization from "../prisma/prisma.graphql"
 # import Team from "../prisma/prisma.graphql"
 # import Staff from "../prisma/prisma.graphql"
+# import Department from "../prisma/prisma.graphql"
 # import Group from "../prisma/prisma.graphql"
 # import GroupMember from "../prisma/prisma.graphql"
 # import GroupTeam from "../prisma/prisma.graphql"
@@ -8,191 +9,187 @@
 # import EventMember from "../prisma/prisma.graphql"
 
 type Query {
-    info: String 
+  info: String
 
-    # single queries
-    staff(where: StaffWhereUniqueInput): Staff 
-    team(where: TeamWhereUniqueInput): Team 
-    organization(where: OrganizationWhereUniqueInput): Organization
-    
-    group(where: GroupWhereUniqueInput): Group
-    groupmember(where: GroupWhereUniqueInput): GroupMember
-    groupteam(where: GroupWhereUniqueInput): GroupTeam
-   
-    event(where: EventWhereUniqueInput): Event
-    eventmember(where: EventWhereUniqueInput): EventMember
-    eventteam(where: EventWhereUniqueInput): EventTeam
- 
+  # single queries
+  staff(where: StaffWhereUniqueInput): Staff
+  team(where: TeamWhereUniqueInput): Team
+  organization(where: OrganizationWhereUniqueInput): Organization
+  department(where: DepartmentWhereUniqueInput): Department
+
+  group(where: GroupWhereUniqueInput): Group
+  groupmember(where: GroupWhereUniqueInput): GroupMember
+  groupteam(where: GroupWhereUniqueInput): GroupTeam
+
+  event(where: EventWhereUniqueInput): Event
+  eventmember(where: EventWhereUniqueInput): EventMember
+  eventteam(where: EventWhereUniqueInput): EventTeam
+
   # multiple queries
-    allOrganizations: [Organization!]
-    allStaff: [Staff!]
-    allTeam: [Team!]
-    allGroup: [Group!]
-    allEvent: [Event!]
-    node(id: ID!): Node
+  allOrganizations: [Organization!]
+  allStaff: [Staff!]
+  allTeam: [Team!]
+  allGroup: [Group!]
+  allEvent: [Event!]
+  node(id: ID!): Node
 }
 
 type Mutation {
+  # Event Mutations ===========>
+  createEvent(
+    where: UniqueInput
+    name: String!
+    description: String
+    email: String
+    createdAt: Int
+    members: Int
+    website: String
+    password: String!
+    leads: Int
+    teams: Int
+    members: Int
+  ): Event
 
+  createEventMember(
+    where: UniqueInput
+    firstname: String!
+    lastname: String!
+    password: String!
+    team: String
+  ): EventMember
 
- # Event Mutations ===========>
-    createEvent( where: UniqueInput
-      name: String!
-      description: String 
-      email: String 
-      createdAt: Int
-      members: Int
-      website: String  
-      password: String!  
-      leads: Int  
-      teams: Int  
-      members: Int  
-    ): Event
+  createEventTeam(
+    where: UniqueInput
+    name: String
+    description: String
+    createdAt: Int
+  ): EventTeam
 
-    createEventMember( where: UniqueInput
-      firstname: String!
-      lastname: String!
-      password: String!
-      team: String
-    ): EventMember
+  #  =======================>>
 
-    createEventTeam( where: UniqueInput
-      name: String 
-      description: String  
-      createdAt: Int 
-    ): EventTeam
+  # Group Mutations ===========>
+  createGroup(
+    where: UniqueInput
+    name: String!
+    description: String
+    email: String
+    password: String!
+    website: String
+    createdAt: Int
+    members: Int
+    leads: Int
+    teams: Int
+  ): Group
 
-    #  =======================>>
+  createGroupMember(
+    where: UniqueInput
+    firstname: String!
+    lastname: String!
+    password: String!
+    team: String
+  ): GroupMember
 
-    # Group Mutations ===========>
-    createGroup( where: UniqueInput
-      name: String!
-      description: String 
-      email: String 
-      password: String!  
-      website: String  
-      createdAt: Int
-      members: Int  
-      leads: Int  
-      teams: Int  
-    ): Group
+  createGroupTeam(
+    where: UniqueInput
+    name: String
+    members: Int
+    description: String
+    active: Boolean
+    lead: String
+    createdAt: Int
+  ): GroupTeam
 
-    createGroupMember( where: UniqueInput
-      firstname: String!
-      lastname: String!
-      password: String!
-      team: String
-    ): GroupMember
+  updateGroup(
+    where: UniqueInput
+    name: String
+    description: String
+    active: Boolean
+    lead: String
+    createdAt: Int
+    website: String
+    teams: Int
+  ): Group
 
-    createGroupTeam( where: UniqueInput
-      name: String 
-      members: Int  
-      description: String  
-      active: Boolean 
-      lead: String 
-      createdAt: Int 
-    ): GroupTeam
-
-    updateGroup(  
-      name: String 
-      members: Int  
-      description: String  
-      active: Boolean 
-      lead: String 
-      createdAt: Int 
-    ): Group
-
-#  ========>
-
+  #  ========>
 
   # organization Mutations
-    createOrganization(  where: UniqueInput 
-        name: String!
-        description: String
-        createdAt: Int
-        staffs: Int
-        type: String
-         email: String
-        website: String  
-         country: String
-         state: String
-         password: String
-      ): Organization
+  createOrganization(
+    where: UniqueInput
+    name: String!
+    description: String
+    createdAt: Int
+    staffs: Int
+    type: String
+    email: String
+    website: String
+    country: String
+    state: String
+    password: String
+  ): Organization
 
-    createDepartment(
-        name: String!  
-        createdAt: Int
-    ): Organization    
+  createDepartment(
+    where: UniqueInput
+    name: String!
+    description: String
+    leads: Int
+    createdAt: Int
+  ): Department
 
-    createStaff(    
-      firstname: String!
-      lastname: String
-      role: String
-      email: String
-      password: String! 
-      country: String
-      state: String
-      joinedAt: Int
-      isLead: Boolean 
-      ): Staff
+  createStaff(
+    firstname: String!
+    lastname: String
+    role: String
+    email: String
+    password: String!
+    country: String
+    state: String
+    joinedAt: Int
+    isLead: Boolean
+  ): Staff
 
-    createTeam(   
-      name: String!
-      members: Int
-      active: Boolean
-      createdAt: Int
-      description: String 
-    ): Team
+  createTeam(
+    name: String!
+    members: Int
+    active: Boolean
+    createdAt: Int
+    description: String
+  ): Team
 
-# authentication ================>
+  # authentication ================>
   loginOrganization(
     where: UniqueInput!
     name: String!
     password: String!
-  ) :  AuthPayload
+  ): AuthPayload
 
-  loginGroup(
+  loginGroup(where: UniqueInput!, name: String!, password: String!): AuthPayload
+
+  loginStaff(where: UniqueInput!, name: String!, password: String!): AuthPayload
+
+  loginGroupMember(
     where: UniqueInput!
     name: String!
     password: String!
-  ) :  AuthPayload
+  ): AuthPayload
 
-   loginStaff(
+  loginEvent(where: UniqueInput!, name: String!, password: String!): AuthPayload
+
+  loginEventMember(
     where: UniqueInput!
     name: String!
     password: String!
-  ) :  AuthPayload
+  ): AuthPayload
 
-   loginGroupMember(
-    where: UniqueInput!
-    name: String!
-    password: String!
-  ) :  AuthPayload
-
-   loginEvent (
-    where: UniqueInput!
-    name: String!
-    password: String!
-  ) :  AuthPayload 
-
-   loginEventMember(
-    where: UniqueInput!
-    name: String!
-    password: String!
-  ) :  AuthPayload
-
-# cloud functions resolvers here 
-    sendEmail(
-      email: String
-    ) : Organization
+  # cloud functions resolvers here
+  sendEmail(email: String): Organization
 }
 
 type AuthPayload {
-    token: String
-    organization: Organization
+  token: String
+  organization: Organization
 }
 
-input UniqueInput{
-  id : ID
+input UniqueInput {
+  id: ID
   email: String
 }
