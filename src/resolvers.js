@@ -78,7 +78,19 @@ const resolver = {
         info,
       });
     },
+      
+      eventmessage: (_, ctx, prisma, info) => {
+      const id = ctx.where.id;
+    return prisma.db.query.eventMessage({
+        where: {
+          id
+      },
+        info,
+      })
   },
+} , 
+
+
 
   Mutation: {
     // ===================>
@@ -204,11 +216,20 @@ const resolver = {
           website: args.where.website,
           teams: args.teams,
           leads: args.where.leads,
-          members: args.mwhere.embers,
+          members: args.members,
           password: hashedPassword,
         },
       });
     },
+
+    createEventMessage : async (_, args, context, info) => {
+        return  context.db.mutation.createEventMessage({
+          data : {
+            content : args.content ,
+            sender : args.sender
+          }
+        })
+    } ,
 
     updateGroup: async (_, args, context, info) => {
       const email = args.where.email;

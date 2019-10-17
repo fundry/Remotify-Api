@@ -7,6 +7,8 @@
 # import GroupTeam from "../prisma/prisma.graphql"
 # import Event from "../prisma/prisma.graphql"
 # import EventMember from "../prisma/prisma.graphql"
+# import EventMessage from "../prisma/prisma.graphql"
+
 
 type Query {
   info: String
@@ -24,6 +26,7 @@ type Query {
   event(where: EventWhereUniqueInput): Event
   eventmember(where: EventWhereUniqueInput): EventMember
   eventteam(where: EventWhereUniqueInput): EventTeam
+  eventmessage(where: EventMessageWhereUniqueInput!): EventMessage
 
   # multiple queries
   allOrganizations: [Organization!]
@@ -65,6 +68,12 @@ type Mutation {
     createdAt: Int
   ): EventTeam
 
+  createEventMessage(
+    where: UniqueInput
+    content: String
+    sender: String
+  ): EventMessage
+  
   #  =======================>>
 
   # Group Mutations ===========>
