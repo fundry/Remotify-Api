@@ -1,10 +1,26 @@
-require('dotenv').config();
-//dotenv should be topmost so it loads all  env data
+require('dotenv').config(); //dotenv should be topmost so it loads all  env data
 import Axios from 'axios';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const resolver = {
+  Subscription: {
+    eventMessageSubscribe: {
+      subscribe: (parent, args, ctx, info) => {
+        console.log(ctx, 'ctx');
+        console.log(info, 'info');
+        return ctx.db.subscription.eventMessageSubscribe(
+          {
+            where: {
+              mutation_in: ['CREATED', 'UPDATED'],
+            },
+          },
+          info
+        );
+      },
+    },
+  },
+
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
 
@@ -78,19 +94,17 @@ const resolver = {
         info,
       });
     },
-      
-      eventmessage: (_, ctx, prisma, info) => {
+
+    eventmessage: (_, ctx, prisma, info) => {
       const id = ctx.where.id;
-    return prisma.db.query.eventMessage({
+      return prisma.db.query.eventMessage({
         where: {
-          id
-      },
+          id,
+        },
         info,
-      })
+      });
+    },
   },
-} , 
-
-
 
   Mutation: {
     // ===================>
@@ -222,14 +236,14 @@ const resolver = {
       });
     },
 
-    createEventMessage : async (_, args, context, info) => {
-        return  context.db.mutation.createEventMessage({
-          data : {
-            content : args.content ,
-            sender : args.sender
-          }
-        })
-    } ,
+    createEventMessage: async (_, args, context, info) => {
+      return context.db.mutation.createEventMessage({
+        data: {
+          content: args.content,
+          sender: args.sender,
+        },
+      });
+    },
 
     updateGroup: async (_, args, context, info) => {
       const email = args.where.email;

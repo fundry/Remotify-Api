@@ -2,13 +2,12 @@
 # import Team from "../prisma/prisma.graphql"
 # import Staff from "../prisma/prisma.graphql"
 # import Department from "../prisma/prisma.graphql"
-# import Group from "../prisma/prisma.graphql"
-# import GroupMember from "../prisma/prisma.graphql"
-# import GroupTeam from "../prisma/prisma.graphql"
-# import Event from "../prisma/prisma.graphql"
-# import EventMember from "../prisma/prisma.graphql"
-# import EventMessage from "../prisma/prisma.graphql"
+# import Group ,  GroupMember  , GroupTeam from "../prisma/prisma.graphql"
+# import Event , EventMember , EventMessage ,  eventMessageSubscriptionPayload from "../prisma/prisma.graphql"
 
+type Subscription {
+ eventMessageSubscribe:  eventMessageSubscriptionPayload
+}
 
 type Query {
   info: String
