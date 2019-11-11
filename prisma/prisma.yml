@@ -1,4 +1,4 @@
-endpoint: http://localhost:4466
+endpoint: ${env:DEV_PRISMA}
 datamodel: datamodel.prisma
 
 secret :  ${env:APP_SECRET}

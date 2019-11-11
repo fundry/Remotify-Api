@@ -64,6 +64,6 @@ var models = [
 exports.Prisma = prisma_lib_1.makePrismaClientClass({
   typeDefs,
   models,
-  endpoint: `http://localhost:4466`
+  endpoint: `https://remotify-server-7050e23715.herokuapp.com`
 });
 exports.prisma = new exports.Prisma();
